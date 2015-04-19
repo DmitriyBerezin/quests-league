@@ -22,8 +22,8 @@ router.get('/', function(req, res, next) {
   }
 
   // res.render('index', { title: 'Express' });
-  getTestDataFromDb(function() {
-  	res.render('index', { title: 'Express' });
+  getTestDataFromDb(function(rows) {
+  	res.render('index', { title: 'Express', length: rows.length });
   })
 });
 
@@ -43,7 +43,7 @@ function getTestDataFromDb(callback) {
 
 			// Don't use the connection here, it has been returned to the pool.
 
-			callback();
+			callback(rows[0]);
 		});
 	});
 }
