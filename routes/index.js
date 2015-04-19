@@ -23,6 +23,10 @@ router.get('/', function(req, res, next) {
 
   // res.render('index', { title: 'Express' });
   getTestDataFromDb(function(rows) {
+  	res.header("Cache-Control", "no-cache, no-store, must-revalidate");
+    res.header("Pragma", "no-cache");
+    res.header("Expires", 0);
+
   	res.render('index', { title: 'Express', length: rows.length });
   })
 });
