@@ -4,11 +4,19 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var session = require('express-session');
+var MongoStore = require('connect-mongo')(session);
+var mongoose = require ("mongoose");
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
 
 var app = express();
+
+var connString = 
+	process.env.MONGOLAB_URI || 
+	process.env.MONGOHQ_URL || 
+	'mongodb://heroku_app36021392:oprsn83qatj8hovffhj3dl2sc@ds039271.mongolab.com:39271/heroku_app36021392';
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -20,6 +28,12 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(session({
+    secret: 'foo',
+    store: new MongoStore({ url: connString }),
+    resave: true, // TODO: understand option
+    saveUninitialized: true // TODO: understand option
+}));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
