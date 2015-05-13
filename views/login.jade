@@ -1,0 +1,19 @@
+extends layout
+
+block content
+	div
+		form(action='/auth/login', method='post')
+			div
+				label Email
+				input(type='text', name='email')
+			div
+				label Password
+				input(type='password', name='password')
+			div
+				input(type='submit', value='Log In')
+	div
+		ul
+			li
+				a(href="/auth/facebook") Login with Facebook
+			li
+				a(href="/auth/twitter") Login with Twitter

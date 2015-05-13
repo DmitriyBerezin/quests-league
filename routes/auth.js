@@ -2,6 +2,8 @@ var express = require('express');
 var router = express.Router();
 // var authFacebook = require('../auth/facebook-auth.js');
 
+require('../auth/local-auth.js');
+
 var passport = require('passport'),
 	FacebookStrategy = require('passport-facebook').Strategy;
 
@@ -29,5 +31,16 @@ router.get('/facebook/callback',
   function(req, res) {
     res.redirect('/');
   });
+
+router.get('/login', function(req, res, next) {
+	res.render('login');
+});
+
+router.post('/login', passport.authenticate('local', {
+	session: false,
+	successRedirect: '/',
+	failureRedirect: '/auth/login'/*,
+	failureFlash: true*/
+}));
 
 module.exports = router;
