@@ -1,11 +1,14 @@
 var passport = require('passport'),
 	LocalStrategy = require('passport-local').Strategy,
+	format = require('string-format'),
 	mysql = require('mysql'),
 	connection = mysql.createConnection({
 		host: 'localhost',
 		user: 'root',
 		password: 'root'
-	});
+	}),
+	authUtils = require('../auth/utils');
+
 
 passport.use(new LocalStrategy({
 		usernameField: 'email',
@@ -13,7 +16,21 @@ passport.use(new LocalStrategy({
 	},
 
 	function(email, password, done) {
-		var query = "call quests.get_user_by_email('" + email + "')";
+		function callback(res) {
+			if (res) {
+				return done(null, row);
+			}
+
+			return done(err, false, { message: 'Incorrect password' });
+		}
+
+		function errback(err) {
+			return done(err);
+		}
+
+		
+		var query = "call quests.get_user_by_email('" + email + "')",
+			row;
 		connection.query(query, function(err, rows, fields) {
 			if (err) {
 				return done(err);
@@ -23,11 +40,34 @@ passport.use(new LocalStrategy({
 				return done(err, false, { message: 'Incorrect email' });
 			}
 
-			if (rows[0][0].password !== password) {
-				return done(err, false, { message: 'Incorrect password' });
-			}
-
-			return done(null, rows[0][0]);
+			row = rows[0][0];
+			authUtils.checkPassword(password, row.password, callback, errback)
 		});
 	}
 ));
+
+function signUp(req, res, next) {
+	function callback(hash) {
+		var query = 'call quests.create_user("' + req.body.name + '", "' + req.body.email + '", "' + hash + '")';
+
+		connection.query(query, function(err, rows, fields) {
+			if (err) {
+				return next(err);
+			}
+
+			res.redirect('/auth/confirm');
+		});
+	}
+
+	function errback(err) {
+		return next(err);
+	}
+
+	
+	authUtils.hashPassword(req.body.password, callback, errback);
+}
+
+
+module.exports = {
+	signUpMiddleware: signUp
+};

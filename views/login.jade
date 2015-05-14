@@ -1,8 +1,25 @@
 extends layout
 
 block content
-	div.error= message
 	div
+		form(action='/auth/signup', method='post')
+			div
+				label Name
+				input(type='text', name='name')
+			div
+				label Email
+				input(type='text', name='email')
+			div
+				label Password
+				input(type='password', name='password')
+			div
+				label Password confirmation
+				input(type='password', name='passwordConfirmation')
+			div
+				input(type='submit', value='Sign Up')
+
+	div
+		div.error= message
 		form(action='/auth/login', method='post')
 			div
 				label Email
@@ -12,6 +29,7 @@ block content
 				input(type='password', name='password')
 			div
 				input(type='submit', value='Log In')
+	
 	div
 		ul
 			li

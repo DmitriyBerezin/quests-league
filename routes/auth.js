@@ -3,7 +3,14 @@ var router = express.Router();
 var passport = require('passport');
 
 require('../auth/facebook-auth.js');
-require('../auth/local-auth.js');
+var localAuth = require('../auth/local-auth.js');
+var authUtils = require('../auth/utils');
+
+
+router.get('/login', function(req, res, next) {
+	res.render('login', {   message: req.flash('error') });
+});
+
 
 
 // Facebook
@@ -16,15 +23,15 @@ router.get('/facebook/callback', passport.authenticate('facebook', {
 
 
 // Email & password
-router.get('/login', function(req, res, next) {
-	res.render('login', { message: req.flash('error') });
-});
-
 router.post('/login', passport.authenticate('local', {
 	successRedirect: '/',
 	failureRedirect: '/auth/login',
 	failureFlash: true
 }));
+
+
+// Sign Up
+router.post('/signup', localAuth.signUpMiddleware);
 
 
 // Log out
