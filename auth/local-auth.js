@@ -15,17 +15,16 @@ passport.use(new LocalStrategy({
 	function(email, password, done) {
 		var query = "call quests.get_user_by_email('" + email + "')";
 		connection.query(query, function(err, rows, fields) {
-			debugger
 			if (err) {
 				return done(err);
 			}
 
 			if (!rows.length) {
-				return done(err, false/*, { message: 'Incorrect email' }*/);
+				return done(err, false, { message: 'Incorrect email' });
 			}
 
 			if (rows[0][0].password !== password) {
-				return done(err, false/*, { message: 'Incorrect password' }*/);
+				return done(err, false, { message: 'Incorrect password' });
 			}
 
 			return done(null, rows[0][0]);

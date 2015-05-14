@@ -7,14 +7,12 @@ require('../auth/local-auth.js');
 
 
 // Facebook
-router.get('/facebook', passport.authenticate('facebook', { session: false }));
+router.get('/facebook', passport.authenticate('facebook'));
 
 router.get('/facebook/callback', passport.authenticate('facebook', { 
-	// session: false, 
 	successRedirect: '/', 
 	failureRedirect: '/login' 
 }));
-
 
 
 // Email & password
@@ -23,11 +21,18 @@ router.get('/login', function(req, res, next) {
 });
 
 router.post('/login', passport.authenticate('local', {
-	// session: false,
 	successRedirect: '/',
-	failureRedirect: '/auth/login'/*,
-	failureFlash: true*/
+	failureRedirect: '/auth/login',
+	failureFlash: true
 }));
+
+
+// Log out
+router.get('/logout', function(req, res, next) {
+	req.logout();
+	res.redirect('/');
+});
+
 
 passport.serializeUser(function(user, done) {
  	done(null, user.id);
