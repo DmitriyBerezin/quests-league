@@ -17,7 +17,7 @@ router.get('/facebook/callback', passport.authenticate('facebook', {
 
 // Email & password
 router.get('/login', function(req, res, next) {
-	res.render('login');
+	res.render('login', { message: req.flash('error') });
 });
 
 router.post('/login', passport.authenticate('local', {

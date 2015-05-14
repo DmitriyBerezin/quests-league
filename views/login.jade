@@ -1,6 +1,7 @@
 extends layout
 
 block content
+	div.error= message
 	div
 		form(action='/auth/login', method='post')
 			div

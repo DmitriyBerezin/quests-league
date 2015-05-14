@@ -19,7 +19,7 @@ passport.use(new LocalStrategy({
 				return done(err);
 			}
 
-			if (!rows.length) {
+			if (!rows[0].length) {
 				return done(err, false, { message: 'Incorrect email' });
 			}
 
