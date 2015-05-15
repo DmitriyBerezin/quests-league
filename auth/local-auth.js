@@ -55,7 +55,7 @@ function signUp(req, res, next) {
 				return next(err);
 			}
 
-			res.redirect('/auth/confirm');
+			res.redirect('/auth/verify');
 		});
 	}
 
@@ -67,7 +67,19 @@ function signUp(req, res, next) {
 	authUtils.hashPassword(req.body.password, callback, errback);
 }
 
+function verify(req, res, next) {
+	var query = 'call quests.verify_user(' + req.body.id + ')';
+
+	connection.query(query, function(err, rows, fields) {
+		if (err) {
+			return next(err);
+		}
+
+		res.redirect('/user/lk');
+	});
+}
 
 module.exports = {
-	signUpMiddleware: signUp
+	signUp: signUp,
+	verify: verify
 };

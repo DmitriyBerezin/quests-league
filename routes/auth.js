@@ -31,7 +31,12 @@ router.post('/login', passport.authenticate('local', {
 
 
 // Sign Up
-router.post('/signup', localAuth.signUpMiddleware);
+router.post('/signup', localAuth.signUp);
+
+router.get('/verify', function(req, res, next) {
+	res.render('verify');
+});
+router.post('/verify', localAuth.verify);
 
 
 // Log out
