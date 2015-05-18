@@ -47,11 +47,11 @@ router.get('/logout', function(req, res, next) {
 
 
 passport.serializeUser(function(user, done) {
- 	done(null, user.id);
+ 	done(null, user);
 });
 
-passport.deserializeUser(function(id, done) {
-	done(null, { name: '1', id: 1 });
+passport.deserializeUser(function(user, done) {
+	done(null, user);
 });
 
 

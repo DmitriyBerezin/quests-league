@@ -1,6 +1,17 @@
-var bcrypt = require('bcrypt');
+var bcrypt = require('bcrypt'),
+	util = require('util'),
+	mysql = require('mysql'),
+	connection = mysql.createConnection({
+		host: 'localhost',
+		user: 'root',
+		password: 'root'
+	});
 
 module.exports = {
+	providers: {
+		FACEBOOK: 'fb'
+	},
+
 	// route middleware to make sure a user is logged in
 	requireAuthentication: function (req, res, next) {
 		// if user is authenticated in the session, carry on
@@ -34,6 +45,20 @@ module.exports = {
 			}
 
 			return cb(res);
+		});
+	},
+
+	oauthAuthorization: function(provider, token, emails, name, cb, eb) {
+		var email = emails.length > 0 ? emails[0].value : '',
+			query = util.format('call quests.pOAuth("%s", "%s", "%s", "%s");', 
+				provider, token, email, name);
+
+		connection.query(query, function(err, rows, fields) {
+			if (err) {
+				return eb(err);
+			}
+
+			cb(rows[0][0]);
 		});
 	}
 };

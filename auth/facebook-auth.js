@@ -1,5 +1,7 @@
 var passport = require('passport'),
-	FacebookStrategy = require('passport-facebook').Strategy;
+	FacebookStrategy = require('passport-facebook').Strategy,
+
+	authUtils = require('./utils.js');
 
 passport.use(new FacebookStrategy({
 		clientID: '426894947484457',
@@ -7,6 +9,15 @@ passport.use(new FacebookStrategy({
 		callbackURL: '/auth/facebook/callback'
 	},
 	function(accessToken, refreshToken, profile, done) {
-		done(null, { name: '1', id: 1 });
+		function callback(data) {
+			return done(null, data);
+		}
+
+		function errback(err) {
+			return done(err);
+		}
+
+		authUtils.oauthAuthorization(authUtils.providers.FACEBOOK, 
+			accessToken, profile.emails, profile.displayName, callback, errback);
 	}
 ));
