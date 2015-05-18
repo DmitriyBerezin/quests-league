@@ -50,7 +50,7 @@ module.exports = {
 
 	oauthAuthorization: function(provider, token, emails, name, cb, eb) {
 		var email = emails.length > 0 ? emails[0].value : '',
-			query = util.format('call quests.pOAuth("%s", "%s", "%s", "%s");', 
+			query = util.format('call quests.pUserOAuth("%s", "%s", "%s", "%s");', 
 				provider, token, email, name);
 
 		connection.query(query, function(err, rows, fields) {

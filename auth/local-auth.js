@@ -1,6 +1,6 @@
 var passport = require('passport'),
 	LocalStrategy = require('passport-local').Strategy,
-	format = require('string-format'),
+	util = require('util'),
 	mysql = require('mysql'),
 	connection = mysql.createConnection({
 		host: 'localhost',
@@ -29,7 +29,7 @@ passport.use(new LocalStrategy({
 		}
 
 		
-		var query = "call quests.get_user_by_email('" + email + "')",
+		var query = util.format('call quests.pUserGet("%s")', email),
 			row;
 		connection.query(query, function(err, rows, fields) {
 			if (err) {
@@ -48,7 +48,8 @@ passport.use(new LocalStrategy({
 
 function signUp(req, res, next) {
 	function callback(hash) {
-		var query = 'call quests.create_user("' + req.body.name + '", "' + req.body.email + '", "' + hash + '")';
+		var query = util.format('call quests.pUserCreate("%s", "%s", "%s")',
+				req.body.name, req.body.email, hash);
 
 		connection.query(query, function(err, rows, fields) {
 			if (err) {
@@ -68,7 +69,7 @@ function signUp(req, res, next) {
 }
 
 function verify(req, res, next) {
-	var query = 'call quests.verify_user(' + req.body.id + ')';
+	var query = util.format('call quests.pUserVerify(%d)', req.body.id);
 
 	connection.query(query, function(err, rows, fields) {
 		if (err) {
