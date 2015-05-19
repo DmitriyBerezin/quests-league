@@ -15,5 +15,17 @@ module.exports = {
 				callbackURL: '/auth/facebook/callback'
 			}
 		}
+	},
+
+	mail: {
+		smtp: {
+			host: 'smtp.yandex.ru',
+			port: 465,
+			secure: true,
+			auth: {
+				user: 'ivan.questoff',
+				pass: 'Quest123'
+			}
+		}
 	}
 };
