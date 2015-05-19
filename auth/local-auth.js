@@ -1,9 +1,7 @@
 var passport = require('passport'),
 	LocalStrategy = require('passport-local').Strategy,
 	util = require('util'),
-	config = require('../config/config'),
-	mysql = require('mysql'),
-	connection = mysql.createConnection(config.database),
+	db = require('../services/database'),
 	authUtils = require('./utils');
 
 
@@ -28,7 +26,8 @@ passport.use(new LocalStrategy({
 		
 		var query = util.format('call quests.pUserGet("%s")', email),
 			row;
-		connection.query(query, function(err, rows, fields) {
+		
+		db.execQuery(query, function(err, rows, fields) {
 			if (err) {
 				return done(err);
 			}
@@ -48,7 +47,7 @@ function signUp(req, res, next) {
 		var query = util.format('call quests.pUserCreate("%s", "%s", "%s")',
 				req.body.name, req.body.email, hash);
 
-		connection.query(query, function(err, rows, fields) {
+		db.execQuery(query, function(err, rows, fields) {
 			if (err) {
 				return next(err);
 			}
@@ -68,7 +67,7 @@ function signUp(req, res, next) {
 function verify(req, res, next) {
 	var query = util.format('call quests.pUserVerify(%d)', req.body.id);
 
-	connection.query(query, function(err, rows, fields) {
+	db.execQuery(query, function(err, rows, fields) {
 		if (err) {
 			return next(err);
 		}

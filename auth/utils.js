@@ -1,8 +1,7 @@
 var bcrypt = require('bcrypt'),
 	util = require('util'),
 	config = require('../config/config'),
-	mysql = require('mysql'),
-	connection = mysql.createConnection(config.database);
+	db = require('../services/database');
 
 module.exports = {
 	providers: {
@@ -50,7 +49,7 @@ module.exports = {
 			query = util.format('call quests.pUserOAuth("%s", "%s", "%s", "%s");', 
 				provider, token, email, name);
 
-		connection.query(query, function(err, rows, fields) {
+		db.execQuery(query, function(err, rows, fields) {
 			if (err) {
 				return eb(err);
 			}
