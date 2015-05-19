@@ -1,13 +1,10 @@
 var passport = require('passport'),
 	LocalStrategy = require('passport-local').Strategy,
 	util = require('util'),
+	config = require('../config/config'),
 	mysql = require('mysql'),
-	connection = mysql.createConnection({
-		host: 'localhost',
-		user: 'root',
-		password: 'root'
-	}),
-	authUtils = require('../auth/utils');
+	connection = mysql.createConnection(config.database),
+	authUtils = require('./utils');
 
 
 passport.use(new LocalStrategy({
@@ -21,7 +18,7 @@ passport.use(new LocalStrategy({
 				return done(null, row);
 			}
 
-			return done(err, false, { message: 'Incorrect password' });
+			return done(null, false, { message: 'Incorrect password' });
 		}
 
 		function errback(err) {

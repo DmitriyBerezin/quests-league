@@ -1,11 +1,8 @@
 var bcrypt = require('bcrypt'),
 	util = require('util'),
+	config = require('../config/config'),
 	mysql = require('mysql'),
-	connection = mysql.createConnection({
-		host: 'localhost',
-		user: 'root',
-		password: 'root'
-	});
+	connection = mysql.createConnection(config.database);
 
 module.exports = {
 	providers: {
