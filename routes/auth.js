@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 var passport = require('passport');
 
-require('../auth/facebook-auth.js');
+require('../auth/oauth-strategies.js');
 var localAuth = require('../auth/local-auth.js');
 var authUtils = require('../auth/utils');
 

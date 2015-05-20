@@ -1,6 +1,8 @@
 var passport = require('passport'),
 	LocalStrategy = require('passport-local').Strategy,
 	util = require('util'),
+	bcrypt = require('bcrypt'),
+	
 	db = require('../services/database'),
 	authUtils = require('./utils');
 
@@ -37,7 +39,7 @@ passport.use(new LocalStrategy({
 			}
 
 			row = rows[0][0];
-			authUtils.checkPassword(password, row.password, callback, errback)
+			checkPassword(password, row.password, callback, errback)
 		});
 	}
 ));
@@ -61,7 +63,7 @@ function signUp(req, res, next) {
 	}
 
 	
-	authUtils.hashPassword(req.body.password, callback, errback);
+	hashPassword(req.body.password, callback, errback);
 }
 
 function verify(req, res, next) {
@@ -75,6 +77,33 @@ function verify(req, res, next) {
 		res.redirect('/user/lk');
 	});
 }
+
+function hashPassword(psw, cb, eb) {
+	bcrypt.genSalt(10, function(err, salt) {
+		if (err) {
+			return eb(err);
+		}
+
+		bcrypt.hash(psw, salt, function(err, hash) {
+			if (err) {
+				return eb(err);
+			}
+
+			return cb(hash);
+		});
+	});
+}
+
+function checkPassword(psw, hash, cb, eb) {
+	bcrypt.compare(psw, hash, function(err, res) {
+		if (err) {
+			return eb(err);
+		}
+
+		return cb(res);
+	});
+}
+
 
 module.exports = {
 	signUp: signUp,

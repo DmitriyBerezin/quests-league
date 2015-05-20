@@ -3,7 +3,13 @@ var passport = require('passport'),
 	TwitterStrategy = require('passport-twitter').Strategy,
 
 	config = require('../config/config'),
-	authUtils = require('./utils.js');
+	db = require('../services/database'),
+	authUtils = require('./utils.js'),
+
+	providers = {
+		FACEBOOK: 'fb',
+		TWITTER: 'tw',
+	};
 
 passport.use(new FacebookStrategy(config.auth.strategies.facebook,
 	function(accessToken, refreshToken, profile, done) {
@@ -15,7 +21,7 @@ passport.use(new FacebookStrategy(config.auth.strategies.facebook,
 			return done(err);
 		}
 
-		authUtils.oauthAuthorization(authUtils.providers.FACEBOOK, 
+		oauthAuthorization(providers.FACEBOOK, 
 			accessToken, profile.emails, profile.displayName, callback, errback);
 	}
 ));
@@ -30,7 +36,21 @@ passport.use(new TwitterStrategy(config.auth.strategies.twitter,
 			return done(err);
 		}
 
-		authUtils.oauthAuthorization(authUtils.providers.TWITTER, 
+		oauthAuthorization(providers.TWITTER, 
 			accessToken, profile.emails, profile.displayName, callback, errback);
 	}
 ));
+
+function oauthAuthorization(provider, token, emails, name, cb, eb) {
+	var email = emails.length > 0 ? emails[0].value : '',
+		query = util.format('call quests.pUserOAuth("%s", "%s", "%s", "%s");', 
+			provider, token, email, name);
+
+	db.execQuery(query, function(err, rows, fields) {
+		if (err) {
+			return eb(err);
+		}
+
+		cb(rows[0][0]);
+	});
+}
