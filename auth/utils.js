@@ -5,7 +5,8 @@ var bcrypt = require('bcrypt'),
 
 module.exports = {
 	providers: {
-		FACEBOOK: 'fb'
+		FACEBOOK: 'fb',
+		TWITTER: 'tw',
 	},
 
 	// route middleware to make sure a user is logged in

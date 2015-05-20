@@ -22,6 +22,15 @@ router.get('/facebook/callback', passport.authenticate('facebook', {
 }));
 
 
+// Twitter
+router.get('/twitter', passport.authenticate('twitter'));
+
+router.get('/twitter/callback', passport.authenticate('twitter', { 
+	successRedirect: '/', 
+	failureRedirect: '/login' 
+}));
+
+
 // Email & password
 router.post('/login', passport.authenticate('local', {
 	successRedirect: '/',
