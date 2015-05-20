@@ -4,6 +4,7 @@ var passport = require('passport'),
 	VKontakteStrategy = require('passport-vkontakte').Strategy,
 	MailRuStrategy = require('passport-mailru').Strategy,
 	GoogleStrategy = require('passport-google-oauth').OAuth2Strategy,
+	InstagramStrategy = require('passport-instagram').Strategy,
 
 	config = require('../config/config'),
 	db = require('../services/database'),
@@ -14,7 +15,8 @@ var passport = require('passport'),
 		TWITTER: 'tw',
 		VKONTAKTE: 'vk',
 		MAILRU: 'mail',
-		GOOGLE: 'googl'
+		GOOGLE: 'googl',
+		INSTAGRAM: 'inst'
 	};
 
 passport.use(new FacebookStrategy(config.auth.strategies.facebook,
@@ -89,6 +91,22 @@ passport.use(new GoogleStrategy(config.auth.strategies.google,
 		}
 
 		oauthAuthorization(providers.GOOGLE, 
+			accessToken, profile.emails, profile.displayName, callback, errback);
+	}
+));
+
+
+passport.use(new InstagramStrategy(config.auth.strategies.instagram,
+	function(accessToken, refreshToken, profile, done) {
+		function callback(data) {
+			return done(null, data);
+		}
+
+		function errback(err) {
+			return done(err);
+		}
+
+		oauthAuthorization(providers.INSTAGRAM, 
 			accessToken, profile.emails, profile.displayName, callback, errback);
 	}
 ));

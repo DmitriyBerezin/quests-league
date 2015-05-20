@@ -40,6 +40,12 @@ module.exports = {
 				clientID: '599117122023-acliond173f33oa6r19mi6sk0649a5kq.apps.googleusercontent.com',
 				clientSecret: 'veJ58I5Kajjud9iwDAvAW6M8',
 				callbackURL: '/auth/google/callback'
+			},
+
+			instagram: {
+				clientID: '733832',
+				clientSecret: 'veJ58I5Kajjud9iwDAvAW6M8',
+				callbackURL: '/auth/instagram/callback'
 			}
 		}
 	},

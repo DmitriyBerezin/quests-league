@@ -58,6 +58,15 @@ router.get('/google/callback', passport.authenticate('google', {
 }));
 
 
+// Instagram
+router.get('/instagram', passport.authenticate('instagram'));
+
+router.get('/instagram/callback', passport.authenticate('instagram', { 
+	successRedirect: '/', 
+	failureRedirect: '/auth/login' 
+}));
+
+
 // Email & password
 router.post('/login', passport.authenticate('local', {
 	successRedirect: '/',
