@@ -19,6 +19,12 @@ module.exports = {
 				consumerKey: '426894947484457',
 				consumerSecret: '4e334911f900ff8246dead4d312d4fae',
 				callbackURL: '/auth/twitter/callback'
+			},
+
+			vkontakte: {
+				clientID: '426894947484457',
+				clientSecret: '4e334911f900ff8246dead4d312d4fae',
+				callbackURL: '/auth/vk/callback'
 			}
 		}
 	},
