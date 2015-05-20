@@ -31,6 +31,24 @@ router.get('/twitter/callback', passport.authenticate('twitter', {
 }));
 
 
+// VKontakte
+router.get('/vkontakte', passport.authenticate('vkontakte'));
+
+router.get('/vkontakte/callback', passport.authenticate('vkontakte', { 
+	successRedirect: '/', 
+	failureRedirect: '/login' 
+}));
+
+
+// MailRu
+router.get('/mailru', passport.authenticate('mailru'));
+
+router.get('/mailru/callback', passport.authenticate('mailru', { 
+	successRedirect: '/', 
+	failureRedirect: '/login' 
+}));
+
+
 // Email & password
 router.post('/login', passport.authenticate('local', {
 	successRedirect: '/',

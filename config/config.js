@@ -24,7 +24,13 @@ module.exports = {
 			vkontakte: {
 				clientID: '426894947484457',
 				clientSecret: '4e334911f900ff8246dead4d312d4fae',
-				callbackURL: '/auth/vk/callback'
+				callbackURL: '/auth/vkontakte/callback'
+			},
+
+			mailru: {
+				clientID: '733832',
+				clientSecret: 'df640d2dc1b81b80ee81c53768a69e77',
+				callbackURL: '/auth/mailru/callback'
 			}
 		}
 	},
