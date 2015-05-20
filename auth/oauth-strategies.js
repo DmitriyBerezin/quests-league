@@ -3,6 +3,7 @@ var passport = require('passport'),
 	TwitterStrategy = require('passport-twitter').Strategy,
 	VKontakteStrategy = require('passport-vkontakte').Strategy,
 	MailRuStrategy = require('passport-mailru').Strategy,
+	GoogleStrategy = require('passport-google-oauth').OAuth2Strategy,
 
 	config = require('../config/config'),
 	db = require('../services/database'),
@@ -12,7 +13,8 @@ var passport = require('passport'),
 		FACEBOOK: 'fb',
 		TWITTER: 'tw',
 		VKONTAKTE: 'vk',
-		MAILRU: 'mail'
+		MAILRU: 'mail',
+		GOOGLE: 'googl'
 	};
 
 passport.use(new FacebookStrategy(config.auth.strategies.facebook,
@@ -71,6 +73,22 @@ passport.use(new MailRuStrategy(config.auth.strategies.mailru,
 		}
 
 		oauthAuthorization(providers.MAILRU, 
+			accessToken, profile.emails, profile.displayName, callback, errback);
+	}
+));
+
+
+passport.use(new GoogleStrategy(config.auth.strategies.google,
+	function(accessToken, refreshToken, profile, done) {
+		function callback(data) {
+			return done(null, data);
+		}
+
+		function errback(err) {
+			return done(err);
+		}
+
+		oauthAuthorization(providers.GOOGLE, 
 			accessToken, profile.emails, profile.displayName, callback, errback);
 	}
 ));

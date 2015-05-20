@@ -9,6 +9,7 @@ module.exports = {
 
 	auth: {
 		strategies: {
+			// https://developers.facebook.com/apps/
 			facebook: {
 				clientID: '426894947484457',
 				clientSecret: '4e334911f900ff8246dead4d312d4fae',
@@ -27,10 +28,18 @@ module.exports = {
 				callbackURL: '/auth/vkontakte/callback'
 			},
 
+			// http://api.mail.ru/sites/my/
 			mailru: {
 				clientID: '733832',
 				clientSecret: 'df640d2dc1b81b80ee81c53768a69e77',
 				callbackURL: '/auth/mailru/callback'
+			},
+
+			// https://console.developers.google.com/project
+			google: {
+				clientID: '599117122023-acliond173f33oa6r19mi6sk0649a5kq.apps.googleusercontent.com',
+				clientSecret: 'veJ58I5Kajjud9iwDAvAW6M8',
+				callbackURL: '/auth/google/callback'
 			}
 		}
 	},

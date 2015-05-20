@@ -18,7 +18,7 @@ router.get('/facebook', passport.authenticate('facebook'));
 
 router.get('/facebook/callback', passport.authenticate('facebook', { 
 	successRedirect: '/', 
-	failureRedirect: '/login' 
+	failureRedirect: '/auth/login' 
 }));
 
 
@@ -27,7 +27,7 @@ router.get('/twitter', passport.authenticate('twitter'));
 
 router.get('/twitter/callback', passport.authenticate('twitter', { 
 	successRedirect: '/', 
-	failureRedirect: '/login' 
+	failureRedirect: '/auth/login' 
 }));
 
 
@@ -36,7 +36,7 @@ router.get('/vkontakte', passport.authenticate('vkontakte'));
 
 router.get('/vkontakte/callback', passport.authenticate('vkontakte', { 
 	successRedirect: '/', 
-	failureRedirect: '/login' 
+	failureRedirect: '/auth/login' 
 }));
 
 
@@ -45,7 +45,16 @@ router.get('/mailru', passport.authenticate('mailru'));
 
 router.get('/mailru/callback', passport.authenticate('mailru', { 
 	successRedirect: '/', 
-	failureRedirect: '/login' 
+	failureRedirect: '/auth/login' 
+}));
+
+
+// Google
+router.get('/google', passport.authenticate('google', { scope: ['https://www.googleapis.com/auth/userinfo.email'] }));
+
+router.get('/google/callback', passport.authenticate('google', { 
+	successRedirect: '/', 
+	failureRedirect: '/auth/login' 
 }));
 
 
