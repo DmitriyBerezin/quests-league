@@ -4,15 +4,9 @@ var nodemailer = require('nodemailer'),
 
 	transporter = nodemailer.createTransport(smtpTransport(config.mail.smtp));
 
-function sendMail(cb) {
-	var mailOptions = {
-		from: 'ivan.questoff@yandex.ru',
-		to: 'ivan.questoff@yandex.ru',
-		subject: 'hello',
-		text: 'hello world!'
-	};
-
-	transporter.sendMail(mailOptions, cb);
+function sendMail(options, cb) {
+	options.from = options.from || 'ivan.questoff@yandex.ru';
+	transporter.sendMail(options, cb);
 }
 
 module.exports = {

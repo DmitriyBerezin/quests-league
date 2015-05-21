@@ -50,7 +50,7 @@ router.get('/mailru/callback', passport.authenticate('mailru', {
 
 
 // Google
-router.get('/google', passport.authenticate('google', { scope: ['https://www.googleapis.com/auth/userinfo.email'] }));
+router.get('/google', passport.authenticate('google', { scope: ['https://www.googleapis.com/auth/plus.login'] }));
 
 router.get('/google/callback', passport.authenticate('google', { 
 	successRedirect: '/', 

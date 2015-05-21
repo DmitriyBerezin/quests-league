@@ -1,4 +1,5 @@
-var passport = require('passport'),
+var util = require('util'),
+	passport = require('passport'),
 	FacebookStrategy = require('passport-facebook').Strategy,
 	TwitterStrategy = require('passport-twitter').Strategy,
 	VKontakteStrategy = require('passport-vkontakte').Strategy,
