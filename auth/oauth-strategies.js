@@ -114,11 +114,11 @@ passport.use(new InstagramStrategy(config.auth.strategies.instagram,
 
 
 function oauthAuthorization(provider, token, emails, name, cb, eb) {
-	var email = emails.length > 0 ? emails[0].value : '',
+	var email = (emails && emails.length > 0) ? emails[0].value : '',
 		query = util.format('call quests.pUserOAuth("%s", "%s", "%s", "%s");', 
 			provider, token, email, name);
 
-	db.execQuery(query, function(err, rows, fields) {
+	db.execQuery(query, function(err, rows, fields) { 
 		if (err) {
 			return eb(err);
 		}

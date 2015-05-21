@@ -1,8 +1,0 @@
-extends layout
-
-block content
-	h3 Please, verify account via email
-
-	form(action='/auth/verify', method='post')
-		input(type='hidden', value='1', name='id')
-		button(type='submit') Verify account

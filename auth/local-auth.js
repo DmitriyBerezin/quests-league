@@ -1,6 +1,7 @@
 var passport = require('passport'),
 	LocalStrategy = require('passport-local').Strategy,
 	util = require('util'),
+	crypto = require('crypto'),
 	bcrypt = require('bcrypt'),
 	
 	db = require('../services/database'),
@@ -16,7 +17,11 @@ passport.use(new LocalStrategy({
 	function(email, password, done) {
 		function callback(res) {
 			if (res) {
-				return done(null, row);
+				if (row.verified_flag === 1) {
+					return done(null, row);	
+				}
+				
+				return done(null, row, { info: 'Account is not verified' });
 			}
 
 			return done(null, false, { message: 'Incorrect password' });
@@ -56,20 +61,14 @@ function signUp(req, res, next) {
 				return next(err);
 			}
 
-			mailOptions = {
-				//to: req.body.email,
-				to: 'ivan.questoff@yandex.ru',
-				subject: 'Verify account',
-				//html: '<a href="http://localhost:3000/auth/verify?id=23"' + rows[0][0].id + '>'
-				html: '<a href="http://localhost:3000/auth/verify?id=24">Verify account</a>'
-			};		
-			mailer.sendMail(mailOptions, function(err, info) {
+			req.login(rows[0][0], function(err) {
 				if (err) {
 					return next(err);
 				}
 
-				res.redirect('/auth/verify');	
+				return next();
 			});
+
 		});
 	}
 
@@ -81,8 +80,47 @@ function signUp(req, res, next) {
 	hashPassword(req.body.password, callback, errback);
 }
 
+function sendVerificationMail(req, res, next) {
+	if (!req.isAuthenticated()) {
+		return next();
+	}
+
+	require('crypto').randomBytes(48, function(err, buf) {
+		if (err) {
+			return next(err);
+		}
+
+		var token = buf.toString('hex'),
+			id = req.user.id
+			query = util.format('call quests.pUserSetVerificationToken(%d, "%s")', 
+				id, token);
+
+		db.execQuery(query, function(err, rows, fields) {
+			if (err) {
+				return next(err);
+			}
+
+			var mailOptions = {
+				//to: req.body.email,
+				to: 'ivan.questoff@yandex.ru',
+				subject: 'Verify account',
+				html: util.format('<a href="http://localhost:3000/auth/verify?token=%s&id=%d">Verify account</a>', token, id)
+			};
+			mailer.sendMail(mailOptions, function(err, info) {
+				if (err) {
+					return next(err);
+				}
+
+				return next();
+			});
+		});
+	});
+}
+
 function verify(req, res, next) {
-	var query = util.format('call quests.pUserVerify(%d)', req.body.id);
+	var id = req.query.id,
+		token = req.query.token,
+		query = util.format('call quests.pUserVerify(%d, "%s")', id, token);
 
 	db.execQuery(query, function(err, rows, fields) {
 		if (err) {
@@ -122,5 +160,6 @@ function checkPassword(psw, hash, cb, eb) {
 
 module.exports = {
 	signUp: signUp,
+	sendVerificationMail: sendVerificationMail,
 	verify: verify
 };

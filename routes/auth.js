@@ -8,7 +8,7 @@ var authUtils = require('../auth/utils');
 
 
 router.get('/login', function(req, res, next) {
-	res.render('login', {   message: req.flash('error') });
+	res.render('login', { message: req.flash('error') });
 });
 
 
@@ -76,12 +76,14 @@ router.post('/login', passport.authenticate('local', {
 
 
 // Sign Up
-router.post('/signup', localAuth.signUp);
-
-router.get('/verify', function(req, res, next) {
-	res.render('verify');
-});
-router.post('/verify', localAuth.verify);
+router.post('/signup', 
+	localAuth.signUp, 
+	localAuth.sendVerificationMail,
+	function(req, res, next) {
+		res.redirect('/');
+	}
+);
+router.get('/verify', localAuth.verify);
 
 
 // Log out
