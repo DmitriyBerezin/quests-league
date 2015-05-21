@@ -85,7 +85,7 @@ function sendVerificationMail(req, res, next) {
 		return next();
 	}
 
-	require('crypto').randomBytes(48, function(err, buf) {
+	crypto.randomBytes(48, function(err, buf) {
 		if (err) {
 			return next(err);
 		}

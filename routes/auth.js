@@ -17,71 +17,64 @@ router.get('/login', function(req, res, next) {
 router.get('/facebook', passport.authenticate('facebook'));
 
 router.get('/facebook/callback', passport.authenticate('facebook', { 
-	successRedirect: '/', 
 	failureRedirect: '/auth/login' 
-}));
+}), authUtils.successRedirect);
 
 
 // Twitter
 router.get('/twitter', passport.authenticate('twitter'));
 
 router.get('/twitter/callback', passport.authenticate('twitter', { 
-	successRedirect: '/', 
 	failureRedirect: '/auth/login' 
-}));
+}), authUtils.successRedirect);
 
 
 // VKontakte
 router.get('/vkontakte', passport.authenticate('vkontakte'));
 
 router.get('/vkontakte/callback', passport.authenticate('vkontakte', { 
-	successRedirect: '/', 
 	failureRedirect: '/auth/login' 
-}));
+}), authUtils.successRedirect);
 
 
 // MailRu
 router.get('/mailru', passport.authenticate('mailru'));
 
 router.get('/mailru/callback', passport.authenticate('mailru', { 
-	successRedirect: '/', 
 	failureRedirect: '/auth/login' 
-}));
+}), authUtils.successRedirect);
 
 
 // Google
 router.get('/google', passport.authenticate('google', { scope: ['https://www.googleapis.com/auth/plus.login'] }));
 
 router.get('/google/callback', passport.authenticate('google', { 
-	successRedirect: '/', 
 	failureRedirect: '/auth/login' 
-}));
+}), authUtils.successRedirect);
+
 
 
 // Instagram
 router.get('/instagram', passport.authenticate('instagram'));
 
 router.get('/instagram/callback', passport.authenticate('instagram', { 
-	successRedirect: '/', 
 	failureRedirect: '/auth/login' 
-}));
+}), authUtils.successRedirect);
+
 
 
 // Email & password
 router.post('/login', passport.authenticate('local', {
-	successRedirect: '/',
 	failureRedirect: '/auth/login',
 	failureFlash: true
-}));
+}), authUtils.successRedirect);
 
 
 // Sign Up
 router.post('/signup', 
 	localAuth.signUp, 
 	localAuth.sendVerificationMail,
-	function(req, res, next) {
-		res.redirect('/');
-	}
+	authUtils.successRedirect
 );
 router.get('/verify', localAuth.verify);
 
