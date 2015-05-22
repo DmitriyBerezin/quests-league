@@ -4,7 +4,7 @@ USE `quests`;
 --
 -- Host: localhost    Database: quests
 -- ------------------------------------------------------
--- Server version	5.6.24
+-- Server version 5.6.24
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -34,15 +34,6 @@ CREATE TABLE `tachievement` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `tachievement`
---
-
-LOCK TABLES `tachievement` WRITE;
-/*!40000 ALTER TABLE `tachievement` DISABLE KEYS */;
-/*!40000 ALTER TABLE `tachievement` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `tcity`
 --
 
@@ -55,15 +46,6 @@ CREATE TABLE `tcity` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Таблица городов';
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `tcity`
---
-
-LOCK TABLES `tcity` WRITE;
-/*!40000 ALTER TABLE `tcity` DISABLE KEYS */;
-/*!40000 ALTER TABLE `tcity` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `tcity_tr`
@@ -84,15 +66,6 @@ CREATE TABLE `tcity_tr` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `tcity_tr`
---
-
-LOCK TABLES `tcity_tr` WRITE;
-/*!40000 ALTER TABLE `tcity_tr` DISABLE KEYS */;
-/*!40000 ALTER TABLE `tcity_tr` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `tcompany`
 --
 
@@ -106,15 +79,6 @@ CREATE TABLE `tcompany` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Таблица компании-оператора квестов (описательная часть)';
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `tcompany`
---
-
-LOCK TABLES `tcompany` WRITE;
-/*!40000 ALTER TABLE `tcompany` DISABLE KEYS */;
-/*!40000 ALTER TABLE `tcompany` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `tcompanyprofile`
@@ -133,15 +97,6 @@ CREATE TABLE `tcompanyprofile` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `tcompanyprofile`
---
-
-LOCK TABLES `tcompanyprofile` WRITE;
-/*!40000 ALTER TABLE `tcompanyprofile` DISABLE KEYS */;
-/*!40000 ALTER TABLE `tcompanyprofile` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `tleague`
 --
 
@@ -153,15 +108,6 @@ CREATE TABLE `tleague` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Таблица лиг квестов';
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `tleague`
---
-
-LOCK TABLES `tleague` WRITE;
-/*!40000 ALTER TABLE `tleague` DISABLE KEYS */;
-/*!40000 ALTER TABLE `tleague` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `tleague_tr`
@@ -180,15 +126,6 @@ CREATE TABLE `tleague_tr` (
   CONSTRAINT `fk_tleague_tr_leqgue_id` FOREIGN KEY (`league_id`) REFERENCES `tleague` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Таблица-переводчик для tLeague';
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `tleague_tr`
---
-
-LOCK TABLES `tleague_tr` WRITE;
-/*!40000 ALTER TABLE `tleague_tr` DISABLE KEYS */;
-/*!40000 ALTER TABLE `tleague_tr` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `tquest`
@@ -223,15 +160,6 @@ CREATE TABLE `tquest` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `tquest`
---
-
-LOCK TABLES `tquest` WRITE;
-/*!40000 ALTER TABLE `tquest` DISABLE KEYS */;
-/*!40000 ALTER TABLE `tquest` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `tquest_tr`
 --
 
@@ -249,15 +177,6 @@ CREATE TABLE `tquest_tr` (
   CONSTRAINT `fk_tquest_tr_quest_id` FOREIGN KEY (`quest_id`) REFERENCES `tquest` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Таблица-переводчик для tQuest';
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `tquest_tr`
---
-
-LOCK TABLES `tquest_tr` WRITE;
-/*!40000 ALTER TABLE `tquest_tr` DISABLE KEYS */;
-/*!40000 ALTER TABLE `tquest_tr` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `tschedule`
@@ -279,15 +198,6 @@ CREATE TABLE `tschedule` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `tschedule`
---
-
-LOCK TABLES `tschedule` WRITE;
-/*!40000 ALTER TABLE `tschedule` DISABLE KEYS */;
-/*!40000 ALTER TABLE `tschedule` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `tstation`
 --
 
@@ -305,15 +215,6 @@ CREATE TABLE `tstation` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `tstation`
---
-
-LOCK TABLES `tstation` WRITE;
-/*!40000 ALTER TABLE `tstation` DISABLE KEYS */;
-/*!40000 ALTER TABLE `tstation` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `tstory`
 --
 
@@ -325,15 +226,6 @@ CREATE TABLE `tstory` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Справочник жанров квестов';
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `tstory`
---
-
-LOCK TABLES `tstory` WRITE;
-/*!40000 ALTER TABLE `tstory` DISABLE KEYS */;
-/*!40000 ALTER TABLE `tstory` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `tstory_tr`
@@ -352,15 +244,6 @@ CREATE TABLE `tstory_tr` (
   CONSTRAINT `fk_tstory_tr_story_id` FOREIGN KEY (`story_id`) REFERENCES `tstory` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Таблица-переводчик для tStory';
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `tstory_tr`
---
-
-LOCK TABLES `tstory_tr` WRITE;
-/*!40000 ALTER TABLE `tstory_tr` DISABLE KEYS */;
-/*!40000 ALTER TABLE `tstory_tr` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `tuser`
@@ -387,18 +270,8 @@ CREATE TABLE `tuser` (
   UNIQUE KEY `phone_UNIQUE` (`phone`),
   UNIQUE KEY `nickname_UNIQUE` (`nickname`),
   UNIQUE KEY `auth_type_UNIQUE` (`auth_type`,`token`)
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8 COMMENT='Таблица зарегистрированных пользователей портала (игроки, компании-операторы)';
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8 COMMENT='Таблица зарегистрированных пользователей портала (игроки, компании-операторы)';
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `tuser`
---
-
-LOCK TABLES `tuser` WRITE;
-/*!40000 ALTER TABLE `tuser` DISABLE KEYS */;
-INSERT INTO `tuser` VALUES (19,'1',NULL,NULL,'1',NULL,NULL,'local','$2a$10$yhv8A47q6U31T4PY9WZkBemgH586r9gmyJGeEclGr9YDx3eDHmv2m',NULL,'2015-05-20 11:39:53',NULL);
-/*!40000 ALTER TABLE `tuser` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `txqueststation`
@@ -418,15 +291,6 @@ CREATE TABLE `txqueststation` (
   CONSTRAINT `fk_txqueststation_station_id` FOREIGN KEY (`station_id`) REFERENCES `tstation` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Таблица-развязка квесты-станции метро';
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `txqueststation`
---
-
-LOCK TABLES `txqueststation` WRITE;
-/*!40000 ALTER TABLE `txqueststation` DISABLE KEYS */;
-/*!40000 ALTER TABLE `txqueststation` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `txquestuser`
@@ -453,15 +317,6 @@ CREATE TABLE `txquestuser` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `txquestuser`
---
-
-LOCK TABLES `txquestuser` WRITE;
-/*!40000 ALTER TABLE `txquestuser` DISABLE KEYS */;
-/*!40000 ALTER TABLE `txquestuser` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `txuserachievement`
 --
 
@@ -479,15 +334,6 @@ CREATE TABLE `txuserachievement` (
   CONSTRAINT `fk_txuserachievement_user_id` FOREIGN KEY (`user_id`) REFERENCES `tuser` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `txuserachievement`
---
-
-LOCK TABLES `txuserachievement` WRITE;
-/*!40000 ALTER TABLE `txuserachievement` DISABLE KEYS */;
-/*!40000 ALTER TABLE `txuserachievement` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Dumping events for database 'quests'
@@ -508,7 +354,9 @@ UNLOCK TABLES;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pUserCreate`(`name` varchar(45), email varchar(45), psw varchar(250))
 BEGIN
-	insert into tuser (auth_type, `name`, email, password) values('local', `name`, email, psw);
+  insert into tuser (auth_type, `name`, email, password) values('local', `name`, email, psw);
+    
+    select * from tuser u where u.email = email;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -527,7 +375,7 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pUserGet`(email varchar(45))
 BEGIN
-	select * from tuser t where t.email = email;
+  select * from tuser t where t.email = email;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -545,28 +393,47 @@ DELIMITER ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pUserOAuth`(
-	auth_type varchar(5),
-	token varchar(250), 
+  auth_type varchar(5),
+  token varchar(250), 
     email varchar(45),
     `name` varchar(45)
 )
 BEGIN
-	declare new_flag bit(1);
+  declare new_flag bit(1);
     
     if EXISTS(SELECT * FROM tuser u  where u.auth_type = auth_type and u.token = token) then
     begin
-		update tuser set last_visit = CURRENT_TIMESTAMP;
+    update tuser set last_visit = CURRENT_TIMESTAMP;
         set new_flag = 0;
-	end;
-	else
-	begin
+  end;
+  else
+  begin
         insert into tuser(token, auth_type, email, `name`, verified_flag) 
         values(token, auth_type, email, `name`, 1);
         set new_flag = 1;
-	end;
-	end if;
+  end;
+  end if;
     
     select *, new_flag as `new_flag` from tuser u where u.auth_type = auth_type and u.token = token;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `pUserSetVerificationToken` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pUserSetVerificationToken`(id int, token varchar(250))
+BEGIN
+  update tuser u set u.token = token where u.id = id;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -583,9 +450,9 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pUserVerify`(user_id int)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pUserVerify`(id int, token varchar(250))
 BEGIN
-	update tuser set verified_flag = 1 where id = user_id;
+  update tuser u set u.verified_flag = 1 where u.id = id and u.token = token;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -602,4 +469,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-05-20 16:06:33
+-- Dump completed on 2015-05-22 16:30:06
