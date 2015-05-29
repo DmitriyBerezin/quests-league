@@ -2,3 +2,5 @@ extends layout
 
 block content
 	h4 Image
+	each img in imgs
+		img(alt='Image from S3', src=img)

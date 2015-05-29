@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var fs = require('fs');
 var AWS = require('aws-sdk');
+var util = require('util');
 var proxy = require('proxy-agent');
 AWS.config.update({
 	httpOptions: { agent: proxy('http://proxy.frsd.ru:3128') }
@@ -15,7 +16,7 @@ var s3bucket = new AWS.S3({
 	signatureVersion: 'v4'
 });
 
-function setAndGetImg(req, res, next) {
+function uploadImg(req, res, next) {
 	var fileStream = fs.createReadStream('C:\\Users\\Public\\Pictures\\Sample Pictures\\Chrysanthemum.jpg');
 	fileStream.on('error', function (err) {
 		if (err) { 
@@ -35,7 +36,22 @@ function setAndGetImg(req, res, next) {
 	}); 
 }
 
-router.get('/', setAndGetImg, function(req, res, next) {
+function listImgs(req, res, next) {
+	s3bucket.listObjects(function(err, data){
+		if (err) {
+			return next(err);
+		}
+
+		var imgs = [],
+			baseUrl = util.format('https://%s.amazonaws.com/%s/', 's3.eu-central-1', 'quests-league');
+		for (var i = 0, l = data.Contents.length; i < l; ++i) {
+			imgs.push(baseUrl + data.Contents[i].Key);
+		}
+		res.render('img', { imgs: imgs });
+	});
+}
+
+router.get('/', /*uploadImg, */listImgs, function(req, res, next) {
 	res.render('img');
 	// s3bucket.createBucket(function() {
 	// 	var params = { Key: 'myKey', Body: 'Hello!' };
