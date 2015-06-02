@@ -9,6 +9,20 @@ function sendMail(options, cb) {
 	transporter.sendMail(options, cb);
 }
 
+function sendErrorLogMail(err, cb) {
+	var options = {
+		from: 'ivan.questoff@yandex.ru',
+		to: 'ivan.questoff@yandex.ru',
+		subject: err.message,
+		text: err
+	};
+
+	cb = cb || function() {};
+
+	transporter.sendMail(options, cb);
+}
+
 module.exports = {
-	sendMail: sendMail
+	sendMail: sendMail,
+	sendErrorLogMail: sendErrorLogMail
 };
