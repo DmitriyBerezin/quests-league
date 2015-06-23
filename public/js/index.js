@@ -2,9 +2,11 @@ $(function() {
 	var $modalCompany = $('#modalCompany'),
 		$listCompany = $('#listCompany'),
 		$formCompany = $('.form-company'),
+		$errCompany = $('.alert-company-error'),
 		$modalTag = $('#modalTag'),
 		$listTag = $('#listTag'),
 		$formTag = $('.form-tag'),
+		$errTag = $('.alert-tag-error'),
 		$formQuest = $('.form-quest');
 
 	$formQuest.validate({
@@ -37,11 +39,12 @@ $(function() {
 	}
 
 	function onFormCompanyError(error) {
-		console.log(error.responseJSON);
+		$errCompany.html(error.responseJSON.message).show();
 	}
 
 	$modalCompany.on('show.bs.modal', function(evt) {
 		$formCompany.clearForm();
+		$errCompany.hide();
 	});
 
 
@@ -59,10 +62,11 @@ $(function() {
 	}
 
 	function onFormTagError(error) {
-		console.log(error.responseJSON);
+		$errTag.html(error.responseJSON.message).show();
 	}
 
 	$modalTag.on('show.bs.modal', function(evt) {
 		$formTag.clearForm();
+		$errTag.hide();
 	});
 });

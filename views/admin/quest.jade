@@ -83,6 +83,7 @@ block content
 		div.form-group.button-group
 			button(type='submit').btn.btn-primary.btn-save Сохранить
 
+		div.alert-quest-error.alert.alert-danger
 
 	//- Quest company editor modal
 	div(id='modalCompany', tabIndex='-1', role='dialog').modal.fade
@@ -94,6 +95,7 @@ block content
 							span(aria-hidden='true') &times;
 						h4.modal-title Новая компания
 					div.modal-body
+						div.alert-company-error.alert.alert-danger
 						div.form-group
 							label(for='txtCompName').col-sm-4.control-label Наименование
 							div.col-sm-6
@@ -115,6 +117,7 @@ block content
 							span(aria-hidden='true') &times;
 						h4.modal-title Тэги
 					div.modal-body
+						div.alert-tag-error.alert.alert-danger
 						div.form-group
 							label(for='txtTag').col-sm-4.control-label Тэг
 							div.col-sm-6

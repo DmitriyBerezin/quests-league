@@ -35,7 +35,7 @@ function createCompany(name, url, done) {
 }
 
 function createTag(name, done) {
-	var query = util.format('call quests.pTagCreate1("%s")', name);
+	var query = util.format('call quests.pTagCreate("%s")', name);
 
 	db.execQuery(query, function(err, rows, fields) {
 		if (err) {

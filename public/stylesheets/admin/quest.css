@@ -14,3 +14,7 @@
 #txtPlayerTo {
 	width: auto;
 }
+
+.alert-danger {
+	display: none;
+}
