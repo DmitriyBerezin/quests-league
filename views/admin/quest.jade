@@ -3,19 +3,19 @@ extends ../layout
 block content
 	h1 Edit Form
 
-	form.form-horizontal
+	form.form-horizontal.form-quest
 		div.form-group
 			label(for='txtName').col-sm-2.control-label Наименование
 			div.col-sm-7
-				input(type='text', id='txtName', placeholder='Наименование').form-control
+				input(type='text', id='txtName', name='name', placeholder='Наименование', required).form-control
 		div.form-group
 			label(for='txtDescr').col-sm-2.control-label Описание
 			div.col-sm-7
-				textarea(type='text', id='txtDescr', placeholder='Описание', rows='10').form-control
+				textarea(type='text', id='txtDescr', name='descr', placeholder='Описание', rows='10').form-control
 		div.form-group
 			label(for='listCompany').col-sm-2.control-label Компания
 			div.col-sm-7
-				select(id='listCompany').form-control.selectpicker
+				select(id='listCompany', name='companyID', data-width='auto', required).form-control.selectpicker
 					option
 					option Company1
 					option Company2
@@ -27,13 +27,13 @@ block content
 		div.form-group
 			label.col-sm-2.control-label Игроков
 			div.col-sm-3
-				input(type='text', id='txtPlayerFrom', placeholder='от').form-control
+				input(type='text', id='txtPlayerFrom', name='playerFrom', size=2, placeholder='от').form-control
 			div.col-sm-3
-				input(type='text', id='txtPlayerTo', placeholder='до').form-control
+				input(type='text', id='txtPlayerTo', name='playerTo', size=2, placeholder='до').form-control
 		div.form-group
 			label(for='listTags').col-sm-2.control-label Тэги
 			div.col-sm-7
-				select(id='listTags', multiple).form-control.selectpicker
+				select(id='listTags', name='tags', multiple, data-width='auto').form-control.selectpicker
 					option
 					option Tag1
 					option Tag2
@@ -43,7 +43,7 @@ block content
 		div.form-group
 			label(for='listLeague').col-sm-2.control-label Лига
 			div.col-sm-7
-				select(id='listLeague').form-control.selectpicker
+				select(id='listLeague', name='league', data-width='auto').form-control.selectpicker
 					option
 					option League1
 					option League2
@@ -54,29 +54,28 @@ block content
 		div.form-group
 			label(for='listCity').col-sm-2.control-label Город
 			div.col-sm-7
-				select(id='listCity').form-control.selectpicker
+				select(id='listCity', name='city', required, data-width='auto').form-control.selectpicker
 					option
-					option Москва
+					option МоскваМоскваМоскваМосква
 		div.form-group
 			label(for='listStation').col-sm-2.control-label Метро
 			div.col-sm-7
-				select(id='listStation', multiple, data-live-search='true').form-control.selectpicker
-					option
-					option Сокол
-					option Аэропорт
+				select(id='listStation', name='station', multiple, data-width='auto', data-live-search='true', required).form-control.selectpicker
+					option(value='1') Сокол
+					option(value='2') Аэропорт
 		div.form-group
 			label(for='txtAddress').col-sm-2.control-label Адрес
 			div.col-sm-7
-				input(type='text', id='txtAddress', placeholder='Адрес').form-control
+				input(type='text', id='txtAddress', name='address', placeholder='Адрес', required).form-control
 		div.form-group
 			label.col-sm-2.control-label Gps Координаты
 			div.col-sm-3
-				input(type='text', id='txtLng', placeholder='долгота').form-control
+				input(type='text', id='txtLng', name='lng', placeholder='долгота', required).form-control
 			div.col-sm-3
-				input(type='text', id='txtLat', placeholder='широта').form-control
-			//- div(role='alert').alert.alert-warning Перейдите нa
-			//- 	a(href='http://maps.yandex.ru', target='ymap') карту
-			//- 	|, введите адрес, нажмите правой кнопкой и выбирете "Что здесь?"
+				input(type='text', id='txtLat', name='lat', placeholder='широта', required).form-control
+		//- div(role='alert').alert.alert-warning Перейдите нa
+		//- 	a(href='http://maps.yandex.ru', target='ymap') карту
+		//- 	|, введите адрес, нажмите правой кнопкой и выбирете "Что здесь?"
 
 		hr
 
@@ -87,37 +86,37 @@ block content
 	div(id='modalCompany', tabIndex='-1', role='dialog').modal.fade
 		div(role='document').modal-dialog
 			div.modal-content
-				div.modal-header
-					button(type='button', data-dismiss='modal' aria-label='Close').close
-						span(aria-hidden='true') &times;
-					h4.modal-title Новая компания
-				div.modal-body
-					form.form-horizontal
+				form(method='post', action='/admin/company').form-horizontal.form-company
+					div.modal-header
+						button(type='button', data-dismiss='modal' aria-label='Close').close
+							span(aria-hidden='true') &times;
+						h4.modal-title Новая компания
+					div.modal-body
 						div.form-group
 							label(for='txtCompName').col-sm-4.control-label Наименование
 							div.col-sm-6
-								input(type='text', id='txtCompName', placeholder='Наименование').form-control
+								input(type='text', id='txtCompName', name='name', placeholder='Наименование', required).form-control
 						div.form-group
 							label(for='txtCompSite').col-sm-4.control-label Сайт
 							div.col-sm-6
-								input(type='text', id='txtCompSite', placeholder='Сайт').form-control
-				div.modal-footer
-					button(type='button').btn.btn-primary Создать
+								input(type='text', id='txtCompSite', name='site', placeholder='Сайт', required).form-control
+					div.modal-footer
+						button(type='submit').btn.btn-primary.btn-company-create Создать
 
 	//- Quest tags modal
 	div(id='modalTags', tabIndex='-1', role='dialog').modal.fade
 		div(role='document').modal-dialog
 			div.modal-content
-				div.modal-header
-					button(type='button', data-dismiss='modal' aria-label='Close').close
-						span(aria-hidden='true') &times;
-					h4.modal-title Тэги
-				div.modal-body
-					form.form-horizontal
+				form(method='post', action='/admin/tag').form-horizontal.form-tag
+					div.modal-header
+						button(type='button', data-dismiss='modal' aria-label='Close').close
+							span(aria-hidden='true') &times;
+						h4.modal-title Тэги
+					div.modal-body
 						div.form-group
 							label(for='txtTag').col-sm-4.control-label Тэг
 							div.col-sm-6
-								input(type='text', id='txtTag', placeholder='Тэг').form-control
-				div.modal-footer
-					button(type='button').btn.btn-primary Создать
-					button(type='button').btn.btn-success Создать и остаться
+								input(type='text', id='txtTag', name='tag', placeholder='Тэг').form-control
+					div.modal-footer
+						button(type='button').btn.btn-primary Создать
+						button(type='button').btn.btn-success Создать и остаться

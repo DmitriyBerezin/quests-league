@@ -9,3 +9,8 @@
 .button-group {
 	text-align: center;
 }
+
+#txtPlayerFrom,
+#txtPlayerTo {
+	width: auto;
+}
