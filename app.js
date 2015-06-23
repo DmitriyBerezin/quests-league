@@ -55,26 +55,34 @@ app.use(function(req, res, next) {
 // will print stacktrace
 if (app.get('env') === 'development') {
 	app.use(function(err, req, res, next) {
-		mailer.sendErrorLogMail(err);
-		
-		res.status(err.status || 500);
-		res.render('error', {
+		var error = {
 			message: err.message,
 			error: err
-		});
+		};
+		errorHandler(error, req, res, next);
 	});
 }
 
 // production error handler
 // no stacktraces leaked to user
 app.use(function(err, req, res, next) {
+	var error = {
+		message: err.message,
+		error: {}
+	};
+	errorHandler(error, req, res, next);
+});
+
+function errorHandler(err, req, res, next) {
 	mailer.sendErrorLogMail(err);
 
 	res.status(err.status || 500);
-	res.render('error', {
-		message: err.message,
-		error: {}
-	});
-});
+	if (req.headers.accept.indexOf('text/html') === -1) {
+		res.send(err);
+	}
+	else {
+		res.render('error', err);
+	}
+}
 
 module.exports = app;

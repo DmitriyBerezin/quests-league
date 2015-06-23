@@ -9,6 +9,10 @@ block content
 			div.col-sm-7
 				input(type='text', id='txtName', name='name', placeholder='Наименование', required).form-control
 		div.form-group
+			label(for='txtUrl').col-sm-2.control-label Url
+			div.col-sm-7
+				input(type='text', id='txtUrl', name='url', placeholder='Url').form-control
+		div.form-group
 			label(for='txtDescr').col-sm-2.control-label Описание
 			div.col-sm-7
 				textarea(type='text', id='txtDescr', name='descr', placeholder='Описание', rows='10').form-control
@@ -17,9 +21,8 @@ block content
 			div.col-sm-7
 				select(id='listCompany', name='companyID', data-width='auto', required).form-control.selectpicker
 					option
-					option Company1
-					option Company2
-					option Company3
+					each item in dic.compaines
+						option(value=item.id)= item.name
 				div(role='alert').alert.alert-warning Не нашли нужную компанию?
 					a(href='#', data-toggle='modal', data-target='#modalCompany') Добавьте ее
 		hr
@@ -31,23 +34,20 @@ block content
 			div.col-sm-3
 				input(type='text', id='txtPlayerTo', name='playerTo', size=2, placeholder='до').form-control
 		div.form-group
-			label(for='listTags').col-sm-2.control-label Тэги
+			label(for='listTag').col-sm-2.control-label Тэги
 			div.col-sm-7
-				select(id='listTags', name='tags', multiple, data-width='auto').form-control.selectpicker
-					option
-					option Tag1
-					option Tag2
-					option Tag3
+				select(id='listTag', name='tags', multiple, data-width='auto').form-control.selectpicker
+					each item in dic.tags
+						option(value=item.id)= item.name
 				div(role='alert').alert.alert-warning Не нашли нужный тэг?
-					a(href='#', data-toggle='modal', data-target='#modalTags') Добавьте тэг
+					a(href='#', data-toggle='modal', data-target='#modalTag') Добавьте тэг
 		div.form-group
 			label(for='listLeague').col-sm-2.control-label Лига
 			div.col-sm-7
 				select(id='listLeague', name='league', data-width='auto').form-control.selectpicker
 					option
-					option League1
-					option League2
-					option League3
+					each item in dic.leagues
+						option(value=item.id)= item.name
 
 		hr
 
@@ -55,14 +55,15 @@ block content
 			label(for='listCity').col-sm-2.control-label Город
 			div.col-sm-7
 				select(id='listCity', name='city', required, data-width='auto').form-control.selectpicker
-					option
-					option МоскваМоскваМоскваМосква
+					//- option
+					each item in dic.cities
+						option(value=item.id)= item.name
 		div.form-group
 			label(for='listStation').col-sm-2.control-label Метро
 			div.col-sm-7
 				select(id='listStation', name='station', multiple, data-width='auto', data-live-search='true', required).form-control.selectpicker
-					option(value='1') Сокол
-					option(value='2') Аэропорт
+					each item in dic.stations
+						option(value=item.id)= item.name
 		div.form-group
 			label(for='txtAddress').col-sm-2.control-label Адрес
 			div.col-sm-7
@@ -81,6 +82,7 @@ block content
 
 		div.form-group.button-group
 			button(type='submit').btn.btn-primary.btn-save Сохранить
+
 
 	//- Quest company editor modal
 	div(id='modalCompany', tabIndex='-1', role='dialog').modal.fade
@@ -104,7 +106,7 @@ block content
 						button(type='submit').btn.btn-primary.btn-company-create Создать
 
 	//- Quest tags modal
-	div(id='modalTags', tabIndex='-1', role='dialog').modal.fade
+	div(id='modalTag', tabIndex='-1', role='dialog').modal.fade
 		div(role='document').modal-dialog
 			div.modal-content
 				form(method='post', action='/admin/tag').form-horizontal.form-tag
@@ -116,7 +118,6 @@ block content
 						div.form-group
 							label(for='txtTag').col-sm-4.control-label Тэг
 							div.col-sm-6
-								input(type='text', id='txtTag', name='tag', placeholder='Тэг').form-control
+								input(type='text', id='txtTag', name='name', placeholder='Тэг', required).form-control
 					div.modal-footer
-						button(type='button').btn.btn-primary Создать
-						button(type='button').btn.btn-success Создать и остаться
+						button(type='submit').btn.btn-primary Создать

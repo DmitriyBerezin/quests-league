@@ -1,15 +1,11 @@
 $(function() {
-	var $formCompany = $('.form-company'),
+	var $modalCompany = $('#modalCompany'),
+		$listCompany = $('#listCompany'),
+		$formCompany = $('.form-company'),
+		$modalTag = $('#modalTag'),
+		$listTag = $('#listTag'),
+		$formTag = $('.form-tag'),
 		$formQuest = $('.form-quest');
-
-	$formCompany.validate({
-		errorElement: 'div',
-		errorClass: 'error'
-	});
-	$formCompany.ajaxForm({
-		success: onFormCompanySuccess,
-		error: onFormCompanyError
-	});
 
 	$formQuest.validate({
 		errorElement: 'div',
@@ -27,14 +23,46 @@ $(function() {
 	$formQuest.data('validator').settings.ignore = '';
 
 
+	$formCompany.validate();
+	$formCompany.ajaxForm({
+		dataType: 'json',
+		success: onFormCompanySuccess,
+		error: onFormCompanyError
+	});
 
-	$('.btn-company-create').click(onConpanyCreateClick);
-
-	function onFormCompanySuccess(responseText, statusText, xhr) {
-
+	function onFormCompanySuccess(data, statusText, xhr) {
+		$modalCompany.modal('hide');
+		$('<option selected>').val(data.id).html(data.name).appendTo($listCompany);
+		$listCompany.selectpicker('refresh');
 	}
 
 	function onFormCompanyError(error) {
-
+		console.log(error.responseJSON);
 	}
+
+	$modalCompany.on('show.bs.modal', function(evt) {
+		$formCompany.clearForm();
+	});
+
+
+	$formTag.validate();
+	$formTag.ajaxForm({
+		dataType: 'json',
+		success: onFormTagSuccess,
+		error: onFormTagError
+	});
+
+	function onFormTagSuccess(data, statusText, xhr) {
+		$modalTag.modal('hide');
+		$('<option selected>').val(data.id).html(data.name).appendTo($listTag);
+		$listTag.selectpicker('refresh');
+	}
+
+	function onFormTagError(error) {
+		console.log(error.responseJSON);
+	}
+
+	$modalTag.on('show.bs.modal', function(evt) {
+		$formTag.clearForm();
+	});
 });
