@@ -13,6 +13,16 @@ router.get('/quest', function(req, res, next) {
 	});
 });
 
+router.post('/quest', function(req, res, next) {
+	admin.editQuest(req.body, function(err, data) {
+		if (err) {
+			return next(err);
+		}
+
+		res.status(200).send({});
+	});
+});
+
 router.post('/company', function(req, res, next) {
 	admin.createCompany(req.body.name, req.body.site, function(err, data) {
 		if (err) {

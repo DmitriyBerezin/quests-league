@@ -22,7 +22,20 @@ $(function() {
 		}
 	});
 	// http://stackoverflow.com/questions/21018970/bootstrap-select-plugin-not-work-with-jquery-validation
-	$formQuest.data('validator').settings.ignore = '';
+	// $formQuest.data('validator').settings.ignore = '';
+	$formQuest.ajaxForm({
+		dataType: 'json',
+		success: onFormQuestSuccess,
+		error: onFormQuestError
+	});
+
+	function onFormQuestSuccess(data, statusText, xhr) {
+		window.location = '/admin/quest/list'
+	}
+
+	function onFormQuestError(error) {
+		// $errCompany.html(error.responseJSON.message).show();
+	}
 
 
 	$formCompany.validate();

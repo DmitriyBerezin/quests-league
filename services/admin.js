@@ -46,8 +46,24 @@ function createTag(name, done) {
 	});
 }
 
+function editQuest(quest, done) {
+	var s = 'call quests.pQuestEdit(%s, "%s", "%s", %d, %s, %s, %s, %d, "%s", %d, %d)',
+		query = util.format(s, quest.id || null, quest.name, quest.descr, quest.companyID,
+			quest.playersForm || null, quest.playersTo || null, quest.leagueID || null, quest.cityID,
+			quest.address, quest.lat, quest.lng);
+
+	db.execQuery(query, function(err, rows, fields) {
+		if (err) {
+			return done(err);
+		}
+
+		return done(null);
+	});
+}
+
 module.exports = {
 	getQuestDictionaries: getQuestDictionaries,
 	createCompany: createCompany,
-	createTag: createTag
+	createTag: createTag,
+	editQuest: editQuest
 };

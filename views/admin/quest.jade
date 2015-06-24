@@ -3,7 +3,7 @@ extends ../layout
 block content
 	h1 Edit Form
 
-	form.form-horizontal.form-quest
+	form(method='post', action='/admin/quest').form-horizontal.form-quest
 		div.form-group
 			label(for='txtName').col-sm-2.control-label Наименование
 			div.col-sm-7
