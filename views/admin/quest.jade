@@ -1,79 +1,85 @@
 extends ../layout
 
 block content
-	h1 Edit Form
+	h1.page-header Форма редактирования квеста
 
 	form(method='post', action='/admin/quest').form-horizontal.form-quest
+		input(type='hidden', name='id', value=id)
+
+		h4.chapter-header Основная информация
 		div.form-group
 			label(for='txtName').col-sm-2.control-label Наименование
 			div.col-sm-7
-				input(type='text', id='txtName', name='name', placeholder='Наименование', required).form-control
+				input(type='text', id='txtName', name='name', value=name, placeholder='Наименование', required).form-control
 		div.form-group
 			label(for='txtUrl').col-sm-2.control-label Url
 			div.col-sm-7
-				input(type='text', id='txtUrl', name='url', placeholder='Url').form-control
+				input(type='text', id='txtUrl', name='url', value=url, placeholder='Url').form-control
 		div.form-group
 			label(for='txtDescr').col-sm-2.control-label Описание
 			div.col-sm-7
-				textarea(type='text', id='txtDescr', name='descr', placeholder='Описание', rows='10').form-control
+				textarea(type='text', id='txtDescr', name='descr', placeholder='Описание', rows='10').form-control= descr
 		div.form-group
 			label(for='listCompany').col-sm-2.control-label Компания
 			div.col-sm-7
 				select(id='listCompany', name='companyID', data-width='auto', required).form-control.selectpicker
 					option
 					each item in dic.compaines
-						option(value=item.id)= item.name
+						option(value=item.id, selected= item.id === company_id)= item.name
 				div(role='alert').alert.alert-warning Не нашли нужную компанию?
 					a(href='#', data-toggle='modal', data-target='#modalCompany') Добавьте ее
+
 		hr
 
+		h4.chapter-header Дополнительные характеристики
 		div.form-group
 			label.col-sm-2.control-label Игроков
 			div.col-sm-3
-				input(type='text', id='txtPlayerFrom', name='playerFrom', size=2, placeholder='от').form-control
+				input(type='text', id='txtPlayerFrom', name='playerFrom', value=playerFrom, size=2, placeholder='от').form-control
 			div.col-sm-3
-				input(type='text', id='txtPlayerTo', name='playerTo', size=2, placeholder='до').form-control
+				input(type='text', id='txtPlayerTo', name='playerTo', value=playerTo, size=2, placeholder='до').form-control
 		div.form-group
 			label(for='listTag').col-sm-2.control-label Тэги
 			div.col-sm-7
-				select(id='listTag', name='tags', multiple, data-width='auto').form-control.selectpicker
+				select(id='listTag', name='tagsID', multiple, data-width='auto').form-control.selectpicker
 					each item in dic.tags
-						option(value=item.id)= item.name
+						option(value=item.id, selected= item.selected === 1)= item.name
 				div(role='alert').alert.alert-warning Не нашли нужный тэг?
 					a(href='#', data-toggle='modal', data-target='#modalTag') Добавьте тэг
 		div.form-group
 			label(for='listLeague').col-sm-2.control-label Лига
 			div.col-sm-7
-				select(id='listLeague', name='league', data-width='auto').form-control.selectpicker
+				select(id='listLeague', name='leagueID', data-width='auto').form-control.selectpicker
 					option
 					each item in dic.leagues
-						option(value=item.id)= item.name
+						option(value=item.id, selected= item.id === league_id)= item.name
 
 		hr
 
+		h4.chapter-header Адресная информация
 		div.form-group
 			label(for='listCity').col-sm-2.control-label Город
 			div.col-sm-7
-				select(id='listCity', name='city', required, data-width='auto').form-control.selectpicker
+				select(id='listCity', name='cityID', required, data-width='auto').form-control.selectpicker
 					//- option
 					each item in dic.cities
-						option(value=item.id)= item.name
+						option(value=item.id, selected= item.id === city_id)= item.name
 		div.form-group
 			label(for='listStation').col-sm-2.control-label Метро
 			div.col-sm-7
-				select(id='listStation', name='station', multiple, data-width='auto', data-live-search='true', required).form-control.selectpicker
+				select(id='listStation', name='stationsID', multiple, data-width='auto', data-live-search='true', required).form-control.selectpicker
 					each item in dic.stations
-						option(value=item.id)= item.name
+						option(value=item.id, selected= item.selected === 1)= item.name
 		div.form-group
 			label(for='txtAddress').col-sm-2.control-label Адрес
 			div.col-sm-7
-				input(type='text', id='txtAddress', name='address', placeholder='Адрес', required).form-control
+				input(type='text', id='txtAddress', name='address', value=address placeholder='Адрес', required).form-control
 		div.form-group
 			label.col-sm-2.control-label Gps Координаты
 			div.col-sm-3
-				input(type='text', id='txtLng', name='lng', placeholder='долгота', required).form-control
+				input(type='text', id='txtLng', name='lng', value=lng, placeholder='долгота', required).form-control
 			div.col-sm-3
-				input(type='text', id='txtLat', name='lat', placeholder='широта', required).form-control
+				input(type='text', id='txtLat', name='lat', value=lat, placeholder='широта', required).form-control
 		//- div(role='alert').alert.alert-warning Перейдите нa
 		//- 	a(href='http://maps.yandex.ru', target='ymap') карту
 		//- 	|, введите адрес, нажмите правой кнопкой и выбирете "Что здесь?"
@@ -81,9 +87,27 @@ block content
 		hr
 
 		div.form-group.button-group
-			button(type='submit').btn.btn-primary.btn-save Сохранить
+			button(type='submit').btn.btn-primary.btn-save Сохранить изменения
 
 		div.alert-quest-error.alert.alert-danger
+		div.alert-quest-success.alert.alert-success Ура! Информация изменена
+
+
+	hr
+
+	h4.chapter-header Картинки
+	form(method='post', action='/admin/quest/file').form-horizontal.form-quest
+		input(type='hidden', name='id', value=id)
+
+		div.form-group
+			div.col-sm-2
+			div.col-sm-7
+				if id
+					span.btn.btn-success.fileinput-button
+						span Добавить картинки
+						input(type='file', name='files[]', multiple)
+				else
+					div.alert-files.alert.alert-warning Сначала создайте квест. Потом появится возможность загрузить картинки.
 
 	//- Quest company editor modal
 	div(id='modalCompany', tabIndex='-1', role='dialog').modal.fade

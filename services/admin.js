@@ -1,24 +1,25 @@
 var util = require('util'),
 	db = require('../services/database');
 
-function getQuestDictionaries(done) {
-	var query = 'call quests.pQuestDuctionaries()',
-		dic;
+function getQuest(id, done) {
+	var query = util.format('call quests.pQuestGet(%s)', id || null),
+		data;
 
 	db.execQuery(query, function(err, rows, fields) {
 		if (err) {
 			return done(err);
 		}
 
-		dic = {
-			compaines: rows[0],
-			tags: rows[1],
-			leagues: rows[2],
-			cities: rows[3],
-			stations: rows[4]
+		data = rows[0].length > 0 ? rows[0][0] : {};
+		data.dic = {
+			compaines: rows[1],
+			tags: rows[2],
+			leagues: rows[3],
+			cities: rows[4],
+			stations: rows[5]
 		};
 
-		return done(null, dic);
+		return done(null, data);
 	});
 }
 
@@ -47,23 +48,29 @@ function createTag(name, done) {
 }
 
 function editQuest(quest, done) {
-	var s = 'call quests.pQuestEdit(%s, "%s", "%s", %d, %s, %s, %s, %d, "%s", %d, %d)',
-		query = util.format(s, quest.id || null, quest.name, quest.descr, quest.companyID,
-			quest.playersForm || null, quest.playersTo || null, quest.leagueID || null, quest.cityID,
+	console.log(quest);
+
+	var tagsQuery = db.intArrToInsertStatement(quest.tagsID),
+		stationsQuery = db.intArrToInsertStatement(quest.stationsID),
+		s = 'call quests.pQuestEdit(%s, "%s", "%s", %d, %s, %s, "%s", %s, %d, "%s", "%s", %d, %d)',
+		query = util.format(s, quest.id || null, quest.name, quest.descr,
+			quest.companyID, quest.playersForm || null, quest.playersTo || null,
+			tagsQuery, quest.leagueID || null, quest.cityID, stationsQuery,
 			quest.address, quest.lat, quest.lng);
 
+	console.log(query);
 	db.execQuery(query, function(err, rows, fields) {
 		if (err) {
 			return done(err);
 		}
 
-		return done(null);
+		return done(null, rows[0][0]);
 	});
 }
 
 module.exports = {
-	getQuestDictionaries: getQuestDictionaries,
+	getQuest: getQuest,
+	editQuest: editQuest,
 	createCompany: createCompany,
-	createTag: createTag,
-	editQuest: editQuest
+	createTag: createTag
 };

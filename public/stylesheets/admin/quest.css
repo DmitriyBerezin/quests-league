@@ -18,3 +18,19 @@
 .alert-danger {
 	display: none;
 }
+
+.alert-success {
+	display: none;
+}
+
+.chapter-header {
+	text-align: center;
+}
+
+.page-header {
+	background-color: antiquewhite;
+	margin-top: 0;
+	margin-bottom: 30px;
+	padding: 10px 20px;
+	border-radius: 10px;
+}

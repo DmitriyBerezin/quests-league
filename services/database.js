@@ -1,4 +1,5 @@
-var config = require('../config/config'),
+var util = require('util'),
+	config = require('../config/config'),
 	mysql = require('mysql'),
 	pool  = mysql.createPool(config.database);
 
@@ -22,7 +23,28 @@ function execQuery(query, callback) {
 	});
 }
 
+function intArrToInsertStatement(arr) {
+	if (!arr) {
+		return '';
+	}
+
+	if (!Array.isArray(arr)) {
+		arr = [arr];
+	}
+
+	return arr.reduce(function(res, val, index) {
+		var pattern = '(e_id, %d)';
+
+		if (index) {
+			pattern = ',' + pattern;
+		}
+
+		return res += util.format(pattern, val);
+	}, '');
+}
+
 module.exports = {
 	getConnection: getConnection,
-	execQuery: execQuery
+	execQuery: execQuery,
+	intArrToInsertStatement: intArrToInsertStatement
 };
