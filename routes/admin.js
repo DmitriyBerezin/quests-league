@@ -3,7 +3,7 @@ var router = express.Router();
 
 var admin = require('../services/admin');
 
-router.get('/quest/:id', function(req, res, next) {
+router.get('/quest/:id?', function(req, res, next) {
 	admin.getQuest(req.params.id, function(err, data) {
 		if (err) {
 			return next(err);
@@ -14,12 +14,30 @@ router.get('/quest/:id', function(req, res, next) {
 });
 
 router.post('/quest', function(req, res, next) {
-	admin.editQuest(req.body, function(err, questID) {
+	admin.editQuest(req.body, function(err, quest) {
 		if (err) {
 			return next(err);
 		}
 
-		res.status(200).send({ questID: questID });
+		res.status(200).send({ questID: quest.quest_id });
+	});
+});
+
+router.post('/quest/file', function(req, res, next) {
+	var id = req.body.id,
+		fileName = req.files.files.originalname,
+		buffer = req.files.files.buffer;
+
+	if (!id) {
+		return res.status(400).send(null);
+	}
+
+	admin.addQuestFile(id, fileName, buffer, function(err, url) {
+		if (err) {
+			return next(err);
+		}
+
+		res.status(200).send({ url: url });
 	});
 });
 

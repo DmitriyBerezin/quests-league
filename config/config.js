@@ -60,5 +60,10 @@ module.exports = {
 				pass: 'Quest123'
 			}
 		}
+	},
+
+	aws: {
+		region: 'eu-central-1',
+		bucket: 'quests-league'
 	}
 };

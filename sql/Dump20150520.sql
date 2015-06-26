@@ -146,7 +146,7 @@ CREATE TABLE `tquest` (
   `league_id` int(11) DEFAULT NULL,
   `players_to` int(11) DEFAULT NULL,
   `lat` decimal(10,8) DEFAULT NULL,
-  `long` decimal(10,8) DEFAULT NULL,
+  `lng` decimal(10,8) DEFAULT NULL,
   `address` varchar(1000) NOT NULL,
   `name` varchar(45) NOT NULL,
   `descr` varchar(5000) NOT NULL,
@@ -157,7 +157,7 @@ CREATE TABLE `tquest` (
   CONSTRAINT `fk_tquest_city_id` FOREIGN KEY (`city_id`) REFERENCES `tcity` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_tquest_company_id` FOREIGN KEY (`company_id`) REFERENCES `tcompany` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_tquest_league_id` FOREIGN KEY (`league_id`) REFERENCES `tleague` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8 COMMENT='Таблица квестов';
+) ENGINE=InnoDB AUTO_INCREMENT=44 DEFAULT CHARSET=utf8 COMMENT='Таблица квестов';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -305,7 +305,7 @@ CREATE TABLE `txqueststation` (
   KEY `fk_txqueststation_station_id_idx` (`station_id`),
   CONSTRAINT `fk_txqueststation_quest_id` FOREIGN KEY (`quest_id`) REFERENCES `tquest` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_txqueststation_station_id` FOREIGN KEY (`station_id`) REFERENCES `tstation` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='Таблица-развязка квесты-станции метро';
+) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=utf8 COMMENT='Таблица-развязка квесты-станции метро';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -324,7 +324,7 @@ CREATE TABLE `txquesttag` (
   KEY `fk_txquesttag_tag_id_idx` (`tag_id`),
   CONSTRAINT `fk_txquesttag_quest_id` FOREIGN KEY (`quest_id`) REFERENCES `tquest` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_txquesttag_tag_id` FOREIGN KEY (`tag_id`) REFERENCES `ttag` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=109 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -451,17 +451,17 @@ BEGIN
     
     if EXISTS(SELECT * FROM tquest q where q.id = id) then
     begin
-      update tquest set 
-        q.`name` = name,
-        q.descr = descr,
-        q.company_id = company_id,
-        q.players_from = players_from,
-        q.players_to = players_to,
-        q.league_id = league_id,
-        q.city_id = city_id,
-        q.address = address,
-        q.lat = lat,
-        q.`long` = lng;
+      update tquest tq set 
+        tq.`name` = name,
+        tq.descr = descr,
+        tq.company_id = company_id,
+        tq.players_from = players_from,
+        tq.players_to = players_to,
+        tq.league_id = league_id,
+        tq.city_id = city_id,
+        tq.address = address,
+        tq.lat = lat,
+        tq.lng = lng;
       set quest_id = id;
     end;
   else
@@ -472,15 +472,64 @@ BEGIN
     end;
   end if;
     
-    -- Insert quest tags
-    set @q = concat('insert into txquesttag(quest_id, tag_id) values', replace(tags_list, 'e_id', quest_id));
-    prepare stm from @q;
-    execute stm;
+    -- Delete and Insert quest tags
+  delete from txquesttag where quest_id = quest_id;
+    if char_length(tags_list) > 0 then
+    begin
+            set @q = concat('insert into txquesttag(quest_id, tag_id) values', replace(tags_list, 'e_id', quest_id));
+      prepare stm from @q;
+      execute stm;
+    end;
+    end if;
     
-    -- Insert quest stations
-    set @q = concat('insert into txqueststation(quest_id, station_id) values', replace(stations_list, 'e_id', quest_id));
-    prepare stm from @q;
-    execute stm;
+    -- Delete and Insert quest stations
+    delete from txqueststation where quest_id = quest_id;
+    if char_length(stations_list) > 0 then
+    begin
+      set @q = concat('insert into txqueststation(quest_id, station_id) values', replace(stations_list, 'e_id', quest_id));
+      prepare stm from @q;
+      execute stm;
+    end;
+  end if;
+    
+    select quest_id;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `pQuestGet` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pQuestGet`(
+  quest_id int
+)
+BEGIN
+  select * from tquest where id = quest_id;
+    
+    select id, name from tcompany;
+    
+    select t.*, case when tx.quest_id is null then 0 else 1 end as selected  
+    from ttag t 
+    left join txquesttag tx on t.id = tx.tag_id
+        and tx.quest_id = quest_id;
+    
+    select id, name from tleague;
+    
+    select id, name from tcity;
+    
+    select t.*, case when tx.quest_id is null then 0 else 1 end as selected  
+    from tstation t 
+    left join txqueststation tx on t.id = tx.station_id
+        and tx.quest_id = quest_id;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -634,4 +683,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-06-25 12:53:01
+-- Dump completed on 2015-06-26 14:43:07

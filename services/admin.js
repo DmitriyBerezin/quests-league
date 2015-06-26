@@ -1,5 +1,6 @@
 var util = require('util'),
-	db = require('../services/database');
+	db = require('../services/database'),
+	s3 = require('../services/aws-s3');
 
 function getQuest(id, done) {
 	var query = util.format('call quests.pQuestGet(%s)', id || null),
@@ -68,9 +69,16 @@ function editQuest(quest, done) {
 	});
 }
 
+function addQuestFile(questID, fileName, file, done) {
+	var path = util.format('quests/%d/%s', questID, fileName);
+
+	s3.putData(path, file, done);
+}
+
 module.exports = {
 	getQuest: getQuest,
 	editQuest: editQuest,
+	addQuestFile: addQuestFile,
 	createCompany: createCompany,
 	createTag: createTag
 };

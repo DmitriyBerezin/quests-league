@@ -7,6 +7,7 @@ var bodyParser = require('body-parser');
 var flash = require('connect-flash');
 var passport = require('passport');
 var session = require('express-session');
+var multer  = require('multer');
 // var MongoStore = require('connect-mongo')(session);
 // var mongoose = require ("mongoose");
 
@@ -28,6 +29,7 @@ app.set('view engine', 'jade');
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(multer({ inMemory: true }));
 app.use(cookieParser());
 app.use(session({
 	secret: 'foo'
