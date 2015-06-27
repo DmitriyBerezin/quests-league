@@ -1,9 +1,24 @@
 $(function() {
 	var $fileInput = $('.fileinput-button'),
 		$warnFiles = $('.alert-files'),
+		$imgsContainer = $('.imgs-container'),
+		$errorFile = $('.alert-file-upload-text'),
 		$id = $('input[name="id"]');
 
 	$('input[type="file"]').fileupload({
+		done: function(evt, data) {
+			var url = data.result.url;
+			$('<a data-gallery>')
+				.attr('href', url)
+				.append($('<img alt="Quest image" class="quest-img">').attr('src', url))
+				.appendTo($imgsContainer);
+
+		},
+		fail: function(evt, data) {
+			$errorFile
+				.text(data.errorThrown)
+				.parent().show();
+		}
 	});
 
 	toggleFileInput();

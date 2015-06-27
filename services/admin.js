@@ -19,8 +19,21 @@ function getQuest(id, done) {
 			cities: rows[4],
 			stations: rows[5]
 		};
+		data.imgs = [];
 
-		return done(null, data);
+		if (id) {
+			getQuestFiles(id, function(err, imgs) {
+				if (err) {
+					return done(err);
+				}
+
+				data.imgs = imgs;
+				return done(null, data);
+			})
+		}
+		else {
+			return done(null, data);			
+		}
 	});
 }
 
@@ -70,15 +83,22 @@ function editQuest(quest, done) {
 }
 
 function addQuestFile(questID, fileName, file, done) {
-	var path = util.format('quests/%d/%s', questID, fileName);
+	var key = util.format('quests/%d/%s', questID, fileName);
 
-	s3.putData(path, file, done);
+	s3.putData(key, file, done);
+}
+
+function getQuestFiles(questID, done) {
+	var key = util.format('quests/%d', questID);
+
+	s3.listData(key, done);
 }
 
 module.exports = {
 	getQuest: getQuest,
 	editQuest: editQuest,
 	addQuestFile: addQuestFile,
+	getQuestFiles: getQuestFiles,
 	createCompany: createCompany,
 	createTag: createTag
 };
