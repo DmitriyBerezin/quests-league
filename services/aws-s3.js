@@ -8,6 +8,12 @@ var AWS = require('aws-sdk'),
 // AWS.config.update({
 // 	httpOptions: { agent: proxy('http://proxy.frsd.ru:3128') }
 // });
+if (process.env.AWS_ACCESS_KEY) {
+	AWS.config.update({
+		accessKeyId: process.env.AWS_ACCESS_KEY, 
+		secretAccessKey: process.env.AWS_SECRET_KEY
+	});
+}
 AWS.config.region = config.aws.region;
 
 bucket = new AWS.S3({

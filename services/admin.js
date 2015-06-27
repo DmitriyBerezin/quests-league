@@ -32,7 +32,7 @@ function getQuest(id, done) {
 			})
 		}
 		else {
-			return done(null, data);			
+			return done(null, data);
 		}
 	});
 }
