@@ -76,7 +76,7 @@ app.use(function(err, req, res, next) {
 });
 
 function errorHandler(err, req, res, next) {
-	mailer.sendErrorLogMail(err);
+	// mailer.sendErrorLogMail(err);
 
 	res.status(err.status || 500);
 	if (req.headers.accept.indexOf('text/html') === -1) {
