@@ -1,0 +1,49 @@
+.form-group .alert {
+	margin-top: 10px
+}
+
+.alert-file-upload {
+	margin-top: 0 !important;
+}
+
+.alert a {
+	margin: 0 5px;
+}
+
+.button-group {
+	text-align: center;
+}
+
+#txtPlayerFrom,
+#txtPlayerTo {
+	width: auto;
+}
+
+.alert-danger {
+	display: none;
+}
+
+.alert-success {
+	display: none;
+}
+
+.chapter-header {
+	text-align: center;
+}
+
+.page-header {
+	background-color: antiquewhite;
+	margin-top: 0;
+	margin-bottom: 30px;
+	padding: 10px 20px;
+	border-radius: 10px;
+}
+
+.quest-img {
+	width: 200px;
+}
+
+.company-block {
+	margin: 20px 0;
+	border-bottom: 1px solid #ccc;
+}

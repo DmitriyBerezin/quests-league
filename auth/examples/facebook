@@ -1,0 +1,22 @@
+CAAGEQjmzgykBAEo8xwALzcHVbWmG4Kqkd0uom7GgxCJPFxShyPRpc8qr5X1AVvTOQOxhZCaa47B2c4oLjuW7IoIYZByPq0fZAMhnbi1yHNi2fhtxiZCqlpD7ZC7ReVf6n2KVGcxrTKDLv82kgccd5jzfnJAE0jAwcea04ZAZCHgcFPYC20pA66EmZAmWDOBZBlfiJEtgF4hw0I2o6LWkA30cH undefined { id: '1397379177254992',
+  username: undefined,
+  displayName: 'Ivan Questoff',
+  name: 
+   { familyName: 'Questoff',
+     givenName: 'Ivan',
+     middleName: undefined },
+  gender: 'male',
+  profileUrl: 'https://www.facebook.com/app_scoped_user_id/1397379177254992/',
+  provider: 'facebook',
+  _raw: '{"id":"1397379177254992","first_name":"Ivan","gender":"male","last_name":"Questoff","link":"https:\\/\\/www.facebook.com\\/app_scoped_user_id\\/1397379177254992\\/","locale":"ru_RU","name":"Ivan Questoff","timezone":3,"updated_time":"2015-05-12T08:51:20+0000","verified":true}',
+  _json: 
+   { id: '1397379177254992',
+     first_name: 'Ivan',
+     gender: 'male',
+     last_name: 'Questoff',
+     link: 'https://www.facebook.com/app_scoped_user_id/1397379177254992/',
+     locale: 'ru_RU',
+     name: 'Ivan Questoff',
+     timezone: 3,
+     updated_time: '2015-05-12T08:51:20+0000',
+     verified: true } }

@@ -1,0 +1,20 @@
+extends ../layout
+
+block style
+	link(rel='stylesheet', href='/stylesheets/style.css')
+	link(rel='stylesheet', href='/stylesheets/admin/quest.css')
+
+
+block content
+	h1.page-header Список квестов
+
+	a(href='/admin/quest').btn.btn-success Новый квест
+
+	each company in companies
+		div.company-block
+			h4 Компания #{company.name}
+			ul.list-group
+				each quest in quests
+					if quest.company_id === company.id
+						li.list-group-item
+							a(href="/admin/quest/#{quest.id}")= quest.name

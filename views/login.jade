@@ -1,0 +1,46 @@
+extends layout
+
+block content
+	div
+		form(action='/auth/signup', method='post')
+			div
+				label Name
+				input(type='text', name='name')
+			div
+				label Email
+				input(type='text', name='email')
+			div
+				label Password
+				input(type='password', name='password')
+			div
+				label Password confirmation
+				input(type='password', name='passwordConfirmation')
+			div
+				input(type='submit', value='Sign Up')
+
+	div
+		div.error= message
+		form(action='/auth/login', method='post')
+			div
+				label Email
+				input(type='text', name='email')
+			div
+				label Password
+				input(type='password', name='password')
+			div
+				input(type='submit', value='Log In')
+	
+	div
+		ul
+			li
+				a(href="/auth/facebook") Login with Facebook
+			li
+				a(href="/auth/twitter") Login with Twitter
+			li
+				a(href="/auth/vkontakte") Login with VKontakte
+			li
+				a(href="/auth/mailru") Login with MailRu
+			li
+				a(href="/auth/google") Login with Google
+			li
+				a(href="/auth/instagram") Login with Instagram
