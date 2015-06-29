@@ -3,6 +3,16 @@ var router = express.Router();
 
 var admin = require('../services/admin');
 
+router.get('/quest/list', function(req, res, next) {
+	admin.getQuestList(function(err, data) {
+		if (err) {
+			return next(err);
+		}
+
+		res.render('admin/quest-list', data);
+	});
+});
+
 router.get('/quest/:id?', function(req, res, next) {
 	admin.getQuest(req.params.id, function(err, data) {
 		if (err) {

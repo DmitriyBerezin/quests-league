@@ -1,0 +1,11 @@
+extends ../layout
+
+block content
+	h1.page-header Список квестов
+
+	a(href='/admin/quest').btn.btn-success Новый квест
+
+	ul.list-group
+		each quest in quests
+			li.list-group-item
+				a(href="/admin/quest/#{quest.id}")= quest.name

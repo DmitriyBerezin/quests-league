@@ -2,6 +2,22 @@ var util = require('util'),
 	db = require('../services/database'),
 	s3 = require('../services/aws-s3');
 
+function getQuestList(done) {
+	var query = 'call quests.pQuestList()',
+		data;
+
+	db.execQuery(query, function(err, rows, fields) {
+		if (err) {
+			return done(err);
+		}
+
+		data = {
+			quests: rows[0]
+		};
+		return done(null, data);
+	});
+}
+
 function getQuest(id, done) {
 	var query = util.format('call quests.pQuestGet(%s)', id || null),
 		data;
@@ -95,6 +111,7 @@ function getQuestFiles(questID, done) {
 }
 
 module.exports = {
+	getQuestList: getQuestList,
 	getQuest: getQuest,
 	editQuest: editQuest,
 	addQuestFile: addQuestFile,
