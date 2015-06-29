@@ -4,7 +4,7 @@ module.exports = {
 		host: 'quests.cp0uujwgrxiz.eu-west-1.rds.amazonaws.com',
 		// host: 'localhost',
 		port: 3306,
-		user: 'root',
+		user: 'moderator',
 		password: process.env.RDS_PSW || 'root',
 		connectionLimit: 10
 	},
