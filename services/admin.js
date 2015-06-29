@@ -12,7 +12,8 @@ function getQuestList(done) {
 		}
 
 		data = {
-			quests: rows[0]
+			companies: rows[0],
+			quests: rows[1]
 		};
 		return done(null, data);
 	});
