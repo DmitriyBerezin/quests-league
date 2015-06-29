@@ -45,7 +45,7 @@ CREATE TABLE `tcity` (
   `time_zone` int(11) DEFAULT NULL,
   `name` varchar(45) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COMMENT='Таблица городов';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Таблица городов';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -78,7 +78,7 @@ CREATE TABLE `tcompany` (
   `name` varchar(100) NOT NULL,
   `site` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8 COMMENT='Таблица компании-оператора квестов (описательная часть)';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Таблица компании-оператора квестов (описательная часть)';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -157,7 +157,7 @@ CREATE TABLE `tquest` (
   CONSTRAINT `fk_tquest_city_id` FOREIGN KEY (`city_id`) REFERENCES `tcity` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_tquest_company_id` FOREIGN KEY (`company_id`) REFERENCES `tcompany` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_tquest_league_id` FOREIGN KEY (`league_id`) REFERENCES `tleague` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=48 DEFAULT CHARSET=utf8 COMMENT='Таблица квестов';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Таблица квестов';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -212,7 +212,7 @@ CREATE TABLE `tstation` (
   PRIMARY KEY (`id`),
   KEY `fk_city_id_idx` (`city_id`),
   CONSTRAINT `fk_city_id` FOREIGN KEY (`city_id`) REFERENCES `tcity` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COMMENT='Таблица станций метро';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Таблица станций метро';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -258,7 +258,7 @@ CREATE TABLE `ttag` (
   `name` varchar(45) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name_UNIQUE` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -305,7 +305,7 @@ CREATE TABLE `txqueststation` (
   KEY `fk_txqueststation_station_id_idx` (`station_id`),
   CONSTRAINT `fk_txqueststation_quest_id` FOREIGN KEY (`quest_id`) REFERENCES `tquest` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_txqueststation_station_id` FOREIGN KEY (`station_id`) REFERENCES `tstation` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=51 DEFAULT CHARSET=utf8 COMMENT='Таблица-развязка квесты-станции метро';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Таблица-развязка квесты-станции метро';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -324,7 +324,7 @@ CREATE TABLE `txquesttag` (
   KEY `fk_txquesttag_tag_id_idx` (`tag_id`),
   CONSTRAINT `fk_txquesttag_quest_id` FOREIGN KEY (`quest_id`) REFERENCES `tquest` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_txquesttag_tag_id` FOREIGN KEY (`tag_id`) REFERENCES `ttag` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -387,7 +387,7 @@ CREATE TABLE `txuserachievement` (
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pCompanyCreate`(`name` varchar(100), url varchar(45))
+CREATE PROCEDURE `pCompanyCreate`(`name` varchar(100), url varchar(45))
 BEGIN
   insert into tcompany(`name`, site) values(`name`, url);
   select LAST_INSERT_ID() as id, `name` as `name`;
@@ -408,7 +408,7 @@ ALTER DATABASE `quests` CHARACTER SET latin1 COLLATE latin1_swedish_ci ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pQuestDuctionaries`()
+CREATE PROCEDURE `pQuestDuctionaries`()
 BEGIN
   select id, name from tcompany;
     select id, name from ttag;
@@ -432,7 +432,7 @@ ALTER DATABASE `quests` CHARACTER SET utf8 COLLATE utf8_general_ci ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pQuestEdit`(
+CREATE PROCEDURE `pQuestEdit`(
   id int,
     name varchar(45),
     descr varchar(5000),
@@ -513,7 +513,7 @@ ALTER DATABASE `quests` CHARACTER SET latin1 COLLATE latin1_swedish_ci ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pQuestGet`(
+CREATE PROCEDURE `pQuestGet`(
   quest_id int
 )
 BEGIN
@@ -551,11 +551,30 @@ ALTER DATABASE `quests` CHARACTER SET utf8 COLLATE utf8_general_ci ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pQuestList`()
+CREATE PROCEDURE `pQuestList`()
 BEGIN
   select id, `name` from tCompany;
     
     select id, `name`, company_id from tQuest;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `pStationCreate` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE PROCEDURE `pStationCreate`(`name` varchar(45))
+BEGIN
+  insert into tstation(`name`) values(`name`);
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -572,7 +591,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pTagCreate`(`name` varchar(45))
+CREATE PROCEDURE `pTagCreate`(`name` varchar(45))
 BEGIN
   insert into ttag(`name`) values(`name`);
     select LAST_INSERT_ID() as id, `name` as `name`;
@@ -593,7 +612,7 @@ ALTER DATABASE `quests` CHARACTER SET latin1 COLLATE latin1_swedish_ci ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pUserCreate`(`name` varchar(45), email varchar(45), psw varchar(250))
+CREATE PROCEDURE `pUserCreate`(`name` varchar(45), email varchar(45), psw varchar(250))
 BEGIN
   insert into tuser (auth_type, `name`, email, password) values('local', `name`, email, psw);
     
@@ -616,7 +635,7 @@ ALTER DATABASE `quests` CHARACTER SET latin1 COLLATE latin1_swedish_ci ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pUserGet`(email varchar(45))
+CREATE PROCEDURE `pUserGet`(email varchar(45))
 BEGIN
   select * from tuser t where t.email = email;
 END ;;
@@ -637,7 +656,7 @@ ALTER DATABASE `quests` CHARACTER SET latin1 COLLATE latin1_swedish_ci ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pUserOAuth`(
+CREATE PROCEDURE `pUserOAuth`(
   auth_type varchar(5),
   token varchar(250), 
     email varchar(45),
@@ -678,7 +697,7 @@ ALTER DATABASE `quests` CHARACTER SET latin1 COLLATE latin1_swedish_ci ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pUserSetVerificationToken`(id int, token varchar(250))
+CREATE PROCEDURE `pUserSetVerificationToken`(id int, token varchar(250))
 BEGIN
   update tuser u set u.token = token where u.id = id;
 END ;;
@@ -699,7 +718,7 @@ ALTER DATABASE `quests` CHARACTER SET latin1 COLLATE latin1_swedish_ci ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pUserVerify`(id int, token varchar(250))
+CREATE PROCEDURE `pUserVerify`(id int, token varchar(250))
 BEGIN
   update tuser u set u.verified_flag = 1 where u.id = id and u.token = token;
 END ;;
@@ -719,4 +738,4 @@ ALTER DATABASE `quests` CHARACTER SET utf8 COLLATE utf8_general_ci ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-06-29 14:12:47
+-- Dump completed on 2015-06-29 15:03:33

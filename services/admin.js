@@ -111,6 +111,24 @@ function getQuestFiles(questID, done) {
 	s3.listData(key, done);
 }
 
+function importStations(done) {
+	var data = require('../sql/moscow-metro'),
+		stations = data.root.row,
+		query = 'call quests.pStationCreate("%s")';
+
+	for (var i = 0, l = stations.length; i < l; ++i) {
+		db.execQuery(util.format(query, stations[i]['_metroName']), function(err, rows, fields) {
+			if (err) {
+				return done(err);
+			}
+
+			if (i === l - 1) {
+				return done(null);
+			}
+		});
+	}
+}
+
 module.exports = {
 	getQuestList: getQuestList,
 	getQuest: getQuest,
@@ -118,5 +136,6 @@ module.exports = {
 	addQuestFile: addQuestFile,
 	getQuestFiles: getQuestFiles,
 	createCompany: createCompany,
-	createTag: createTag
+	createTag: createTag,
+	importStations: importStations
 };
