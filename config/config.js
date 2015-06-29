@@ -2,6 +2,7 @@
 module.exports = {
 	database: {
 		host: 'quests.cp0uujwgrxiz.eu-west-1.rds.amazonaws.com',
+		// host: 'localhost',
 		port: 3306,
 		user: 'root',
 		password: process.env.RDS_PSW || 'root',

@@ -68,7 +68,7 @@ function editQuest(quest, done) {
 		stationsQuery = db.intArrToInsertStatement(quest.stationsID),
 		s = 'call quests.pQuestEdit(%s, "%s", "%s", %d, %s, %s, "%s", %s, %d, "%s", "%s", %d, %d)',
 		query = util.format(s, quest.id || null, quest.name, quest.descr,
-			quest.companyID, quest.playersForm || null, quest.playersTo || null,
+			quest.companyID, quest.playerFrom || null, quest.playerTo || null,
 			tagsQuery, quest.leagueID || null, quest.cityID, stationsQuery,
 			quest.address, quest.lat, quest.lng);
 
