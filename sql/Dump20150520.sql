@@ -151,6 +151,9 @@ CREATE TABLE `tquest` (
   `name` varchar(45) NOT NULL,
   `descr` varchar(5000) NOT NULL,
   `url` varchar(45) DEFAULT NULL,
+  `price_from` int(11) DEFAULT NULL,
+  `price_to` int(11) DEFAULT NULL,
+  `video_url` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_company_id_idx` (`company_id`),
   KEY `fk_city_id_idx` (`city_id`),
@@ -447,7 +450,10 @@ CREATE PROCEDURE `pQuestEdit`(
     stations_list varchar(1000),
     address varchar(1000),
     lat decimal(10, 8),
-    lng decimal(10, 8)
+    lng decimal(10, 8),
+    price_from int,
+    price_to int,
+    video_url varchar(45)
 )
 BEGIN
   declare q_id int;
@@ -466,14 +472,17 @@ BEGIN
         tq.city_id = city_id,
         tq.address = address,
         tq.lat = lat,
-        tq.lng = lng
+        tq.lng = lng,
+        tq.price_from = price_from,
+        tq.price_to = price_to,
+        tq.video_url = video_url
     where tq.id = id;
       set q_id = id;
     end;
   else
     begin
-      insert into tquest(`name`, descr, url, company_id, players_from, players_to, league_id, city_id, address, lat, lng) 
-        values(name, descr, url, company_id, players_from, players_to, league_id, city_id, address, lat, lng);
+      insert into tquest(`name`, descr, url, company_id, players_from, players_to, league_id, city_id, address, lat, lng, price_from, price_to, video_url) 
+        values(name, descr, url, company_id, players_from, players_to, league_id, city_id, address, lat, lng, price_from, price_to, video_url);
       set q_id = LAST_INSERT_ID();
     end;
   end if;
@@ -741,4 +750,4 @@ ALTER DATABASE `quests` CHARACTER SET utf8 COLLATE utf8_general_ci ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-06-30 14:28:08
+-- Dump completed on 2015-06-30 18:14:13
