@@ -1,10 +1,10 @@
 CREATE DATABASE  IF NOT EXISTS `quests` /*!40100 DEFAULT CHARACTER SET utf8 */;
 USE `quests`;
--- MySQL dump 10.13  Distrib 5.6.24, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 5.6.19, for osx10.7 (i386)
 --
--- Host: 127.0.0.1    Database: quests
+-- Host: quests.cp0uujwgrxiz.eu-west-1.rds.amazonaws.com    Database: quests
 -- ------------------------------------------------------
--- Server version 5.6.24
+-- Server version 5.6.23-log
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -150,6 +150,7 @@ CREATE TABLE `tquest` (
   `address` varchar(1000) NOT NULL,
   `name` varchar(45) NOT NULL,
   `descr` varchar(5000) NOT NULL,
+  `url` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_company_id_idx` (`company_id`),
   KEY `fk_city_id_idx` (`city_id`),
@@ -430,12 +431,13 @@ ALTER DATABASE `quests` CHARACTER SET utf8 COLLATE utf8_general_ci ;
 /*!50003 SET character_set_results = utf8 */ ;
 /*!50003 SET collation_connection  = utf8_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+/*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 CREATE PROCEDURE `pQuestEdit`(
   id int,
     name varchar(45),
     descr varchar(5000),
+    url varchar(45),
     company_id int,
     players_from int,
     players_to int,
@@ -456,6 +458,7 @@ BEGIN
       update tquest tq set 
         tq.`name` = name,
         tq.descr = descr,
+        tq.url = url,
         tq.company_id = company_id,
         tq.players_from = players_from,
         tq.players_to = players_to,
@@ -469,14 +472,14 @@ BEGIN
     end;
   else
     begin
-      insert into tquest(`name`, descr, company_id, players_from, players_to, league_id, city_id, address, lat, lng) 
-        values(name, descr, company_id, players_from, players_to, league_id, city_id, address, lat, lng);
+      insert into tquest(`name`, descr, url, company_id, players_from, players_to, league_id, city_id, address, lat, lng) 
+        values(name, descr, url, company_id, players_from, players_to, league_id, city_id, address, lat, lng);
       set quest_id = LAST_INSERT_ID();
     end;
   end if;
     
     -- Delete and Insert quest tags
-  delete from txquesttag where quest_id = quest_id;
+  delete from txquesttag where quest_id = @quest_id;
     if char_length(tags_list) > 0 then
     begin
             set @q = concat('insert into txquesttag(quest_id, tag_id) values', replace(tags_list, 'e_id', quest_id));
@@ -486,7 +489,7 @@ BEGIN
     end if;
     
     -- Delete and Insert quest stations
-    delete from txqueststation where quest_id = quest_id;
+    delete from txqueststation where quest_id = @quest_id;
     if char_length(stations_list) > 0 then
     begin
       set @q = concat('insert into txqueststation(quest_id, station_id) values', replace(stations_list, 'e_id', quest_id));
@@ -549,7 +552,7 @@ ALTER DATABASE `quests` CHARACTER SET utf8 COLLATE utf8_general_ci ;
 /*!50003 SET character_set_results = utf8 */ ;
 /*!50003 SET collation_connection  = utf8_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+/*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 CREATE PROCEDURE `pQuestList`()
 BEGIN
@@ -738,4 +741,4 @@ ALTER DATABASE `quests` CHARACTER SET utf8 COLLATE utf8_general_ci ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-06-29 15:03:33
+-- Dump completed on 2015-06-30  9:32:27
