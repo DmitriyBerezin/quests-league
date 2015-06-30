@@ -1,10 +1,10 @@
 CREATE DATABASE  IF NOT EXISTS `quests` /*!40100 DEFAULT CHARACTER SET utf8 */;
 USE `quests`;
--- MySQL dump 10.13  Distrib 5.6.19, for osx10.7 (i386)
+-- MySQL dump 10.13  Distrib 5.6.24, for Win64 (x86_64)
 --
--- Host: quests.cp0uujwgrxiz.eu-west-1.rds.amazonaws.com    Database: quests
+-- Host: 127.0.0.1    Database: quests
 -- ------------------------------------------------------
--- Server version 5.6.23-log
+-- Server version 5.6.24
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -450,7 +450,7 @@ CREATE PROCEDURE `pQuestEdit`(
     lng decimal(10, 8)
 )
 BEGIN
-  declare quest_id int;
+  declare q_id int;
     declare q varchar(1000);
     
     if EXISTS(SELECT * FROM tquest q where q.id = id) then
@@ -468,37 +468,37 @@ BEGIN
         tq.lat = lat,
         tq.lng = lng
     where tq.id = id;
-      set quest_id = id;
+      set q_id = id;
     end;
   else
     begin
       insert into tquest(`name`, descr, url, company_id, players_from, players_to, league_id, city_id, address, lat, lng) 
         values(name, descr, url, company_id, players_from, players_to, league_id, city_id, address, lat, lng);
-      set quest_id = LAST_INSERT_ID();
+      set q_id = LAST_INSERT_ID();
     end;
   end if;
     
     -- Delete and Insert quest tags
-  delete from txquesttag where quest_id = @quest_id;
+  delete from txquesttag where quest_id = q_id;
     if char_length(tags_list) > 0 then
     begin
-            set @q = concat('insert into txquesttag(quest_id, tag_id) values', replace(tags_list, 'e_id', quest_id));
+            set @q = concat('insert into txquesttag(quest_id, tag_id) values', replace(tags_list, 'e_id', q_id));
       prepare stm from @q;
       execute stm;
     end;
     end if;
     
     -- Delete and Insert quest stations
-    delete from txqueststation where quest_id = @quest_id;
+    delete from txqueststation where quest_id = q_id;
     if char_length(stations_list) > 0 then
     begin
-      set @q = concat('insert into txqueststation(quest_id, station_id) values', replace(stations_list, 'e_id', quest_id));
+      set @q = concat('insert into txqueststation(quest_id, station_id) values', replace(stations_list, 'e_id', q_id));
       prepare stm from @q;
       execute stm;
     end;
   end if;
     
-    select quest_id;
+    select q_id as quest_id;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -741,4 +741,4 @@ ALTER DATABASE `quests` CHARACTER SET utf8 COLLATE utf8_general_ci ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-06-30  9:32:27
+-- Dump completed on 2015-06-30 14:28:08
