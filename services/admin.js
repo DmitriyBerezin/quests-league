@@ -106,7 +106,7 @@ function addQuestFile(questID, fileName, file, done) {
 }
 
 function getQuestFiles(questID, done) {
-	var key = util.format('quests/%d', questID);
+	var key = util.format('quests/%d/', questID);
 
 	s3.listData(key, done);
 }
