@@ -57,6 +57,12 @@ block content
 			div.col-sm-3
 				input(type='text', id='txtPlayerTo', name='playerTo', value=players_to, size=2, placeholder='до').form-control
 		div.form-group
+			label.col-sm-2.control-label Стоимость посещения
+			div.col-sm-3
+				input(type='text', id='txtPriceFrom', name='priceFrom', value=price_from, size=2, placeholder='от').form-control
+			div.col-sm-3
+				input(type='text', id='txtPriceTo', name='priceTo', value=price_to, size=2, placeholder='до').form-control
+		div.form-group
 			label(for='listTag').col-sm-2.control-label Тэги
 			div.col-sm-7
 				select(id='listTag', name='tagsID', multiple, data-width='auto').form-control.selectpicker
@@ -103,6 +109,11 @@ block content
 			|, введите адрес, нажмите правой кнопкой и выбирете "Что здесь?"
 
 		hr
+
+		div.form-group
+			label(for='txtVideoUrl').col-sm-2.control-label Ссылка на видео
+			div.col-sm-7
+				input(type='text', id='txtVideoUrl', name='videoUrl', value=video_url, placeholder='Ссылка на видео').form-control
 
 		div.form-group.button-group
 			button(type='submit').btn.btn-primary.btn-save Сохранить изменения
