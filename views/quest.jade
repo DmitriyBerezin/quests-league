@@ -1,0 +1,459 @@
+extends layout
+
+block style
+	link(rel='stylesheet', href='/stylesheets/style.css')
+	link(rel='stylesheet', href='/stylesheets/app.css')
+
+block content
+	header
+		.container
+			.row
+				.col-sm-5.hidden-xs
+					.logo-area
+						a(href='#')
+							img(src='/images/logo.png', alt='logo')
+						a.lang-toggle(href='#')
+							img.logo(src='/images/flaf-br.png', alt='british flag')
+						a.lang-toggle(href='#')
+							img(src='/images/flag-rus.png', alt='russian flag')
+						div
+							span
+								b ВСЕ КВЕСТЫ В ОДНОМ МЕСТЕ
+				.col-sm-7
+					.header-socials.text-right.hidden-xs
+						img(src='/images/socials.png', alt='socials')
+					nav.navbar.navbar-default
+						// Brand and toggle get grouped for better mobile display
+						.navbar-header
+							button.navbar-toggle.collapsed(type='button', data-toggle='collapse', data-target='#bs-example-navbar-collapse-1', aria-expanded='false')
+								span.sr-only Toggle navigation
+								span.icon-bar
+								span.icon-bar
+								span.icon-bar
+							a.navbar-brand.visible-xs(href='#')
+								img(src='/images/logo.png', alt='logo', width='100')
+						// Collect the nav links, forms, and other content for toggling
+						#bs-example-navbar-collapse-1.collapse.navbar-collapse
+							ul.nav.navbar-nav.navbar-right
+								li
+									a(href='#') Главная
+								li.active
+									a(href='#')
+										| О проекте
+										span.sr-only (current)
+								li
+									a(href='#') Добавить свой квест
+								li
+									a(href='#') Статьи
+						// /.navbar-collapse
+	.container-fluid
+		.row
+			.col-md-12.no-padding
+				.divider
+	.container
+		.row.quest-info-row
+			.col-md-12
+				.row
+					.col-md-12
+						h1.no-margin.quest-info-header Путешествие по городу...Солнце как компас
+						ol.breadcrumb
+							li
+								a(href='#') Главная
+							li
+								a(href='#') Каталог
+							li.active Страница проекта
+				.row
+					.col-sm-5
+						img.img-responsive(src='http://placehold.it/500x400', alt='')
+						.preview-controls
+							ul.list-inline.text-center
+								li.pull-left
+									button.btn.btn-success
+										i.fa.fa-chevron-left
+								li
+									a(href='#')
+										img.img-responsive(src='http://placehold.it/80x80', alt='')
+								li.hidden-xs.hidden-sm
+									a(href='#')
+										img.img-responsive(src='http://placehold.it/80x80', alt='')
+								li.hidden-xs.active
+									a(href='#')
+										img.img-responsive(src='http://placehold.it/80x80', alt='')
+								li.pull-right
+									button.btn.btn-success
+										i.fa.fa-chevron-right
+					.col-sm-7
+						.row
+							.col-sm-3.col-md-2.col-xs-4
+								ul.list-unstyled
+									li.text-muted Атмосфера
+									li.text-muted Сюжет
+									li.text-muted Загадки
+									li.text-muted Сервис
+							.col-sm-6.col-md-5.col-xs-8
+								.progress
+									.progress-bar.progress-bar-warning(role='progressbar', aria-valuenow='60', aria-valuemin='0', aria-valuemax='100', style='width: 30%;')
+										span.sr-only 30% Complete
+								.progress
+									.progress-bar.progress-bar-yellow(role='progressbar', aria-valuenow='60', aria-valuemin='0', aria-valuemax='100', style='width: 60%;')
+										span.sr-only 60% Complete
+								.progress
+									.progress-bar.progress-bar-success(role='progressbar', aria-valuenow='60', aria-valuemin='0', aria-valuemax='100', style='width: 80%;')
+										span.sr-only 80% Complete
+								.progress
+									.progress-bar.progress-bar-danger(role='progressbar', aria-valuenow='60', aria-valuemin='0', aria-valuemax='100', style='width: 20%;')
+										span.sr-only 20% Complete
+							.col-md-4.col-sm-3.quest-players
+								span
+									i.fa.fa-male.fa-2x
+								span.number 1-12
+								span.text
+									| количество
+									br
+									|  игроков
+						.row
+							.col-sm-10
+								ul.list-unstyled
+									li.list-item-calendar
+										span 20 августа - 31 августа | с 9:00 до 15:00 | вт.-пт.
+									li.list-item-link
+										span
+											a(href='http://aledisgn.ru') http://aledisgn.ru
+									li.list-item-marker
+										span
+											| г.Москва, Кутузовский пр-т, 12 с 1г.Москва, Кутузовский пр-т, 12 с 1г.Москва, Кутузовский пр-т, 12 с 1
+									li.list-item-phone
+										span
+											| +7 495 
+											b 374 67 83
+						.row
+							.col-md-12
+								hr.no-margin-top
+								span.quest-price
+									| от 
+									b 1000
+									|  до 
+									b 15 000
+									|  р.
+						.row
+							.col-md-12.quest-actions
+								button.btn.btn-danger Забронировать
+								a.schedule-link(href='#')
+									i.fa.fa-arrow-down
+									| расписание ниже
+						.row
+							.col-md-12.quest-actions
+								hr.no-margin-top
+								p
+									| Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc hendrerit arcu nec sapien
+									| sollicitudin, non consectetur velit ullamcorper. Quisque nisl nulla, efficitur nec
+									| tellus a, fermentum dignissim lacus. Suspendisse erat nibh, varius eget ante eget,
+									| placerat fermentum massa. Proin rutrum diam et vehicula sollicitudin.
+		// QUEST INFO
+		.row
+			.col-md-12
+				div
+					// Nav tabs
+					ul.nav.nav-tabs(role='tablist')
+						li.active(role='presentation')
+							a(href='#reviews', aria-controls='reviews', role='tab', data-toggle='tab') Отзывы
+						li(role='presentation')
+							a(href='#map', aria-controls='map', role='tab', data-toggle='tab') Карта
+						li(role='presentation')
+							a(href='#video', aria-controls='video', role='tab', data-toggle='tab') Видео
+					// Tab panes
+					.tab-content
+						#reviews.tab-pane.active(role='tabpanel')
+							.panel.panel-gray
+								| Тут пока нет отзывов
+							article.media
+								.media-left
+									a(href='#')
+										img.media-object.img-circle(src='http://placehold.it/100x100', alt='...')
+								.media-body
+									h4.media-heading
+										| Аркадий Укупник 
+										span.small.text-muted 30 августа, 2014 год
+									p
+										i
+											| Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc hendrerit arcu nec
+											| sapien
+											| sollicitudin, non consectetur velit ullamcorper. Quisque nisl nulla, efficitur
+											| nec
+											| tellus a, fermentum dignissim lacus.
+									div
+										i.fa.fa-star
+										i.fa.fa-star
+										i.fa.fa-star
+										i.fa.fa-star
+										i.fa.fa-star
+							article.media
+								.media-left
+									a(href='#')
+										img.media-object.img-circle(src='http://placehold.it/100x100', alt='...')
+								.media-body
+									h4.media-heading
+										| Аркадий Укупник 
+										span.small.text-muted 30 августа, 2014 год
+									p
+										i
+											| Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc hendrerit arcu nec
+											| sapien
+											| sollicitudin, non consectetur velit ullamcorper. Quisque nisl nulla, efficitur
+											| nec
+											| tellus a, fermentum dignissim lacus.
+									div
+										i.fa.fa-star
+										i.fa.fa-star
+										i.fa.fa-star
+										i.fa.fa-star
+										i.fa.fa-star
+							.text-center.reviews-actions
+								a.btn.btn-warning(href='#')
+									| Оставить отзыв
+								br.visible-xs
+								a.show-more(href='#')
+									i Показать ещё отзывы
+								br.visible-xs
+								a.schedule-link(href='#')
+									i.fa.fa-arrow-down
+									| расписание ниже
+						#map.tab-pane(role='tabpanel')
+							iframe(src='https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d287424.1771205896!2d37.632494949999995!3d55.749792000000014!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x46b54afc73d4b0c9%3A0x3d44d6cc5757cf4c!2sMoskwa%2C+Rosja!5e0!3m2!1spl!2spl!4v1436016243560', style='border:0', allowfullscreen='')
+						#video.tab-pane(role='tabpanel') ...
+		// TABS
+		.row
+			.col-md-12
+				hr
+		.row
+			.col-md-12
+				.promo-form.quest-promo-form
+					.row
+						.col-sm-4
+							h4.no-margin
+								| Узнавай о скидках 
+								br
+								|  и акциях в своем городе
+						.col-sm-8
+							.row
+								form
+									.col-sm-4
+										input.form-control(type='text', placeholder='введите имя')
+									.col-sm-4
+										input.form-control(type='email', placeholder='введите e-mail')
+									.col-sm-4
+										button.btn.btn-success.btn-block Подписаться
+		// PROMO FORM
+		.row.schedule-row
+			.col-md-12
+				.schedule-border.top
+				h3.text-center Расписание
+				.schedule-item.clearfix
+					.date.active
+						span.number 28
+						br
+						span
+							small августа
+						br
+						span
+							small воскресенье
+					.schedule-time-wrapper
+						button
+							i.fa.fa-chevron-left
+						span.time 23:15
+						span.time.active 23:15
+						span.time 23:15
+						span.time 23:15
+						span.time 23:15
+						span.time.hidden-xs 23:15
+						span.time.hidden-xs 23:15
+						span.time.hidden-xs 23:15
+						span.time.hidden-xs 23:15
+						span.time.hidden-xs 23:15
+						span.time.hidden-xs 23:15
+						span.time.hidden-xs 23:15
+						span.time.hidden-xs 23:15
+						button
+							i.fa.fa-chevron-right
+						.schedule-price-range-container.hidden-xs
+							.schedule-price-range.x1
+								span 1500 р.
+							.schedule-price-range.x3
+								span 1500 р.
+							.schedule-price-range.x5
+								span 1500 р.
+							.schedule-price-range.x1
+								span 1500 р.
+				.schedule-item.clearfix
+					.date.active
+						span.number 28
+						br
+						span
+							small августа
+						br
+						span
+							small воскресенье
+					.schedule-time-wrapper
+						button
+							i.fa.fa-chevron-left
+						span.time 23:15
+						span.time.active 23:15
+						span.time 23:15
+						span.time 23:15
+						span.time 23:15
+						span.time.hidden-xs 23:15
+						span.time.hidden-xs 23:15
+						span.time.hidden-xs 23:15
+						span.time.hidden-xs 23:15
+						span.time.hidden-xs 23:15
+						span.time.hidden-xs 23:15
+						span.time.hidden-xs 23:15
+						span.time.hidden-xs 23:15
+						button
+							i.fa.fa-chevron-right
+						.schedule-price-range-container.hidden-xs
+							.schedule-price-range.x10
+								span 1500 р.
+				.schedule-item.clearfix
+					.date.active
+						span.number 28
+						br
+						span
+							small августа
+						br
+						span
+							small воскресенье
+					.schedule-time-wrapper
+						button
+							i.fa.fa-chevron-left
+						span.time 23:15
+						span.time.active 23:15
+						span.time 23:15
+						span.time 23:15
+						span.time 23:15
+						span.time.hidden-xs 23:15
+						span.time.hidden-xs 23:15
+						span.time.hidden-xs 23:15
+						span.time.hidden-xs 23:15
+						span.time.hidden-xs 23:15
+						span.time.hidden-xs 23:15
+						span.time.hidden-xs 23:15
+						span.time.hidden-xs 23:15
+						button
+							i.fa.fa-chevron-right
+						.schedule-price-range-container.hidden-xs
+							.schedule-price-range.x5
+								span 1500 р.
+							.schedule-price-range.x5
+								span 1500 р.
+							.schedule-price-range.x2
+								span 1500 р.
+							.schedule-price-range.x1
+								span 1500 р.
+				.schedule-border.bottom
+		// SCHEDULE
+		.row
+			.col-md-12
+				h4 Похожие квесты
+				.row
+					.col-sm-3.col-xs-6
+						.similar-event
+							img(src='/images/bg.png', alt='')
+							.row
+								.col-md-12
+									a(href='#')
+										h4.no-margin-top Салемская ведьма
+							.row
+								.col-md-12
+									span.event-persons
+										i.fa.fa-user
+										|  2-4 людей
+									span.event-price
+										| от 
+										b 2500
+										|  до 
+										b 7000
+					.col-sm-3.col-xs-6
+						.similar-event
+							img(src='/images/bg.png', alt='')
+							.row
+								.col-md-12
+									a(href='#')
+										h4.no-margin-top Салемская ведьма
+							.row
+								.col-md-12
+									span.event-persons
+										i.fa.fa-user
+										|  2-4 людей
+									span.event-price
+										| от 
+										b 2500
+										|  до 
+										b 7000
+					.col-sm-3.col-xs-6
+						.similar-event
+							img(src='/images/bg.png', alt='')
+							.row
+								.col-md-12
+									a(href='#')
+										h4.no-margin-top Салемская ведьма
+							.row
+								.col-md-12
+									span.event-persons
+										i.fa.fa-user
+										|  2-4 людей
+									span.event-price
+										| от 
+										b 2500
+										|  до 
+										b 7000
+					.col-sm-3.col-xs-6
+						.similar-event
+							img(src='/images/bg.png', alt='')
+							.row
+								.col-md-12
+									a(href='#')
+										h4.no-margin-top Салемская ведьма
+							.row
+								.col-md-12
+									span.event-persons
+										i.fa.fa-user
+										|  2-4 людей
+									span.event-price
+										| от 
+										b 2500
+										|  до 
+										b 7000
+	.container-fluid
+		.row
+			.col-md-12.no-padding
+				.divider.footer-divider
+	footer
+		.container
+			.row
+				.col-sm-6.col-md-7
+					h4 Узнавай о скидках и акциях в своём городе: 
+					form.form-inline
+						.form-group
+							input.form-control(type='text', placeholder='введите имя')
+							input.form-control(type='email', placeholder='введите e-mail')
+							button.btn.btn-success Подписаться
+				.col-sm-3.col-md-2.col-xs-6
+					h4.text-muted Навигация
+					ul.list-unstyled
+						li
+							a(href='#') Главная
+						li
+							a(href='#') О проекте
+						li
+							a(href='#') Добавить свой квест
+						li
+							a(href='#') Статьи
+				.col-sm-3.col-xs-6
+					h4.text-muted Нас рекомендуют
+					img.img-responsive(src='/images/vk-placeholder.png', alt='')
+					img.img-responsive(src='/images/vk-placeholder.png', alt='')
+					img.img-responsive(src='/images/vk-placeholder.png', alt='')
+			.row
+				.col-md-12
+					| © Exitor - Все квесты в одном месте.
