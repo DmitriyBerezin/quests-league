@@ -55,7 +55,7 @@ block content
 			.col-md-12
 				.row
 					.col-md-12
-						h1.no-margin.quest-info-header Путешествие по городу...Солнце как компас
+						h1.no-margin.quest-header= name
 						ol.breadcrumb
 							li
 								a(href='#') Главная
@@ -106,7 +106,10 @@ block content
 							.col-md-4.col-sm-3.quest-players
 								span
 									i.fa.fa-male.fa-2x
-								span.number 1-12
+								span.number
+									span.number-from= players_from
+									| -
+									span.number-to= players_to
 								span.text
 									| количество
 									br
@@ -114,26 +117,26 @@ block content
 						.row
 							.col-sm-10
 								ul.list-unstyled
-									li.list-item-calendar
-										span 20 августа - 31 августа | с 9:00 до 15:00 | вт.-пт.
-									li.list-item-link
-										span
-											a(href='http://aledisgn.ru') http://aledisgn.ru
+									//- li.list-item-calendar
+									//- 	span 20 августа - 31 августа | с 9:00 до 15:00 | вт.-пт.
+									if url
+										li.list-item-link
+											span
+												a(href=url, target="_quest")= url
 									li.list-item-marker
-										span
-											| г.Москва, Кутузовский пр-т, 12 с 1г.Москва, Кутузовский пр-т, 12 с 1г.Москва, Кутузовский пр-т, 12 с 1
-									li.list-item-phone
-										span
-											| +7 495 
-											b 374 67 83
+										span= address
+									//- li.list-item-phone
+									//- 	span
+									//- 		| +7 495 
+									//- 		b 374 67 83
 						.row
 							.col-md-12
 								hr.no-margin-top
 								span.quest-price
 									| от 
-									b 1000
+									span.price-from= price_from
 									|  до 
-									b 15 000
+									span.price-to= price_to
 									|  р.
 						.row
 							.col-md-12.quest-actions
@@ -144,11 +147,7 @@ block content
 						.row
 							.col-md-12.quest-actions
 								hr.no-margin-top
-								p
-									| Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc hendrerit arcu nec sapien
-									| sollicitudin, non consectetur velit ullamcorper. Quisque nisl nulla, efficitur nec
-									| tellus a, fermentum dignissim lacus. Suspendisse erat nibh, varius eget ante eget,
-									| placerat fermentum massa. Proin rutrum diam et vehicula sollicitudin.
+								p !{descr}
 		// QUEST INFO
 		.row
 			.col-md-12
