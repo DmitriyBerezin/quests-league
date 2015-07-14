@@ -7,3 +7,12 @@
 	max-height: 272px;
 	margin: 0 auto;
 }
+
+.quest-tag {
+	margin-right: 10px;
+	display: inline-block;
+}
+
+.quest-tags {
+	padding: 18px 0;
+}

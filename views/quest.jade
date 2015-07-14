@@ -11,42 +11,42 @@ block content
 			.row
 				.col-sm-5.hidden-xs
 					.logo-area
-						a(href='#')
+						a(href='/')
 							img(src='/images/logo.png', alt='logo')
-						a.lang-toggle(href='#')
-							img.logo(src='/images/flaf-br.png', alt='british flag')
-						a.lang-toggle(href='#')
-							img(src='/images/flag-rus.png', alt='russian flag')
+						//- a.lang-toggle(href='#')
+						//- 	img.logo(src='/images/flaf-br.png', alt='british flag')
+						//- a.lang-toggle(href='#')
+						//- 	img(src='/images/flag-rus.png', alt='russian flag')
 						div
 							span
 								b ВСЕ КВЕСТЫ В ОДНОМ МЕСТЕ
 				.col-sm-7
 					.header-socials.text-right.hidden-xs
 						img(src='/images/socials.png', alt='socials')
-					nav.navbar.navbar-default
-						// Brand and toggle get grouped for better mobile display
-						.navbar-header
-							button.navbar-toggle.collapsed(type='button', data-toggle='collapse', data-target='#bs-example-navbar-collapse-1', aria-expanded='false')
-								span.sr-only Toggle navigation
-								span.icon-bar
-								span.icon-bar
-								span.icon-bar
-							a.navbar-brand.visible-xs(href='#')
-								img(src='/images/logo.png', alt='logo', width='100')
-						// Collect the nav links, forms, and other content for toggling
-						#bs-example-navbar-collapse-1.collapse.navbar-collapse
-							ul.nav.navbar-nav.navbar-right
-								li
-									a(href='#') Главная
-								li.active
-									a(href='#')
-										| О проекте
-										span.sr-only (current)
-								li
-									a(href='#') Добавить свой квест
-								li
-									a(href='#') Статьи
-						// /.navbar-collapse
+					//- nav.navbar.navbar-default
+					//- 	// Brand and toggle get grouped for better mobile display
+					//- 	.navbar-header
+					//- 		button.navbar-toggle.collapsed(type='button', data-toggle='collapse', data-target='#bs-example-navbar-collapse-1', aria-expanded='false')
+					//- 			span.sr-only Toggle navigation
+					//- 			span.icon-bar
+					//- 			span.icon-bar
+					//- 			span.icon-bar
+					//- 		a.navbar-brand.visible-xs(href='#')
+					//- 			img(src='/images/logo.png', alt='logo', width='100')
+					//- 	// Collect the nav links, forms, and other content for toggling
+					//- 	#bs-example-navbar-collapse-1.collapse.navbar-collapse
+					//- 		ul.nav.navbar-nav.navbar-right
+					//- 			li
+					//- 				a(href='#') Главная
+					//- 			li.active
+					//- 				a(href='#')
+					//- 					| О проекте
+					//- 					span.sr-only (current)
+					//- 			li
+					//- 				a(href='#') Добавить свой квест
+					//- 			li
+					//- 				a(href='#') Статьи
+					//- 	// /.navbar-collapse
 	.container-fluid
 		.row
 			.col-md-12.no-padding
@@ -57,12 +57,13 @@ block content
 				.row
 					.col-md-12
 						h1.no-margin.quest-header= name
+						.quest-company= company_name
 						ol.breadcrumb
-							li
-								a(href='#') Главная
-							li
-								a(href='#') Каталог
-							li.active Страница проекта
+							//- li
+							//- 	a(href='#') Главная
+							//- li
+							//- 	a(href='#') Каталог
+							//- li.active Страница проекта
 				.row
 					.col-sm-5
 						.carousel.slide(id="carousel-images", data-ride="carousel")
@@ -96,25 +97,34 @@ block content
 						//- 				i.fa.fa-chevron-right
 					.col-sm-7
 						.row
-							.col-sm-3.col-md-2.col-xs-4
+							//- .col-sm-3.col-md-2.col-xs-4
+							//- 	ul.list-unstyled
+							//- 		li.text-muted Атмосфера
+							//- 		li.text-muted Сюжет
+							//- 		li.text-muted Загадки
+							//- 		li.text-muted Сервис
+							//- .col-sm-6.col-md-5.col-xs-8
+							//- 	.progress
+							//- 		.progress-bar.progress-bar-warning(role='progressbar', aria-valuenow='60', aria-valuemin='0', aria-valuemax='100', style='width: 30%;')
+							//- 			span.sr-only 30% Complete
+							//- 	.progress
+							//- 		.progress-bar.progress-bar-yellow(role='progressbar', aria-valuenow='60', aria-valuemin='0', aria-valuemax='100', style='width: 60%;')
+							//- 			span.sr-only 60% Complete
+							//- 	.progress
+							//- 		.progress-bar.progress-bar-success(role='progressbar', aria-valuenow='60', aria-valuemin='0', aria-valuemax='100', style='width: 80%;')
+							//- 			span.sr-only 80% Complete
+							//- 	.progress
+							//- 		.progress-bar.progress-bar-danger(role='progressbar', aria-valuenow='60', aria-valuemin='0', aria-valuemax='100', style='width: 20%;')
+							//- 			span.sr-only 20% Complete
+
+							.col-sm-6.col-md-5.col-xs-8.quest-tags
 								ul.list-unstyled
-									li.text-muted Атмосфера
-									li.text-muted Сюжет
-									li.text-muted Загадки
-									li.text-muted Сервис
-							.col-sm-6.col-md-5.col-xs-8
-								.progress
-									.progress-bar.progress-bar-warning(role='progressbar', aria-valuenow='60', aria-valuemin='0', aria-valuemax='100', style='width: 30%;')
-										span.sr-only 30% Complete
-								.progress
-									.progress-bar.progress-bar-yellow(role='progressbar', aria-valuenow='60', aria-valuemin='0', aria-valuemax='100', style='width: 60%;')
-										span.sr-only 60% Complete
-								.progress
-									.progress-bar.progress-bar-success(role='progressbar', aria-valuenow='60', aria-valuemin='0', aria-valuemax='100', style='width: 80%;')
-										span.sr-only 80% Complete
-								.progress
-									.progress-bar.progress-bar-danger(role='progressbar', aria-valuenow='60', aria-valuemin='0', aria-valuemax='100', style='width: 20%;')
-										span.sr-only 20% Complete
+									each tag in tags
+										li.quest-tag
+											i.fa.fa-tag
+											| #{tag.name}
+							.col-sm-3.col-md-2.col-xs-4
+
 							.col-md-4.col-sm-3.quest-players
 								span
 									i.fa.fa-male.fa-2x
