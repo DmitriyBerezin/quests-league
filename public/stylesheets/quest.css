@@ -1,0 +1,9 @@
+#carousel-images .inner-item {
+	text-align: center;
+}
+
+#carousel-images img {
+	width: auto;
+	max-height: 272px;
+	margin: 0 auto;
+}
