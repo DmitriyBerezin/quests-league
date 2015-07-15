@@ -510,7 +510,8 @@ div.select-stacked div.select + .select {
   color: #b3b3b3;
 }
 .quest-players {
-  padding: 18px 0;
+  /*padding: 18px 0;*/
+  padding-bottom: 18px;
 }
 .quest-players span {
   display: inline-block;

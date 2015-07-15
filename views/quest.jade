@@ -117,14 +117,6 @@ block content
 							//- 		.progress-bar.progress-bar-danger(role='progressbar', aria-valuenow='60', aria-valuemin='0', aria-valuemax='100', style='width: 20%;')
 							//- 			span.sr-only 20% Complete
 
-							.col-sm-6.col-md-5.col-xs-8.quest-tags
-								ul.list-unstyled
-									each tag in tags
-										li.quest-tag
-											i.fa.fa-tag
-											| #{tag.name}
-							.col-sm-3.col-md-2.col-xs-4
-
 							.col-md-4.col-sm-3.quest-players
 								span
 									i.fa.fa-male.fa-2x
@@ -136,6 +128,13 @@ block content
 									| количество
 									br
 									|  игроков
+							.col-sm-6.col-md-5.col-xs-8.quest-tags
+								if tags.length > 0
+									i.fa.fa-tags
+									ul.list-unstyled.quest-tags-list
+										each tag in tags
+											li.quest-tag= tag.name
+							.col-sm-3.col-md-2.col-xs-4
 						.row
 							.col-sm-10
 								ul.list-unstyled
@@ -160,291 +159,231 @@ block content
 									|  до 
 									span.price-to= price_to
 									|  р.
-						.row
-							.col-md-12.quest-actions
-								button.btn.btn-danger Забронировать
-								a.schedule-link(href='#')
-									i.fa.fa-arrow-down
-									| расписание ниже
+						//- .row
+						//- 	.col-md-12.quest-actions
+						//- 		button.btn.btn-danger Забронировать
+						//- 		a.schedule-link(href='#')
+						//- 			i.fa.fa-arrow-down
+						//- 			| расписание ниже
 						.row
 							.col-md-12.quest-actions
 								hr.no-margin-top
 								p !{descr}
 		// QUEST INFO
-		.row
-			.col-md-12
-				div
-					// Nav tabs
-					ul.nav.nav-tabs(role='tablist')
-						li.active(role='presentation')
-							a(href='#reviews', aria-controls='reviews', role='tab', data-toggle='tab') Отзывы
-						li(role='presentation')
-							a(href='#map', aria-controls='map', role='tab', data-toggle='tab') Карта
-						li(role='presentation')
-							a(href='#video', aria-controls='video', role='tab', data-toggle='tab') Видео
-					// Tab panes
-					.tab-content
-						#reviews.tab-pane.active(role='tabpanel')
-							.panel.panel-gray
-								| Тут пока нет отзывов
-							article.media
-								.media-left
-									a(href='#')
-										img.media-object.img-circle(src='http://placehold.it/100x100', alt='...')
-								.media-body
-									h4.media-heading
-										| Аркадий Укупник 
-										span.small.text-muted 30 августа, 2014 год
-									p
-										i
-											| Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc hendrerit arcu nec
-											| sapien
-											| sollicitudin, non consectetur velit ullamcorper. Quisque nisl nulla, efficitur
-											| nec
-											| tellus a, fermentum dignissim lacus.
-									div
-										i.fa.fa-star
-										i.fa.fa-star
-										i.fa.fa-star
-										i.fa.fa-star
-										i.fa.fa-star
-							article.media
-								.media-left
-									a(href='#')
-										img.media-object.img-circle(src='http://placehold.it/100x100', alt='...')
-								.media-body
-									h4.media-heading
-										| Аркадий Укупник 
-										span.small.text-muted 30 августа, 2014 год
-									p
-										i
-											| Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc hendrerit arcu nec
-											| sapien
-											| sollicitudin, non consectetur velit ullamcorper. Quisque nisl nulla, efficitur
-											| nec
-											| tellus a, fermentum dignissim lacus.
-									div
-										i.fa.fa-star
-										i.fa.fa-star
-										i.fa.fa-star
-										i.fa.fa-star
-										i.fa.fa-star
-							.text-center.reviews-actions
-								a.btn.btn-warning(href='#')
-									| Оставить отзыв
-								br.visible-xs
-								a.show-more(href='#')
-									i Показать ещё отзывы
-								br.visible-xs
-								a.schedule-link(href='#')
-									i.fa.fa-arrow-down
-									| расписание ниже
-						#map.tab-pane(role='tabpanel')
-							iframe(src='https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d287424.1771205896!2d37.632494949999995!3d55.749792000000014!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x46b54afc73d4b0c9%3A0x3d44d6cc5757cf4c!2sMoskwa%2C+Rosja!5e0!3m2!1spl!2spl!4v1436016243560', style='border:0', allowfullscreen='')
-						#video.tab-pane(role='tabpanel') ...
-		// TABS
+		//- .row
+		//- 	.col-md-12
+		//- 		div
+		//- 			// Nav tabs
+		//- 			ul.nav.nav-tabs(role='tablist')
+		//- 				li.active(role='presentation')
+		//- 					a(href='#reviews', aria-controls='reviews', role='tab', data-toggle='tab') Отзывы
+		//- 				li(role='presentation')
+		//- 					a(href='#map', aria-controls='map', role='tab', data-toggle='tab') Карта
+		//- 				li(role='presentation')
+		//- 					a(href='#video', aria-controls='video', role='tab', data-toggle='tab') Видео
+		//- 			// Tab panes
+		//- 			.tab-content
+		//- 				#reviews.tab-pane.active(role='tabpanel')
+		//- 					.panel.panel-gray
+		//- 						| Тут пока нет отзывов
+		//- 					article.media
+		//- 						.media-left
+		//- 							a(href='#')
+		//- 								img.media-object.img-circle(src='http://placehold.it/100x100', alt='...')
+		//- 						.media-body
+		//- 							h4.media-heading
+		//- 								| Аркадий Укупник 
+		//- 								span.small.text-muted 30 августа, 2014 год
+		//- 							p
+		//- 								i
+		//- 									| Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc hendrerit arcu nec
+		//- 									| sapien
+		//- 									| sollicitudin, non consectetur velit ullamcorper. Quisque nisl nulla, efficitur
+		//- 									| nec
+		//- 									| tellus a, fermentum dignissim lacus.
+		//- 							div
+		//- 								i.fa.fa-star
+		//- 								i.fa.fa-star
+		//- 								i.fa.fa-star
+		//- 								i.fa.fa-star
+		//- 								i.fa.fa-star
+		//- 					article.media
+		//- 						.media-left
+		//- 							a(href='#')
+		//- 								img.media-object.img-circle(src='http://placehold.it/100x100', alt='...')
+		//- 						.media-body
+		//- 							h4.media-heading
+		//- 								| Аркадий Укупник 
+		//- 								span.small.text-muted 30 августа, 2014 год
+		//- 							p
+		//- 								i
+		//- 									| Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc hendrerit arcu nec
+		//- 									| sapien
+		//- 									| sollicitudin, non consectetur velit ullamcorper. Quisque nisl nulla, efficitur
+		//- 									| nec
+		//- 									| tellus a, fermentum dignissim lacus.
+		//- 							div
+		//- 								i.fa.fa-star
+		//- 								i.fa.fa-star
+		//- 								i.fa.fa-star
+		//- 								i.fa.fa-star
+		//- 								i.fa.fa-star
+		//- 					.text-center.reviews-actions
+		//- 						a.btn.btn-warning(href='#')
+		//- 							| Оставить отзыв
+		//- 						br.visible-xs
+		//- 						a.show-more(href='#')
+		//- 							i Показать ещё отзывы
+		//- 						br.visible-xs
+		//- 						a.schedule-link(href='#')
+		//- 							i.fa.fa-arrow-down
+		//- 							| расписание ниже
+		//- 				#map.tab-pane(role='tabpanel')
+		//- 					iframe(src='https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d287424.1771205896!2d37.632494949999995!3d55.749792000000014!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x46b54afc73d4b0c9%3A0x3d44d6cc5757cf4c!2sMoskwa%2C+Rosja!5e0!3m2!1spl!2spl!4v1436016243560', style='border:0', allowfullscreen='')
+		//- 				#video.tab-pane(role='tabpanel') ...
+		//- // TABS
+		//- .row
+		//- 	.col-md-12
+		//- 		hr
+		//- .row
+		//- 	.col-md-12
+		//- 		.promo-form.quest-promo-form
+		//- 			.row
+		//- 				.col-sm-4
+		//- 					h4.no-margin
+		//- 						| Узнавай о скидках 
+		//- 						br
+		//- 						|  и акциях в своем городе
+		//- 				.col-sm-8
+		//- 					.row
+		//- 						form
+		//- 							.col-sm-4
+		//- 								input.form-control(type='text', placeholder='введите имя')
+		//- 							.col-sm-4
+		//- 								input.form-control(type='email', placeholder='введите e-mail')
+		//- 							.col-sm-4
+		//- 								button.btn.btn-success.btn-block Подписаться
+		//- // PROMO FORM
+		//- .row.schedule-row
+		//- 	.col-md-12
+		//- 		.schedule-border.top
+		//- 		h3.text-center Расписание
+		//- 		.schedule-item.clearfix
+		//- 			.date.active
+		//- 				span.number 28
+		//- 				br
+		//- 				span
+		//- 					small августа
+		//- 				br
+		//- 				span
+		//- 					small воскресенье
+		//- 			.schedule-time-wrapper
+		//- 				button
+		//- 					i.fa.fa-chevron-left
+		//- 				span.time 23:15
+		//- 				span.time.active 23:15
+		//- 				span.time 23:15
+		//- 				span.time 23:15
+		//- 				span.time 23:15
+		//- 				span.time.hidden-xs 23:15
+		//- 				span.time.hidden-xs 23:15
+		//- 				span.time.hidden-xs 23:15
+		//- 				span.time.hidden-xs 23:15
+		//- 				span.time.hidden-xs 23:15
+		//- 				span.time.hidden-xs 23:15
+		//- 				span.time.hidden-xs 23:15
+		//- 				span.time.hidden-xs 23:15
+		//- 				button
+		//- 					i.fa.fa-chevron-right
+		//- 				.schedule-price-range-container.hidden-xs
+		//- 					.schedule-price-range.x1
+		//- 						span 1500 р.
+		//- 					.schedule-price-range.x3
+		//- 						span 1500 р.
+		//- 					.schedule-price-range.x5
+		//- 						span 1500 р.
+		//- 					.schedule-price-range.x1
+		//- 						span 1500 р.
+		//- 		.schedule-item.clearfix
+		//- 			.date.active
+		//- 				span.number 28
+		//- 				br
+		//- 				span
+		//- 					small августа
+		//- 				br
+		//- 				span
+		//- 					small воскресенье
+		//- 			.schedule-time-wrapper
+		//- 				button
+		//- 					i.fa.fa-chevron-left
+		//- 				span.time 23:15
+		//- 				span.time.active 23:15
+		//- 				span.time 23:15
+		//- 				span.time 23:15
+		//- 				span.time 23:15
+		//- 				span.time.hidden-xs 23:15
+		//- 				span.time.hidden-xs 23:15
+		//- 				span.time.hidden-xs 23:15
+		//- 				span.time.hidden-xs 23:15
+		//- 				span.time.hidden-xs 23:15
+		//- 				span.time.hidden-xs 23:15
+		//- 				span.time.hidden-xs 23:15
+		//- 				span.time.hidden-xs 23:15
+		//- 				button
+		//- 					i.fa.fa-chevron-right
+		//- 				.schedule-price-range-container.hidden-xs
+		//- 					.schedule-price-range.x10
+		//- 						span 1500 р.
+		//- 		.schedule-item.clearfix
+		//- 			.date.active
+		//- 				span.number 28
+		//- 				br
+		//- 				span
+		//- 					small августа
+		//- 				br
+		//- 				span
+		//- 					small воскресенье
+		//- 			.schedule-time-wrapper
+		//- 				button
+		//- 					i.fa.fa-chevron-left
+		//- 				span.time 23:15
+		//- 				span.time.active 23:15
+		//- 				span.time 23:15
+		//- 				span.time 23:15
+		//- 				span.time 23:15
+		//- 				span.time.hidden-xs 23:15
+		//- 				span.time.hidden-xs 23:15
+		//- 				span.time.hidden-xs 23:15
+		//- 				span.time.hidden-xs 23:15
+		//- 				span.time.hidden-xs 23:15
+		//- 				span.time.hidden-xs 23:15
+		//- 				span.time.hidden-xs 23:15
+		//- 				span.time.hidden-xs 23:15
+		//- 				button
+		//- 					i.fa.fa-chevron-right
+		//- 				.schedule-price-range-container.hidden-xs
+		//- 					.schedule-price-range.x5
+		//- 						span 1500 р.
+		//- 					.schedule-price-range.x5
+		//- 						span 1500 р.
+		//- 					.schedule-price-range.x2
+		//- 						span 1500 р.
+		//- 					.schedule-price-range.x1
+		//- 						span 1500 р.
+		//- 		.schedule-border.bottom
+		//- // SCHEDULE
+		// TEMP
 		.row
 			.col-md-12
 				hr
 		.row
-			.col-md-12
-				.promo-form.quest-promo-form
-					.row
-						.col-sm-4
-							h4.no-margin
-								| Узнавай о скидках 
-								br
-								|  и акциях в своем городе
-						.col-sm-8
-							.row
-								form
-									.col-sm-4
-										input.form-control(type='text', placeholder='введите имя')
-									.col-sm-4
-										input.form-control(type='email', placeholder='введите e-mail')
-									.col-sm-4
-										button.btn.btn-success.btn-block Подписаться
-		// PROMO FORM
-		.row.schedule-row
-			.col-md-12
-				.schedule-border.top
-				h3.text-center Расписание
-				.schedule-item.clearfix
-					.date.active
-						span.number 28
-						br
-						span
-							small августа
-						br
-						span
-							small воскресенье
-					.schedule-time-wrapper
-						button
-							i.fa.fa-chevron-left
-						span.time 23:15
-						span.time.active 23:15
-						span.time 23:15
-						span.time 23:15
-						span.time 23:15
-						span.time.hidden-xs 23:15
-						span.time.hidden-xs 23:15
-						span.time.hidden-xs 23:15
-						span.time.hidden-xs 23:15
-						span.time.hidden-xs 23:15
-						span.time.hidden-xs 23:15
-						span.time.hidden-xs 23:15
-						span.time.hidden-xs 23:15
-						button
-							i.fa.fa-chevron-right
-						.schedule-price-range-container.hidden-xs
-							.schedule-price-range.x1
-								span 1500 р.
-							.schedule-price-range.x3
-								span 1500 р.
-							.schedule-price-range.x5
-								span 1500 р.
-							.schedule-price-range.x1
-								span 1500 р.
-				.schedule-item.clearfix
-					.date.active
-						span.number 28
-						br
-						span
-							small августа
-						br
-						span
-							small воскресенье
-					.schedule-time-wrapper
-						button
-							i.fa.fa-chevron-left
-						span.time 23:15
-						span.time.active 23:15
-						span.time 23:15
-						span.time 23:15
-						span.time 23:15
-						span.time.hidden-xs 23:15
-						span.time.hidden-xs 23:15
-						span.time.hidden-xs 23:15
-						span.time.hidden-xs 23:15
-						span.time.hidden-xs 23:15
-						span.time.hidden-xs 23:15
-						span.time.hidden-xs 23:15
-						span.time.hidden-xs 23:15
-						button
-							i.fa.fa-chevron-right
-						.schedule-price-range-container.hidden-xs
-							.schedule-price-range.x10
-								span 1500 р.
-				.schedule-item.clearfix
-					.date.active
-						span.number 28
-						br
-						span
-							small августа
-						br
-						span
-							small воскресенье
-					.schedule-time-wrapper
-						button
-							i.fa.fa-chevron-left
-						span.time 23:15
-						span.time.active 23:15
-						span.time 23:15
-						span.time 23:15
-						span.time 23:15
-						span.time.hidden-xs 23:15
-						span.time.hidden-xs 23:15
-						span.time.hidden-xs 23:15
-						span.time.hidden-xs 23:15
-						span.time.hidden-xs 23:15
-						span.time.hidden-xs 23:15
-						span.time.hidden-xs 23:15
-						span.time.hidden-xs 23:15
-						button
-							i.fa.fa-chevron-right
-						.schedule-price-range-container.hidden-xs
-							.schedule-price-range.x5
-								span 1500 р.
-							.schedule-price-range.x5
-								span 1500 р.
-							.schedule-price-range.x2
-								span 1500 р.
-							.schedule-price-range.x1
-								span 1500 р.
-				.schedule-border.bottom
-		// SCHEDULE
-		.row
-			.col-md-12
-				h4 Похожие квесты
-				.row
-					.col-sm-3.col-xs-6
-						.similar-event
-							img(src='/images/bg.png', alt='')
-							.row
-								.col-md-12
-									a(href='#')
-										h4.no-margin-top Салемская ведьма
-							.row
-								.col-md-12
-									span.event-persons
-										i.fa.fa-user
-										|  2-4 людей
-									span.event-price
-										| от 
-										b 2500
-										|  до 
-										b 7000
-					.col-sm-3.col-xs-6
-						.similar-event
-							img(src='/images/bg.png', alt='')
-							.row
-								.col-md-12
-									a(href='#')
-										h4.no-margin-top Салемская ведьма
-							.row
-								.col-md-12
-									span.event-persons
-										i.fa.fa-user
-										|  2-4 людей
-									span.event-price
-										| от 
-										b 2500
-										|  до 
-										b 7000
-					.col-sm-3.col-xs-6
-						.similar-event
-							img(src='/images/bg.png', alt='')
-							.row
-								.col-md-12
-									a(href='#')
-										h4.no-margin-top Салемская ведьма
-							.row
-								.col-md-12
-									span.event-persons
-										i.fa.fa-user
-										|  2-4 людей
-									span.event-price
-										| от 
-										b 2500
-										|  до 
-										b 7000
-					.col-sm-3.col-xs-6
-						.similar-event
-							img(src='/images/bg.png', alt='')
-							.row
-								.col-md-12
-									a(href='#')
-										h4.no-margin-top Салемская ведьма
-							.row
-								.col-md-12
-									span.event-persons
-										i.fa.fa-user
-										|  2-4 людей
-									span.event-price
-										| от 
-										b 2500
-										|  до 
-										b 7000
+			.col-md-12.company-quests
+				if quests.length > 0
+					h4 Другие квесты компании #{company_name}
+					- for (var i = 0; i < quests.length; i += 4)
+						.row
+							- for (var j = i; j < i + 4 && j < quests.length; ++j)
+								+questWidget(quests[j])
 	.container-fluid
 		.row
 			.col-md-12.no-padding
@@ -478,3 +417,24 @@ block content
 			.row
 				.col-md-12
 					| © Exitor - Все квесты в одном месте.
+
+mixin questWidget(quest)
+	.col-sm-3.col-xs-6
+		a(href='/quest/#{quest.id}')
+			.similar-event
+				img(src='/images/bg.png', alt='')
+				.row
+					.col-md-12
+						h4.no-margin-top= quest.name
+				.row
+					.col-md-12
+						if quest.players_from && quest.players_to
+							span.event-persons
+								i.fa.fa-user
+								|  #{quest.players_from}-#{quest.players_to} людей
+						if quest.price_from && quest.price_to
+							span.event-price
+								| от 
+								b= quest.price_from
+								|  до 
+								b= quest.price_to

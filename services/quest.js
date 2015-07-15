@@ -14,6 +14,7 @@ function getQuest(id, done) {
 
 		data = rows[0].length > 0 ? rows[0][0] : {};
 		data.tags = rows[1];
+		data.quests = rows[2];
 		data.imgs = [];
 
 		if (id) {

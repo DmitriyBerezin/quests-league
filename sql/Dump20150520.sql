@@ -1,10 +1,10 @@
 CREATE DATABASE  IF NOT EXISTS `quests` /*!40100 DEFAULT CHARACTER SET utf8 */;
 USE `quests`;
--- MySQL dump 10.13  Distrib 5.6.19, for osx10.7 (i386)
+-- MySQL dump 10.13  Distrib 5.6.24, for Win64 (x86_64)
 --
--- Host: quests.cp0uujwgrxiz.eu-west-1.rds.amazonaws.com    Database: quests
+-- Host: 127.0.0.1    Database: quests
 -- ------------------------------------------------------
--- Server version 5.6.23-log
+-- Server version 5.6.24
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -565,13 +565,21 @@ ALTER DATABASE `quests` CHARACTER SET utf8 COLLATE utf8_general_ci ;
 DELIMITER ;;
 CREATE PROCEDURE `pQuestGet1`(quest_id int)
 BEGIN
+    declare company_id int;
+
   select q.id, q.name, c.name as company_name, q.url, q.descr, q.address, 
     q.players_from, q.players_to, q.price_from, q.price_to
     from tquest q inner join tcompany c on q.company_id = c.id 
     where q.id = quest_id;
         
-  select t.id, t.name from ttag t inner join txquesttag tx on t.id = tx.tag_id
+  -- Select tags
+    select t.id, t.name from ttag t inner join txquesttag tx on t.id = tx.tag_id
     where tx.quest_id = quest_id;
+    
+    -- Select other quest's company quests
+    select q.company_id into company_id from tquest q where q.id = quest_id;
+    select * from tquest q
+    where q.company_id = company_id and q.id != quest_id;
     
     /*select t.*, case when tx.quest_id is null then 0 else 1 end as selected  
     from ttag t 
@@ -785,4 +793,4 @@ ALTER DATABASE `quests` CHARACTER SET utf8 COLLATE utf8_general_ci ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-07-14 21:19:28
+-- Dump completed on 2015-07-15 16:16:26
