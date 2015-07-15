@@ -128,22 +128,30 @@ block content
 									| количество
 									br
 									|  игроков
-							.col-sm-6.col-md-5.col-xs-8.quest-tags
-								if tags.length > 0
-									i.fa.fa-tags
-									ul.list-unstyled.quest-tags-list
-										each tag in tags
-											li.quest-tag= tag.name
+							//- .col-sm-6.col-md-5.col-xs-8.quest-tags
+							//- 	if tags.length > 0
+							//- 		i.fa.fa-tags
+							//- 		ul.list-unstyled.quest-tags-list
+							//- 			each tag in tags
+							//- 				li.quest-tag= tag.name
 							.col-sm-3.col-md-2.col-xs-4
 						.row
 							.col-sm-10
 								ul.list-unstyled
-									//- li.list-item-calendar
-									//- 	span 20 августа - 31 августа | с 9:00 до 15:00 | вт.-пт.
+									if tags.length > 0
+										li.list-item-tags
+											ul.list-unstyled.list-inline
+												each tag in tags
+													li= tag.name
 									if url
 										li.list-item-link
 											span
 												a(href=url, target="_quest")= url
+									if stations.length > 0
+										li.list-item-subway
+											ul.list-unstyled.list-inline
+												each station in stations
+													li= station.name
 									li.list-item-marker
 										span= address
 									//- li.list-item-phone
@@ -379,7 +387,7 @@ block content
 		.row
 			.col-md-12.company-quests
 				if quests.length > 0
-					h4 Другие квесты компании #{company_name}
+					h4 Другие квесты компании "#{company_name}"
 					- for (var i = 0; i < quests.length; i += 4)
 						.row
 							- for (var j = i; j < i + 4 && j < quests.length; ++j)
@@ -419,7 +427,7 @@ block content
 					| © Exitor - Все квесты в одном месте.
 
 mixin questWidget(quest)
-	.col-sm-3.col-xs-6
+	.col-md-3.col-sm-6.col-xs-12
 		a(href='/quest/#{quest.id}')
 			.similar-event
 				img(src=quest.img.url, alt='Другие квесты компании')

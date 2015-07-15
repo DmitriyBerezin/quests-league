@@ -4,23 +4,13 @@
 
 #carousel-images img {
 	width: auto;
-	max-height: 272px;
+	max-height: 340px;
 	margin: 0 auto;
 }
 
-.quest-tag {
-	margin-right: 10px;
-	display: inline-block;
-}
-
-.quest-tags-list {
-	display: inline-block;
-	margin-left: 10px;
-}
-
-.quest-tags {
+/*.quest-tags {
 	padding-bottom: 18px;
-}
+}*/
 
 .company-quests .row {
 	margin-bottom: 30px;
@@ -31,6 +21,10 @@
 	width: auto;
 	max-width: 232px;
 	max-height: 250px;*/
+}
+
+.list-item-station:before {
+	content: "\f238";
 }
 
 

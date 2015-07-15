@@ -172,6 +172,7 @@ div.select-stacked div.select + .select {
 .list-item-briefcase,
 .list-item-marker,
 .list-item-subway,
+.list-item-tags,
 .list-item-mail,
 .list-item-phone,
 .list-item-calendar,
@@ -184,6 +185,7 @@ div.select-stacked div.select + .select {
 .list-item-briefcase:before,
 .list-item-marker:before,
 .list-item-subway:before,
+.list-item-tags:before,
 .list-item-mail:before,
 .list-item-phone:before,
 .list-item-calendar:before,
@@ -209,6 +211,9 @@ div.select-stacked div.select + .select {
 }
 .list-item-subway:before {
   content: "\f239";
+}
+.list-item-tags:before {
+  content: "\f02c";
 }
 .list-item-mail:before {
   content: "\f0e0";

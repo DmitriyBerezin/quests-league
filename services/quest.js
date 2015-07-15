@@ -18,6 +18,7 @@ function getQuest(id, done) {
 		res = rows[0].length > 0 ? rows[0][0] : {};
 		res.tags = rows[1];
 		res.quests = rows[2];
+		res.stations = rows[3];
 		res.imgs = [];
 
 		filesFunc[id] = admin.getQuestFiles.bind(null, id);
