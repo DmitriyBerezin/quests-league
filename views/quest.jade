@@ -422,7 +422,7 @@ mixin questWidget(quest)
 	.col-sm-3.col-xs-6
 		a(href='/quest/#{quest.id}')
 			.similar-event
-				img(src='/images/bg.png', alt='')
+				img(src=quest.img.url, alt='Другие квесты компании')
 				.row
 					.col-md-12
 						h4.no-margin-top= quest.name
