@@ -6,47 +6,8 @@ block style
 	link(rel='stylesheet', href='/stylesheets/quest.css')
 
 block content
-	header
-		.container
-			.row
-				.col-sm-5.hidden-xs
-					.logo-area
-						a(href='/')
-							img(src='/images/logo.png', alt='logo')
-						//- a.lang-toggle(href='#')
-						//- 	img.logo(src='/images/flaf-br.png', alt='british flag')
-						//- a.lang-toggle(href='#')
-						//- 	img(src='/images/flag-rus.png', alt='russian flag')
-						div
-							span
-								b ВСЕ КВЕСТЫ В ОДНОМ МЕСТЕ
-				.col-sm-7
-					.header-socials.text-right.hidden-xs
-						img(src='/images/socials.png', alt='socials')
-					//- nav.navbar.navbar-default
-					//- 	// Brand and toggle get grouped for better mobile display
-					//- 	.navbar-header
-					//- 		button.navbar-toggle.collapsed(type='button', data-toggle='collapse', data-target='#bs-example-navbar-collapse-1', aria-expanded='false')
-					//- 			span.sr-only Toggle navigation
-					//- 			span.icon-bar
-					//- 			span.icon-bar
-					//- 			span.icon-bar
-					//- 		a.navbar-brand.visible-xs(href='#')
-					//- 			img(src='/images/logo.png', alt='logo', width='100')
-					//- 	// Collect the nav links, forms, and other content for toggling
-					//- 	#bs-example-navbar-collapse-1.collapse.navbar-collapse
-					//- 		ul.nav.navbar-nav.navbar-right
-					//- 			li
-					//- 				a(href='#') Главная
-					//- 			li.active
-					//- 				a(href='#')
-					//- 					| О проекте
-					//- 					span.sr-only (current)
-					//- 			li
-					//- 				a(href='#') Добавить свой квест
-					//- 			li
-					//- 				a(href='#') Статьи
-					//- 	// /.navbar-collapse
+	include ./header.jade
+
 	.container-fluid
 		.row
 			.col-md-12.no-padding
@@ -396,35 +357,7 @@ block content
 		.row
 			.col-md-12.no-padding
 				.divider.footer-divider
-	footer
-		.container
-			.row
-				.col-sm-6.col-md-7
-					h4 Узнавай о скидках и акциях в своём городе: 
-					form.form-inline
-						.form-group
-							input.form-control(type='text', placeholder='введите имя')
-							input.form-control(type='email', placeholder='введите e-mail')
-							button.btn.btn-success Подписаться
-				.col-sm-3.col-md-2.col-xs-6
-					h4.text-muted Навигация
-					ul.list-unstyled
-						li
-							a(href='#') Главная
-						li
-							a(href='#') О проекте
-						li
-							a(href='#') Добавить свой квест
-						li
-							a(href='#') Статьи
-				.col-sm-3.col-xs-6
-					h4.text-muted Нас рекомендуют
-					img.img-responsive(src='/images/vk-placeholder.png', alt='')
-					img.img-responsive(src='/images/vk-placeholder.png', alt='')
-					img.img-responsive(src='/images/vk-placeholder.png', alt='')
-			.row
-				.col-md-12
-					| © Exitor - Все квесты в одном месте.
+	include ./footer.jade
 
 mixin questWidget(quest)
 	.col-md-3.col-sm-6.col-xs-12
