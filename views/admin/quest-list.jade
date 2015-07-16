@@ -17,4 +17,5 @@ block content
 				each quest in quests
 					if quest.company_id === company.id
 						li.list-group-item
-							a(href="/admin/quest/#{quest.id}")= quest.name
+							a(href="/quest/#{quest.id}")= quest.name
+							a(href="/admin/quest/#{quest.id}").pull-right Редактировать

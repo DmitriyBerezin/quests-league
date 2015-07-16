@@ -1,0 +1,33 @@
+#carousel-images .inner-item {
+	text-align: center;
+}
+
+#carousel-images img {
+	width: auto;
+	max-height: 340px;
+	margin: 0 auto;
+}
+
+/*.quest-tags {
+	padding-bottom: 18px;
+}*/
+
+.company-quests .row {
+	margin-bottom: 30px;
+}
+
+.similar-event img {
+	/*height: auto;
+	width: auto;
+	max-width: 232px;
+	max-height: 250px;*/
+}
+
+.list-item-station:before {
+	content: "\f238";
+}
+
+.address-link {
+	margin-left: 10px;
+	color: #000;
+}
