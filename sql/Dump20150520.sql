@@ -568,7 +568,7 @@ BEGIN
     declare company_id int;
 
   select q.id, q.name, c.name as company_name, q.url, q.descr, q.address, 
-    q.players_from, q.players_to, q.price_from, q.price_to
+    q.players_from, q.players_to, q.price_from, q.price_to, q.lat, q.lng
     from tquest q inner join tcompany c on q.company_id = c.id 
     where q.id = quest_id;
         
@@ -580,7 +580,7 @@ BEGIN
     select q.company_id into company_id from tquest q where q.id = quest_id;
     select * from tquest q
     where q.company_id = company_id and q.id != quest_id;
-    
+        
     -- Select stations
     select s.id, s.name from tstation s inner join txqueststation tx on s.id = tx.station_id
     where tx.quest_id = quest_id;

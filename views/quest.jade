@@ -115,6 +115,8 @@ block content
 													li= station.name
 									li.list-item-marker
 										span= address
+										a(href='https://maps.yandex.ru/?whatshere%5Bpoint%5D=#{lng}%2C#{lat}&whatshere%5Bzoom%5D=16', target="ymaps").address-link
+											i.fa.fa-external-link
 									//- li.list-item-phone
 									//- 	span
 									//- 		| +7 495 

@@ -27,4 +27,7 @@
 	content: "\f238";
 }
 
-
+.address-link {
+	margin-left: 10px;
+	color: #000;
+}
