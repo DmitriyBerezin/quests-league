@@ -1,10 +1,10 @@
 CREATE DATABASE  IF NOT EXISTS `quests` /*!40100 DEFAULT CHARACTER SET utf8 */;
 USE `quests`;
--- MySQL dump 10.13  Distrib 5.6.19, for osx10.7 (i386)
+-- MySQL dump 10.13  Distrib 5.6.24, for Win64 (x86_64)
 --
--- Host: quests.cp0uujwgrxiz.eu-west-1.rds.amazonaws.com    Database: quests
+-- Host: 127.0.0.1    Database: quests
 -- ------------------------------------------------------
--- Server version 5.6.23-log
+-- Server version 5.6.24
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -77,7 +77,8 @@ CREATE TABLE `tcompany` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL,
   `site` varchar(45) DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  FULLTEXT KEY `ft_name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Таблица компании-оператора квестов (описательная часть)';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -158,6 +159,7 @@ CREATE TABLE `tquest` (
   KEY `fk_company_id_idx` (`company_id`),
   KEY `fk_city_id_idx` (`city_id`),
   KEY `fk_tquest_league_id_idx` (`league_id`),
+  FULLTEXT KEY `ft_name_descr` (`name`,`descr`,`address`),
   CONSTRAINT `fk_tquest_city_id` FOREIGN KEY (`city_id`) REFERENCES `tcity` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_tquest_company_id` FOREIGN KEY (`company_id`) REFERENCES `tcompany` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_tquest_league_id` FOREIGN KEY (`league_id`) REFERENCES `tleague` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
@@ -621,6 +623,40 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `pQuestSearch` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE PROCEDURE `pQuestSearch`(q varchar(100))
+BEGIN
+  select q.name as quest, c.name as company from tquest q
+  inner join tcompany c on q.company_id = c.id
+    inner join (
+    select qt.quest_id, group_concat(qt.tag_name separator ' ') tags_name
+    from (select tx.quest_id as quest_id, t.id as tag_id, t.name as tag_name from txquesttag tx inner join ttag t on tx.tag_id = t.id) qt
+    group by qt.quest_id
+  ) tags on q.id = tags.quest_id
+    inner join (
+    select qs.quest_id, group_concat(qs.station_name separator ' ') stations_name
+    from (select tx.quest_id as quest_id, s.id as station_id, s.name as station_name from txqueststation tx inner join tstation s on tx.station_id = s.id) qs
+    group by qs.quest_id
+  ) stations on q.id = stations.quest_id
+  WHERE MATCH (q.name, q.descr, q.address) AGAINST (q IN BOOLEAN MODE)
+     or MATCH (c.name) AGAINST (q IN BOOLEAN MODE)
+       or MATCH (tags.tags_name) AGAINST (q IN BOOLEAN MODE)
+       or MATCH (stations.stations_name) AGAINST (q IN BOOLEAN MODE);
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `pStationCreate` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -797,4 +833,4 @@ ALTER DATABASE `quests` CHARACTER SET utf8 COLLATE utf8_general_ci ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-07-15 20:49:22
+-- Dump completed on 2015-07-17  9:52:01
