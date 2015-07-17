@@ -1,5 +1,6 @@
 var util = require('util'),
 	async = require('async'),
+	natural = require('natural'),
 	db = require('./database'),
 	s3 = require('./aws-s3'),
 	admin = require('./admin');
@@ -42,6 +43,32 @@ function getQuest(id, done) {
 	});
 }
 
+function search(q, done) {
+	var dbQuery;
+
+	q = prepareSearchQuery(q);
+	dbQuery = util.format('call quests.pQuestSearch("%s")', q);
+
+	db.execQuery(dbQuery, function(err, rows, fields) {
+		if (err) {
+			return done(err);
+		}
+
+		return done(null, rows[0]);
+	});
+}
+
+function prepareSearchQuery(q) {
+	var words = q.split(' ');
+
+	for (var i = 0; i < words.length; ++i) {
+		words[i] = natural.PorterStemmerRu.stem(words[i]) + '*';
+	}
+
+	return words.join(' ');
+}
+
 module.exports = {
-	getQuest: getQuest
+	getQuest: getQuest,
+	search: search
 };

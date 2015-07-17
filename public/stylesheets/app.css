@@ -417,11 +417,10 @@ div.select-stacked div.select + .select {
 .criterias-row .input-group {
   position: relative;
   top: -7px;
-  width: 230px;
 }
 .criterias-row .btn {
-  border-left: none;
-  background: #f5f5f5;
+  /*border-left: none;*/
+  /*background: #f5f5f5;*/
   border-radius: 0;
 }
 .event-list-item {

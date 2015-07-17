@@ -1,0 +1,47 @@
+mixin questWidget(quest)
+	.event-list-item
+		a(href='/quest/#{quest.id}')
+			img(src='images/bg.png', alt='')
+			.row
+				.col-md-12
+					h3.no-margin-top= quest.name
+			//- .row
+			//- 	.col-md-12
+			//- 		.event-rating
+			//- 			span рейтинг
+			//- 			.progress
+			//- 				.progress-bar.progress-bar-success(role='progressbar', aria-valuenow='60', aria-valuemin='0', aria-valuemax='100', style='width: 60%;')
+			//- 					span.sr-only 60% Complete
+			//- 		.event-grade
+			//- 			| 4.3
+			.row
+				.col-md-12
+					if quest.price_from && quest.price_to
+						span.event-price
+							| от 
+							b= quest.price_from
+							|  до 
+							b= quest.price_to
+					if quest.players_from && quest.players_to
+						span.event-persons
+							i.fa.fa-user
+							|  #{quest.players_from}-#{quest.players_to} людей
+			.row
+				.col-md-12.event-info-block
+					hr
+					ul.list-unstyled
+						//- li.list-item-phone
+						//- 	span
+						//- 		| +7 495 
+						//- 		b 374 67 83
+						li.list-item-link
+							a(href=quest.url) Сайт
+						li.list-item-subway
+							span Приморская
+						li.list-item-marker
+							span= quest.address
+						//- li.list-item-briefcase
+						//- 	span
+						//- 		| +7 495 
+						//- 		b 374 67 83
+					button.btn.btn-success забронировать

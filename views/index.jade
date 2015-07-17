@@ -4,6 +4,9 @@ block style
 	link(rel='stylesheet', href='/stylesheets/style.css')
 	link(rel='stylesheet', href='/stylesheets/app.css')
 
+block script
+	script(src='/js/index.js')
+
 block content
 	include ./header.jade
 
@@ -54,275 +57,277 @@ block content
 								.form-group.text-right
 									button.btn.btn-success(type='submit') Подписаться
 	.container-fluid
-		.row.filter-row
-			.container
-				.row
-					.col-md-12
-						.select-stacked
-							.select
-								select(name='country')
-									option(value='test') страна
-									option(value='test') Россия
-									option(value='test') Украина
-							.select
-								select(name='city')
-									option(value='test') город
-									option(value='test') Одесса
-									option(value='test') Харьков
-						.select
-							select(name='members')
-								option(value='test') участников
-								option(value='test') 1
-								option(value='test') 2
-						.select.gray
-							select(name='city')
-								option(value='test') стоимость
-								option(value='test') 100
-								option(value='test') 200
-						.filter-checks
-							.checkbox
-								label
-									input(type='checkbox')
-									|  с отзывами
-							.checkbox
-								label
-									input(type='checkbox')
-									|  свободные сеансы
-						div
-							input.form-control(type='text', readonly='', placeholder='выбрать дату и время')
-						div
-							a(href='#') по рейтингу
-						div
-							button.btn.btn-danger по дате
-						a(href='#')
-							i.layout-toggle.fa.fa-globe
-						a(href='#')
-							i.layout-toggle.fa.fa-th-large
-						a(href='#')
-							i.layout-toggle.active.fa.fa-th
-		.row.criterias-row
-			.container
-				.row
-					.col-md-12
-						.pull-right
-							.input-group
-								input.form-control(type='text', placeholder='введите ключевую фразу')
-								span.input-group-btn
-									button.btn.btn-default(type='button')
-										i.fa.fa-search
-						ul.list-inline
-							li
-								span Критерии поиска: 
-							li
-								button.btn-remove
-									i.fa.fa-times-circle
-								a(href='#') россия
-							li
-								button.btn-remove
-									i.fa.fa-times-circle
-								a(href='#') москва
-							li
-								button.btn-remove
-									i.fa.fa-times-circle
-								a(href='#') на 5 участников
-							li
-								button.btn-remove
-									i.fa.fa-times-circle
-								a(href='#') от 2000 до 3000 р.
-							li
-								button.btn-remove
-									i.fa.fa-times-circle
-								a(href='#') с отзывами
-							li
-								button.btn-remove
-									i.fa.fa-times-circle
-								a(href='#') постапокалипсис
-	.container
-		.row.events-list-row
-			.col-sm-6
-				.event-list-item
-					img(src='images/bg.png', alt='')
-					.row
-						.col-md-12
-							a(href='#')
-								h3.no-margin-top Салемская ведьма
-					.row
-						.col-md-12
-							.event-rating
-								span рейтинг
-								.progress
-									.progress-bar.progress-bar-success(role='progressbar', aria-valuenow='60', aria-valuemin='0', aria-valuemax='100', style='width: 60%;')
-										span.sr-only 60% Complete
-							.event-grade
-								| 4.3
-					.row
-						.col-md-12
-							span.event-price
-								| от 
-								b 2500
-								|  до 
-								b 7000
-							span.event-persons
-								i.fa.fa-user
-								|  2-4 людей
-					.row
-						.col-md-12.event-info-block
-							hr
-							ul.list-unstyled
-								li.list-item-phone
-									span
-										| +7 495 
-										b 374 67 83
-								li.list-item-mail
-									a(href='mailto:mail@mail.ru') mail@mail.ru
-								li.list-item-subway
-									span Приморская
-								li.list-item-marker
-									span
-										| г.Москва, Кутузовский пр-т, 12 с 1г.Москва, Кутузовский пр-т, 12 с 1г.Москва, Кутузовский пр-т, 12 с 1
-								li.list-item-briefcase
-									span
-										| +7 495 
-										b 374 67 83
-							button.btn.btn-success забронировать
-			.col-sm-6
-				.event-list-item
-					img(src='images/bg.png', alt='')
-					.row
-						.col-md-12
-							a(href='#')
-								h3.no-margin-top Салемская ведьма
-					.row
-						.col-md-12
-							.event-rating
-								span raiting
-								.progress
-									.progress-bar.progress-bar-success(role='progressbar', aria-valuenow='60', aria-valuemin='0', aria-valuemax='100', style='width: 60%;')
-										span.sr-only 60% Complete
-							.event-grade
-								| 4.3
-					.row
-						.col-md-12
-							span.event-price
-								| от 
-								b 2500
-								|  до 
-								b 7000
-							span.event-persons
-								i.fa.fa-user
-								|  2-4 людей
-					.row
-						.col-md-12.event-info-block
-							hr
-							ul.list-unstyled
-								li.list-item-phone
-									span
-										| +7 495 
-										b 374 67 83
-								li.list-item-mail
-									a(href='mailto:mail@mail.ru') mail@mail.ru
-								li.list-item-subway
-									span Приморская
-								li.list-item-marker
-									span
-										| г.Москва, Кутузовский пр-т, 12 с 1г.Москва, Кутузовский пр-т, 12 с 1г.Москва, Кутузовский пр-т, 12 с 1
-								li.list-item-briefcase
-									span
-										| +7 495 
-										b 374 67 83
-							button.btn.btn-success забронировать
-			.col-sm-6
-				.event-list-item
-					img(src='images/bg.png', alt='')
-					.row
-						.col-md-12
-							a(href='#')
-								h3.no-margin-top Салемская ведьма
-					.row
-						.col-md-12
-							.event-rating
-								span raiting
-								.progress
-									.progress-bar.progress-bar-success(role='progressbar', aria-valuenow='60', aria-valuemin='0', aria-valuemax='100', style='width: 60%;')
-										span.sr-only 60% Complete
-							.event-grade
-								| 4.3
-					.row
-						.col-md-12
-							span.event-price
-								| от 
-								b 2500
-								|  до 
-								b 7000
-							span.event-persons
-								i.fa.fa-user
-								|  2-4 людей
-					.row
-						.col-md-12.event-info-block
-							hr
-							ul.list-unstyled
-								li.list-item-phone
-									span
-										| +7 495 
-										b 374 67 83
-								li.list-item-mail
-									a(href='mailto:mail@mail.ru') mail@mail.ru
-								li.list-item-subway
-									span Приморская
-								li.list-item-marker
-									span
-										| г.Москва, Кутузовский пр-т, 12 с 1г.Москва, Кутузовский пр-т, 12 с 1г.Москва, Кутузовский пр-т, 12 с 1
-								li.list-item-briefcase
-									span
-										| +7 495 
-										b 374 67 83
-							button.btn.btn-success забронировать
-			.col-sm-6
-				.event-list-item
-					img(src='images/bg.png', alt='')
-					.row
-						.col-md-12
-							a(href='#')
-								h3.no-margin-top Салемская ведьма
-					.row
-						.col-md-12
-							.event-rating
-								span raiting
-								.progress
-									.progress-bar.progress-bar-success(role='progressbar', aria-valuenow='60', aria-valuemin='0', aria-valuemax='100', style='width: 60%;')
-										span.sr-only 60% Complete
-							.event-grade
-								| 4.3
-					.row
-						.col-md-12
-							span.event-price
-								| от 
-								b 2500
-								|  до 
-								b 7000
-							span.event-persons
-								i.fa.fa-user
-								|  2-4 людей
-					.row
-						.col-md-12.event-info-block
-							hr
-							ul.list-unstyled
-								li.list-item-phone
-									span
-										| +7 495 
-										b 374 67 83
-								li.list-item-mail
-									a(href='mailto:mail@mail.ru') mail@mail.ru
-								li.list-item-subway
-									span Приморская
-								li.list-item-marker
-									span
-										| г.Москва, Кутузовский пр-т, 12 с 1г.Москва, Кутузовский пр-т, 12 с 1г.Москва, Кутузовский пр-т, 12 с 1
-								li.list-item-briefcase
-									span
-										| +7 495 
-										b 374 67 83
-							button.btn.btn-success забронировать
+		//- .row.filter-row
+		//- 	.container
+		//- 		.row
+		//- 			.col-md-12
+		//- 				.select-stacked
+		//- 					.select
+		//- 						select(name='country')
+		//- 							option(value='test') страна
+		//- 							option(value='test') Россия
+		//- 							option(value='test') Украина
+		//- 					.select
+		//- 						select(name='city')
+		//- 							option(value='test') город
+		//- 							option(value='test') Одесса
+		//- 							option(value='test') Харьков
+		//- 				.select
+		//- 					select(name='members')
+		//- 						option(value='test') участников
+		//- 						option(value='test') 1
+		//- 						option(value='test') 2
+		//- 				.select.gray
+		//- 					select(name='city')
+		//- 						option(value='test') стоимость
+		//- 						option(value='test') 100
+		//- 						option(value='test') 200
+		//- 				.filter-checks
+		//- 					.checkbox
+		//- 						label
+		//- 							input(type='checkbox')
+		//- 							|  с отзывами
+		//- 					.checkbox
+		//- 						label
+		//- 							input(type='checkbox')
+		//- 							|  свободные сеансы
+		//- 				div
+		//- 					input.form-control(type='text', readonly='', placeholder='выбрать дату и время')
+		//- 				div
+		//- 					a(href='#') по рейтингу
+		//- 				div
+		//- 					button.btn.btn-danger по дате
+		//- 				a(href='#')
+		//- 					i.layout-toggle.fa.fa-globe
+		//- 				a(href='#')
+		//- 					i.layout-toggle.fa.fa-th-large
+		//- 				a(href='#')
+		//- 					i.layout-toggle.active.fa.fa-th
+		.container
+			.row.criterias-row
+				.col-md-12
+					.input-group.input-group-lg
+						input.input-search.form-control(type='text', placeholder='Например, приключения сложный белорусская')
+						span.input-group-btn
+							button.btn-search.btn.btn-primary(type='button') Найти
+							//- a(href='#')
+							//- 	i.layout-toggle.fa.fa-globe
+							//- a(href='#')
+							//- 	i.layout-toggle.fa.fa-th-large
+						//- ul.list-inline
+						//- 	li
+						//- 		span Критерии поиска: 
+						//- 	li
+						//- 		button.btn-remove
+						//- 			i.fa.fa-times-circle
+						//- 		a(href='#') россия
+						//- 	li
+						//- 		button.btn-remove
+						//- 			i.fa.fa-times-circle
+						//- 		a(href='#') москва
+						//- 	li
+						//- 		button.btn-remove
+						//- 			i.fa.fa-times-circle
+						//- 		a(href='#') на 5 участников
+						//- 	li
+						//- 		button.btn-remove
+						//- 			i.fa.fa-times-circle
+						//- 		a(href='#') от 2000 до 3000 р.
+						//- 	li
+						//- 		button.btn-remove
+						//- 			i.fa.fa-times-circle
+						//- 		a(href='#') с отзывами
+						//- 	li
+						//- 		button.btn-remove
+						//- 			i.fa.fa-times-circle
+						//- 		a(href='#') постапокалипсис
+	.container.founded-quests
+		include ./quest-list.jade
+		//- .row.events-list-row
+		//- 	.col-sm-6
+		//- 		.event-list-item
+		//- 			img(src='images/bg.png', alt='')
+		//- 			.row
+		//- 				.col-md-12
+		//- 					a(href='#')
+		//- 						h3.no-margin-top Салемская ведьма
+		//- 			.row
+		//- 				.col-md-12
+		//- 					.event-rating
+		//- 						span рейтинг
+		//- 						.progress
+		//- 							.progress-bar.progress-bar-success(role='progressbar', aria-valuenow='60', aria-valuemin='0', aria-valuemax='100', style='width: 60%;')
+		//- 								span.sr-only 60% Complete
+		//- 					.event-grade
+		//- 						| 4.3
+		//- 			.row
+		//- 				.col-md-12
+		//- 					span.event-price
+		//- 						| от 
+		//- 						b 2500
+		//- 						|  до 
+		//- 						b 7000
+		//- 					span.event-persons
+		//- 						i.fa.fa-user
+		//- 						|  2-4 людей
+		//- 			.row
+		//- 				.col-md-12.event-info-block
+		//- 					hr
+		//- 					ul.list-unstyled
+		//- 						li.list-item-phone
+		//- 							span
+		//- 								| +7 495 
+		//- 								b 374 67 83
+		//- 						li.list-item-mail
+		//- 							a(href='mailto:mail@mail.ru') mail@mail.ru
+		//- 						li.list-item-subway
+		//- 							span Приморская
+		//- 						li.list-item-marker
+		//- 							span
+		//- 								| г.Москва, Кутузовский пр-т, 12 с 1г.Москва, Кутузовский пр-т, 12 с 1г.Москва, Кутузовский пр-т, 12 с 1
+		//- 						li.list-item-briefcase
+		//- 							span
+		//- 								| +7 495 
+		//- 								b 374 67 83
+		//- 					button.btn.btn-success забронировать
+		//- 	.col-sm-6
+		//- 		.event-list-item
+		//- 			img(src='images/bg.png', alt='')
+		//- 			.row
+		//- 				.col-md-12
+		//- 					a(href='#')
+		//- 						h3.no-margin-top Салемская ведьма
+		//- 			.row
+		//- 				.col-md-12
+		//- 					.event-rating
+		//- 						span raiting
+		//- 						.progress
+		//- 							.progress-bar.progress-bar-success(role='progressbar', aria-valuenow='60', aria-valuemin='0', aria-valuemax='100', style='width: 60%;')
+		//- 								span.sr-only 60% Complete
+		//- 					.event-grade
+		//- 						| 4.3
+		//- 			.row
+		//- 				.col-md-12
+		//- 					span.event-price
+		//- 						| от 
+		//- 						b 2500
+		//- 						|  до 
+		//- 						b 7000
+		//- 					span.event-persons
+		//- 						i.fa.fa-user
+		//- 						|  2-4 людей
+		//- 			.row
+		//- 				.col-md-12.event-info-block
+		//- 					hr
+		//- 					ul.list-unstyled
+		//- 						li.list-item-phone
+		//- 							span
+		//- 								| +7 495 
+		//- 								b 374 67 83
+		//- 						li.list-item-mail
+		//- 							a(href='mailto:mail@mail.ru') mail@mail.ru
+		//- 						li.list-item-subway
+		//- 							span Приморская
+		//- 						li.list-item-marker
+		//- 							span
+		//- 								| г.Москва, Кутузовский пр-т, 12 с 1г.Москва, Кутузовский пр-т, 12 с 1г.Москва, Кутузовский пр-т, 12 с 1
+		//- 						li.list-item-briefcase
+		//- 							span
+		//- 								| +7 495 
+		//- 								b 374 67 83
+		//- 					button.btn.btn-success забронировать
+		//- 	.col-sm-6
+		//- 		.event-list-item
+		//- 			img(src='images/bg.png', alt='')
+		//- 			.row
+		//- 				.col-md-12
+		//- 					a(href='#')
+		//- 						h3.no-margin-top Салемская ведьма
+		//- 			.row
+		//- 				.col-md-12
+		//- 					.event-rating
+		//- 						span raiting
+		//- 						.progress
+		//- 							.progress-bar.progress-bar-success(role='progressbar', aria-valuenow='60', aria-valuemin='0', aria-valuemax='100', style='width: 60%;')
+		//- 								span.sr-only 60% Complete
+		//- 					.event-grade
+		//- 						| 4.3
+		//- 			.row
+		//- 				.col-md-12
+		//- 					span.event-price
+		//- 						| от 
+		//- 						b 2500
+		//- 						|  до 
+		//- 						b 7000
+		//- 					span.event-persons
+		//- 						i.fa.fa-user
+		//- 						|  2-4 людей
+		//- 			.row
+		//- 				.col-md-12.event-info-block
+		//- 					hr
+		//- 					ul.list-unstyled
+		//- 						li.list-item-phone
+		//- 							span
+		//- 								| +7 495 
+		//- 								b 374 67 83
+		//- 						li.list-item-mail
+		//- 							a(href='mailto:mail@mail.ru') mail@mail.ru
+		//- 						li.list-item-subway
+		//- 							span Приморская
+		//- 						li.list-item-marker
+		//- 							span
+		//- 								| г.Москва, Кутузовский пр-т, 12 с 1г.Москва, Кутузовский пр-т, 12 с 1г.Москва, Кутузовский пр-т, 12 с 1
+		//- 						li.list-item-briefcase
+		//- 							span
+		//- 								| +7 495 
+		//- 								b 374 67 83
+		//- 					button.btn.btn-success забронировать
+		//- 	.col-sm-6
+		//- 		.event-list-item
+		//- 			img(src='images/bg.png', alt='')
+		//- 			.row
+		//- 				.col-md-12
+		//- 					a(href='#')
+		//- 						h3.no-margin-top Салемская ведьма
+		//- 			.row
+		//- 				.col-md-12
+		//- 					.event-rating
+		//- 						span raiting
+		//- 						.progress
+		//- 							.progress-bar.progress-bar-success(role='progressbar', aria-valuenow='60', aria-valuemin='0', aria-valuemax='100', style='width: 60%;')
+		//- 								span.sr-only 60% Complete
+		//- 					.event-grade
+		//- 						| 4.3
+		//- 			.row
+		//- 				.col-md-12
+		//- 					span.event-price
+		//- 						| от 
+		//- 						b 2500
+		//- 						|  до 
+		//- 						b 7000
+		//- 					span.event-persons
+		//- 						i.fa.fa-user
+		//- 						|  2-4 людей
+		//- 			.row
+		//- 				.col-md-12.event-info-block
+		//- 					hr
+		//- 					ul.list-unstyled
+		//- 						li.list-item-phone
+		//- 							span
+		//- 								| +7 495 
+		//- 								b 374 67 83
+		//- 						li.list-item-mail
+		//- 							a(href='mailto:mail@mail.ru') mail@mail.ru
+		//- 						li.list-item-subway
+		//- 							span Приморская
+		//- 						li.list-item-marker
+		//- 							span
+		//- 								| г.Москва, Кутузовский пр-т, 12 с 1г.Москва, Кутузовский пр-т, 12 с 1г.Москва, Кутузовский пр-т, 12 с 1
+		//- 						li.list-item-briefcase
+		//- 							span
+		//- 								| +7 495 
+		//- 								b 374 67 83
+		//- 					button.btn.btn-success забронировать
 	.container-fluid
 		.row
 			.col-md-12.no-padding

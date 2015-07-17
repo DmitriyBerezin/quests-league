@@ -635,7 +635,9 @@ DELIMITER ;
 DELIMITER ;;
 CREATE PROCEDURE `pQuestSearch`(q varchar(100))
 BEGIN
-  select q.name as quest, c.name as company from tquest q
+  select q.id, q.name, c.name as company_name, q.url, q.descr, q.address, 
+    q.players_from, q.players_to, q.price_from, q.price_to, q.lat, q.lng 
+  from tquest q
   inner join tcompany c on q.company_id = c.id
     inner join (
     select qt.quest_id, group_concat(qt.tag_name separator ' ') tags_name
@@ -833,4 +835,4 @@ ALTER DATABASE `quests` CHARACTER SET utf8 COLLATE utf8_general_ci ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-07-17  9:52:01
+-- Dump completed on 2015-07-17 15:58:29

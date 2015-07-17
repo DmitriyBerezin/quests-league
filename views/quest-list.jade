@@ -1,0 +1,10 @@
+include ./widgets/quest-widget.jade
+
+if quests && quests.length > 0
+	- for (var i = 0; i < quests.length; i += 2)
+		.row
+			- for (var j = i; j < i + 2 && j < quests.length; ++j)
+				.col-sm-6
+					+questWidget(quests[j])
+else
+	h4 По Вашему запросу ничего не найдено
