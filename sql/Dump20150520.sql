@@ -1,10 +1,10 @@
 CREATE DATABASE  IF NOT EXISTS `quests` /*!40100 DEFAULT CHARACTER SET utf8 */;
 USE `quests`;
--- MySQL dump 10.13  Distrib 5.6.24, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 5.6.19, for osx10.7 (i386)
 --
--- Host: 127.0.0.1    Database: quests
+-- Host: quests.cp0uujwgrxiz.eu-west-1.rds.amazonaws.com    Database: quests
 -- ------------------------------------------------------
--- Server version 5.6.24
+-- Server version 5.6.23-log
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -159,7 +159,7 @@ CREATE TABLE `tquest` (
   KEY `fk_company_id_idx` (`company_id`),
   KEY `fk_city_id_idx` (`city_id`),
   KEY `fk_tquest_league_id_idx` (`league_id`),
-  FULLTEXT KEY `ft_name_descr` (`name`,`descr`,`address`),
+  FULLTEXT KEY `ft_name_descr_address` (`name`,`descr`,`address`),
   CONSTRAINT `fk_tquest_city_id` FOREIGN KEY (`city_id`) REFERENCES `tcity` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_tquest_company_id` FOREIGN KEY (`company_id`) REFERENCES `tcompany` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_tquest_league_id` FOREIGN KEY (`league_id`) REFERENCES `tleague` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
@@ -614,9 +614,9 @@ DELIMITER ;
 DELIMITER ;;
 CREATE PROCEDURE `pQuestList`()
 BEGIN
-  select id, `name` from tCompany;
+  select id, `name` from tcompany;
     
-    select id, `name`, company_id from tQuest;
+    select id, `name`, company_id from tquest;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -635,16 +635,17 @@ DELIMITER ;
 DELIMITER ;;
 CREATE PROCEDURE `pQuestSearch`(q varchar(100))
 BEGIN
-  select q.id, q.name, c.name as company_name, q.url, q.descr, q.address, 
-    q.players_from, q.players_to, q.price_from, q.price_to, q.lat, q.lng 
+   select q.id, q.name, c.name as company_name, q.url, q.descr, q.address, 
+    q.players_from, q.players_to, q.price_from, q.price_to, q.lat, q.lng,
+    stations.stations_name as stations
   from tquest q
   inner join tcompany c on q.company_id = c.id
-    inner join (
+    left join (
     select qt.quest_id, group_concat(qt.tag_name separator ' ') tags_name
     from (select tx.quest_id as quest_id, t.id as tag_id, t.name as tag_name from txquesttag tx inner join ttag t on tx.tag_id = t.id) qt
     group by qt.quest_id
   ) tags on q.id = tags.quest_id
-    inner join (
+    left join (
     select qs.quest_id, group_concat(qs.station_name separator ' ') stations_name
     from (select tx.quest_id as quest_id, s.id as station_id, s.name as station_name from txqueststation tx inner join tstation s on tx.station_id = s.id) qs
     group by qs.quest_id
@@ -835,4 +836,4 @@ ALTER DATABASE `quests` CHARACTER SET utf8 COLLATE utf8_general_ci ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-07-17 15:58:29
+-- Dump completed on 2015-07-18 13:25:58
