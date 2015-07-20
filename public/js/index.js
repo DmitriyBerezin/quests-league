@@ -1,23 +1,42 @@
 $(function() {
-	var $foundedQuests = $('.founded-quests'),
+	var $formSeach = $('.form-search'),
+		$foundedQuests = $('.founded-quests'),
 		$btnSearch = $('.btn-search'),
-		$inputSearch = $('.input-search');
+		$inputSearch = $('.input-search'),
+		query,
+		options;
 
-	$btnSearch.click(onButtonSearchClick);
+	// Process search form
+	options = {
+		success: onSeachFormSuccess,
+		error: onSeachFormError
+	};
+	$formSeach.ajaxForm(options);
 
-	function onButtonSearchClick(evt) {
-		search($inputSearch.val());
+	// Initial search
+	query = getUrlParameter('q');
+	if (query) {
+		$inputSearch.val(query);
+		$formSeach.submit();
 	}
 
-	function search(query) {
-		function cb(html) {
-			$foundedQuests.html(html);
-		}
+	function onSeachFormSuccess(data) {
+		var query = $inputSearch.val();
 
-		function eb() {
+		history.pushState({ q: query }, 'test', '?q=' + query);
+		$foundedQuests.html(data);
+		$inputSearch.focus();
+	}
 
-		}
+	function onSeachFormError(err) {
 
-		$.get('/quest/search', { query: query }).then(cb, eb);
+	}
+
+	// TODO: move to utils module
+	function getUrlParameter(name) {
+		name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+		var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+			results = regex.exec(location.search);
+		return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
 	}
 });

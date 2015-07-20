@@ -5,6 +5,7 @@ block style
 	link(rel='stylesheet', href='/stylesheets/app.css')
 
 block script
+	script(src='/lib/jquery.form.min.js')
 	script(src='/js/index.js')
 
 block content
@@ -106,10 +107,11 @@ block content
 		.container
 			.row.criterias-row
 				.col-md-12
-					.input-group.input-group-lg
-						input.input-search.form-control(type='text', placeholder='Например, приключения сложный белорусская')
-						span.input-group-btn
-							button.btn-search.btn.btn-primary(type='button') Найти
+					form(action='/quest/search', method='GET').form-search
+						.input-group.input-group-lg
+							input.input-search.form-control(type='text', name='query', autofocus, placeholder='Например, приключения сложный белорусская')
+							span.input-group-btn
+								button.btn-search.btn.btn-primary Найти
 							//- a(href='#')
 							//- 	i.layout-toggle.fa.fa-globe
 							//- a(href='#')
