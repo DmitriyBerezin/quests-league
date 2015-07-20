@@ -37,6 +37,12 @@ block content
 									- var className = index == 0 ? 'active' : '';
 									div(class=className).item
 										img(src=img.url, alt='Quest image').quest-img.img-responsive
+							a(href="#carousel-images", role="button", data-slide="prev").left.carousel-control
+								span(aria-hidden="true").glyphicon.glyphicon-chevron-left
+								span.sr-only
+							a(href="#carousel-images", role="button", data-slide="next").right.carousel-control
+								span(aria-hidden="true").glyphicon.glyphicon-chevron-right
+								span.sr-only
 
 						//- img.img-responsive(src='http://placehold.it/500x400', alt='')
 						//- .preview-controls
