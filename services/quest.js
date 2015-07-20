@@ -44,7 +44,9 @@ function getQuest(id, done) {
 }
 
 function search(q, done) {
-	var dbQuery;
+	var dbQuery,
+		quests = [],
+		filesFunc = {};
 
 	q = prepareSearchQuery(q);
 	dbQuery = util.format('call quests.pQuestSearch("%s")', q);
@@ -54,7 +56,23 @@ function search(q, done) {
 			return done(err);
 		}
 
-		return done(null, rows[0]);
+		quests = rows[0];
+		for (var i = 0; i < quests.length; ++i) {
+			filesFunc[quests[i].id] = admin.getQuestFiles.bind(null, quests[i].id);
+		}
+
+		async.parallel(filesFunc, function(err, data) {
+			if (err) {
+				return done(err);
+			}
+
+			for (var i = 0; i < quests.length; ++i) {
+				quests[i].img = data[quests[i].id].length > 0 ?
+					data[quests[i].id][0] : null;
+			}
+
+			return done(null, quests);
+		});
 	});
 }
 
