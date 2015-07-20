@@ -3,6 +3,7 @@ extends layout
 block style
 	link(rel='stylesheet', href='/stylesheets/style.css')
 	link(rel='stylesheet', href='/stylesheets/app.css')
+	link(rel='stylesheet', href='/stylesheets/index.css')
 
 block script
 	script(src='/lib/jquery.form.min.js')
@@ -143,8 +144,10 @@ block content
 						//- 		button.btn-remove
 						//- 			i.fa.fa-times-circle
 						//- 		a(href='#') постапокалипсис
+	.container.search-preloader
+		img(src='/images/preloader.gif', alt='Preloader')
+		| Ищем подходящие варианты...
 	.container.founded-quests
-		include ./quest-list.jade
 		//- .row.events-list-row
 		//- 	.col-sm-6
 		//- 		.event-list-item

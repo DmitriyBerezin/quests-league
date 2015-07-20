@@ -3,11 +3,13 @@ $(function() {
 		$foundedQuests = $('.founded-quests'),
 		$btnSearch = $('.btn-search'),
 		$inputSearch = $('.input-search'),
+		$preloader = $('.search-preloader'),
 		query,
 		options;
 
 	// Process search form
 	options = {
+		beforeSubmit: onSeachFormBeforeSubmit,
 		success: onSeachFormSuccess,
 		error: onSeachFormError
 	};
@@ -20,16 +22,22 @@ $(function() {
 		$formSeach.submit();
 	}
 
+	function onSeachFormBeforeSubmit() {
+		$preloader.show();
+		$foundedQuests.html('');
+	}
+
 	function onSeachFormSuccess(data) {
 		var query = $inputSearch.val();
 
 		history.pushState({ q: query }, 'test', '?q=' + query);
 		$foundedQuests.html(data);
 		$inputSearch.focus();
+		$preloader.hide();
 	}
 
 	function onSeachFormError(err) {
-
+		$preloader.hide();
 	}
 
 	// TODO: move to utils module
