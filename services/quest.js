@@ -77,8 +77,13 @@ function search(q, done) {
 }
 
 function prepareSearchQuery(q) {
-	var words = q.split(' ');
+	var words = [];
 
+	if (!q) {
+		return '';
+	}
+
+	words = q.split(' ');
 	for (var i = 0; i < words.length; ++i) {
 		words[i] = natural.PorterStemmerRu.stem(words[i]) + '*';
 	}
