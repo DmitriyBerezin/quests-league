@@ -192,7 +192,7 @@ div.select-stacked div.select + .select {
 .list-item-link:before {
   position: absolute;
   left: 0;
-  top: 2px;
+  /*top: 2px;*/
   font: normal normal normal 14px/1 FontAwesome;
   text-rendering: auto;
   -webkit-font-smoothing: antialiased;
@@ -411,9 +411,9 @@ div.select-stacked div.select + .select {
 .criterias-row ul {
   margin: 0;
 }
-.criterias-row li {
+/*.criterias-row li {
   padding: 0;
-}
+}*/
 .criterias-row .input-group {
   position: relative;
   top: -7px;
@@ -425,7 +425,7 @@ div.select-stacked div.select + .select {
 }
 .event-list-item {
   width: 100%;
-  height: 475px;
+  height: 300px;
   padding: 25px;
   position: relative;
   color: #fff;
@@ -774,6 +774,7 @@ div.select-stacked div.select + .select {
 }
 .similar-event {
   padding: 25px;
+  margin-bottom: 30px;
   color: #fff;
   height: 250px;
   transition: .5s all ease;

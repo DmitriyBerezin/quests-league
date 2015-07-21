@@ -23,8 +23,10 @@ mixin questWidget(quest)
 					ul.list-unstyled
 						//- li.list-item-link
 						//- 	a(href=quest.url) Сайт
-						li.list-item-subway
-							span= quest.stations
-						li.list-item-marker
-							span= quest.address
+						if quest.stations
+							li.list-item-subway
+								span= quest.stations
+						if quest.address
+							li.list-item-marker
+								span= quest.address
 					button.btn.btn-success забронировать

@@ -1,10 +1,9 @@
 include ./widgets/quest-widget.jade
 
 if quests && quests.length > 0
-	- for (var i = 0; i < quests.length; i += 2)
-		.row
-			- for (var j = i; j < i + 2 && j < quests.length; ++j)
-				.col-sm-6
-					+questWidget(quests[j])
+	.row
+		each quest in quests
+			.col-md-4.col-sm-6.col-sx-12
+				+questWidget(quest)
 else
 	h4 По Вашему запросу ничего не найдено
