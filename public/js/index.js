@@ -5,7 +5,8 @@ $(function() {
 		$inputSearch = $('.input-search'),
 		$preloader = $('.search-preloader'),
 		query,
-		options;
+		options,
+		quests = [];
 
 	// Process search form
 	options = {
@@ -31,7 +32,7 @@ $(function() {
 		var query = $inputSearch.val();
 
 		history.pushState({ q: query }, 'test', '?q=' + query);
-		$foundedQuests.html(data);
+		$foundedQuests.html(tmplQuestsList(data));
 		$inputSearch.focus();
 		$preloader.hide();
 	}

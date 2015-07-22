@@ -9,7 +9,7 @@ router.get('/search', function(req, res, next) {
 			return next(err);
 		}
 
-		res.render('quest-list', { quests: data });
+		res.send({ quests: data });
 	});
 });
 

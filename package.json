@@ -27,6 +27,10 @@
     "debug": "~2.1.1",
     "express": "~4.12.2",
     "express-session": "^1.11.2",
+    "gulp": "^3.9.0",
+    "gulp-concat": "^2.6.0",
+    "gulp-jade": "^1.0.1",
+    "gulp-util": "^3.0.6",
     "jade": "~1.9.2",
     "morgan": "~1.5.1",
     "multer": "^0.1.8",
@@ -43,6 +47,7 @@
     "passport-twitter": "^1.0.3",
     "passport-vkontakte": "^0.4.0",
     "proxy-agent": "^1.1.0",
-    "serve-favicon": "~2.2.0"
+    "serve-favicon": "~2.2.0",
+    "through2": "^2.0.0"
   }
 }
