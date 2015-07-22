@@ -1,5 +1,6 @@
 var util = require('util'),
 	async = require('async'),
+	natural = require('natural'),
 	db = require('./database'),
 	s3 = require('./aws-s3'),
 	admin = require('./admin');
@@ -42,6 +43,55 @@ function getQuest(id, done) {
 	});
 }
 
+function search(q, done) {
+	var dbQuery,
+		quests = [],
+		filesFunc = {};
+
+	q = prepareSearchQuery(q);
+	dbQuery = util.format('call quests.pQuestSearch("%s")', q);
+
+	db.execQuery(dbQuery, function(err, rows, fields) {
+		if (err) {
+			return done(err);
+		}
+
+		quests = rows[0];
+		for (var i = 0; i < quests.length; ++i) {
+			filesFunc[quests[i].id] = admin.getQuestFiles.bind(null, quests[i].id);
+		}
+
+		async.parallel(filesFunc, function(err, data) {
+			if (err) {
+				return done(err);
+			}
+
+			for (var i = 0; i < quests.length; ++i) {
+				quests[i].img = data[quests[i].id].length > 0 ?
+					data[quests[i].id][0] : null;
+			}
+
+			return done(null, quests);
+		});
+	});
+}
+
+function prepareSearchQuery(q) {
+	var words = [];
+
+	if (!q) {
+		return '';
+	}
+
+	words = q.split(' ');
+	for (var i = 0; i < words.length; ++i) {
+		words[i] = natural.PorterStemmerRu.stem(words[i]) + '*';
+	}
+
+	return words.join(' ');
+}
+
 module.exports = {
-	getQuest: getQuest
+	getQuest: getQuest,
+	search: search
 };

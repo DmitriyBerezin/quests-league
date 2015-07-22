@@ -1,0 +1,32 @@
+mixin questWidget(quest)
+	a(href='/quest/#{quest.id}')
+		.event-list-item
+			img(src=quest.img.url, alt='')
+			.row
+				.col-md-12
+					h3.no-margin-top= quest.name
+			.row
+				.col-md-12
+					if quest.price_from && quest.price_to
+						span.event-price
+							| от 
+							b= quest.price_from
+							|  до 
+							b= quest.price_to
+					if quest.players_from && quest.players_to
+						span.event-persons
+							i.fa.fa-user
+							|  #{quest.players_from}-#{quest.players_to} людей
+			.row
+				.col-md-12.event-info-block
+					hr
+					ul.list-unstyled
+						//- li.list-item-link
+						//- 	a(href=quest.url) Сайт
+						if quest.stations
+							li.list-item-subway
+								span= quest.stations
+						if quest.address
+							li.list-item-marker
+								span= quest.address
+					button.btn.btn-success забронировать
