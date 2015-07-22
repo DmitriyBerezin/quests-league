@@ -6,7 +6,9 @@ block style
 	link(rel='stylesheet', href='/stylesheets/index.css')
 
 block script
+	script(src='https://api-maps.yandex.ru/2.1/?lang=ru_RU')
 	script(src='/lib/jquery.form.min.js')
+	script(src='/js/map.js')
 	script(src='/js/index.js')
 
 block content
@@ -16,43 +18,6 @@ block content
 		.row
 			.col-md-12.no-padding
 				.divider
-	//- .container
-	//- 	section.row.info-row
-	//- 		.col-sm-5
-	//- 			img.img-responsive(src='http://placehold.it/500x400', alt='')
-	//- 		.col-sm-7
-	//- 			.row
-	//- 				.col-sm-6
-	//- 					.event-info
-	//- 						h3.no-margin-top
-	//- 							| Путешествие по городу... 
-	//- 							br
-	//- 							|  Солнце как компас
-	//- 						ul.list-unstyled
-	//- 							li
-	//- 								i.fa.fa-calendar.text-center
-	//- 								span 20 августа - 30 августа
-	//- 							li
-	//- 								i.fa.fa-map-marker.text-center
-	//- 								span г.Москва, Кутузовский пр-т, 12 с 1
-	//- 							li
-	//- 								i.fa.fa-thumbs-up.text-center
-	//- 								a.text-muted(href='#') 10 отзывов
-	//- 							li
-	//- 								i.fa.fa-phone-square.text-center
-	//- 								span
-	//- 									| +7 495 
-	//- 									b 374 67 83
-	//- 				.col-sm-6
-	//- 					.promo-form
-	//- 						h4.text-center.no-margin-top Узнавай о скидках и акциях в своем городе
-	//- 						form
-	//- 							.form-group
-	//- 								input.form-control(type='text', placeholder='введите имя')
-	//- 							.form-group
-	//- 								input.form-control(type='email', placeholder='введите e-mail')
-	//- 							.form-group.text-right
-	//- 								button.btn.btn-success(type='submit') Подписаться
 	.container-fluid
 		.container
 			.row.criterias-row
@@ -65,7 +30,14 @@ block content
 					.container.search-preloader
 						img(src='/images/preloader.gif', alt='Preloader')
 						| Ищем подходящие варианты...
-					.founded-quests
+					.container
+						ul.display-mode-list.nav.nav-pills.center
+							li(role='presentation').list.active
+								a(href='#') Списком
+							li(role='presentation').map
+								a(href='#') На карте
+						.founded-quests-list
+						.founded-quests-map(id='quests-map')
 				//- .col-md-3
 				//- 	div
 				//- 		img.img-responsive(src='http://placehold.it/230x250', alt='')

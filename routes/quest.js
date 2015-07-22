@@ -4,12 +4,12 @@ var router = express.Router();
 var quest = require('../services/quest');
 
 router.get('/search', function(req, res, next) {
-	quest.search(req.query.query, function(err, data) {
+	quest.search(req.query.query, function(err, quests) {
 		if (err) {
 			return next(err);
 		}
 
-		res.send({ quests: data });
+		res.send(quests);
 	});
 });
 

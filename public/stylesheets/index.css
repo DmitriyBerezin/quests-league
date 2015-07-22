@@ -3,3 +3,16 @@
 	text-align: center;
 	display: none;
 }
+
+.display-mode-list li {
+	display: inline-block;
+	margin: 10px 50px;
+	cursor: pointer;
+	float: none;
+}
+
+.founded-quests-map {
+	/*width: 600px;*/
+	height: 600px;
+}
+
