@@ -11,6 +11,13 @@
 	float: none;
 }
 
+@media screen and (max-width: 510px) {
+	.display-mode-list li {
+		margin: 10px 0 !important;
+	}
+}
+
+
 .founded-quests-map {
 	/*width: 600px;*/
 	height: 600px;
