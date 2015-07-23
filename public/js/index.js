@@ -34,7 +34,7 @@ $(function() {
 	}
 
 	function onSeachFormSuccess(data) {
-		var query = $inputSearch.val();
+		query = $inputSearch.val();
 
 		quests = data;
 		if (pushState) {
