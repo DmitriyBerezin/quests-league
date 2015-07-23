@@ -9,7 +9,11 @@ $(function() {
 		query,
 		view = 'list',
 		options,
-		quests = [];
+		quests = [],
+		pushState = true;
+
+
+	App.map.init('quests-map');
 
 	// Process search form
 	options = {
@@ -19,26 +23,10 @@ $(function() {
 	};
 	$formSeach.ajaxForm(options);
 
+	window.onpopstate = onPopState;
 	$viewSwitch.click(onViewSwitchClick);
 
-	// Initial search
-	query = getUrlParameter('q');
-	if (query) {
-		$inputSearch.val(query);
-		$formSeach.submit();
-	}
-	view = getUrlParameter('v');
-	if (view === 'map') {
-		$viewSwitch.removeClass('active');
-		$('.display-mode-list .map').addClass('active');
-
-		$listView.hide();
-		$mapView.show();
-	}
-	else {
-		$mapView.hide();
-		$listView.show();
-	}
+	applyQueryParams();
 
 	function onSeachFormBeforeSubmit() {
 		$preloader.show();
@@ -49,13 +37,15 @@ $(function() {
 		var query = $inputSearch.val();
 
 		quests = data;
-		history.pushState({ q: query, v: view }, 'test', '?q=' + query + '&v=' + view);
+		if (pushState) {
+			history.pushState({ q: query, v: view }, 'test', '?q=' + query + '&v=' + view);
+		}
+		pushState = true;
 
 		$listView.html(tmplQuestsList({ quests: quests }));
 		$inputSearch.focus();
 		$preloader.hide();
 
-		App.map.init('quests-map');
 		App.map.render(quests);
 	}
 
@@ -72,10 +62,8 @@ $(function() {
 			return;
 		}
 
-		if ($target.hasClass('map')) {
-			view = 'map';
-			history.pushState({ q: query, v: view }, 'map-view', '?q=' + query + '&v=' + view);
-		}
+		view = $target.hasClass('map') ? 'map' : 'list';
+		history.pushState({ q: query, v: view }, 'map-view', '?q=' + query + '&v=' + view);
 
 		$viewSwitch.removeClass('active');
 		$target.addClass('active');
@@ -84,6 +72,36 @@ $(function() {
 		$listView.toggle();
 
 		evt.preventDefault();
+	}
+
+	function applyQueryParams() {
+		// Initial search
+		query = getUrlParameter('q');
+		$inputSearch.val(query);
+		if (query) {
+			$formSeach.submit();
+		}
+
+		// Init view
+		$viewSwitch.removeClass('active');
+		view = getUrlParameter('v');
+		if (view === 'map') {
+			$('.display-mode-list .map').addClass('active');
+
+			$listView.hide();
+			$mapView.show();
+		}
+		else {
+			$('.display-mode-list .list').addClass('active');
+
+			$mapView.hide();
+			$listView.show();
+		}
+	}
+
+	function onPopState(evt) {
+		pushState = false;
+		applyQueryParams();
 	}
 
 	// TODO: move to utils module

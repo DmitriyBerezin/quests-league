@@ -19,10 +19,13 @@ App.map = (function($, module) {
 		center = getLatLngCenter(coords);
 
 		ymaps.ready(function() {
-			map = new ymaps.Map(container, {
-				center: center,
-				zoom: 13
-			});
+			if (!map) {
+				map = new ymaps.Map(container, {
+					center: center,
+					zoom: 13
+				});
+			}
+			map.setCenter(center);
 
 			for (var i = 0; i < quests.length; ++i) {
 				placemark = new ymaps.Placemark([quests[i].lat, quests[i].lng], {
@@ -42,7 +45,7 @@ App.map = (function($, module) {
 		return degr * Math.PI / 180;
 	}
 
-	http://stackoverflow.com/questions/6671183/calculate-the-center-point-of-multiple-latitude-longitude-coordinate-pairs
+	// http://stackoverflow.com/questions/6671183/calculate-the-center-point-of-multiple-latitude-longitude-coordinate-pairs
 	function getLatLngCenter(latLngInDegr) {
 		var sumX = 0,
 			sumY = 0,
