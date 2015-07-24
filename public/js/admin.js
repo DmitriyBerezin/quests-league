@@ -25,6 +25,8 @@ $(function() {
 	formQuest();
 	formCompany();
 	formTag();
+	formCountry();
+	formCity();
 
 
 	function toggleFileInput() {
@@ -74,36 +76,45 @@ $(function() {
 		}
 	}
 
+	function modalForm($modal, $list, $form, $err, onChange) {
+		$form.validate();
+		$form.ajaxForm({
+			dataType: 'json',
+			success: onSuccess,
+			error: onError,
+			beforeSubmit: beforeSubmit
+		});
+
+		function onSuccess(data, statusText, xhr) {
+			$modal.modal('hide');
+			$('<option selected>').val(data.id).html(data.name).appendTo($list);
+			$list.selectpicker('refresh');
+			$list.change();
+			$form.find('button[type="submit"]').attr('disabled', false);
+		}
+
+		function onError(error) {
+			$err.html(error.responseJSON.message).show();
+			$form.find('button[type="submit"]').attr('disabled', false);
+		}
+
+		$modal.on('show.bs.modal', function(evt) {
+			$form.clearForm();
+			$err.hide();
+		});
+
+		if (typeof onChange === 'function') {
+			$list.on('change', onChange);
+		}
+	}
+
 	function formCompany() {
 		var $modalCompany = $('#modalCompany'),
 			$listCompany = $('#listCompany'),
 			$formCompany = $('.form-company'),
 			$errCompany = $('.alert-company-error');
 
-		$formCompany.validate();
-		$formCompany.ajaxForm({
-			dataType: 'json',
-			success: onFormCompanySuccess,
-			error: onFormCompanyError,
-			beforeSubmit: beforeSubmit
-		});
-
-		function onFormCompanySuccess(data, statusText, xhr) {
-			$modalCompany.modal('hide');
-			$('<option selected>').val(data.id).html(data.name).appendTo($listCompany);
-			$listCompany.selectpicker('refresh');
-			$formCompany.find('button[type="submit"]').attr('disabled', false);
-		}
-
-		function onFormCompanyError(error) {
-			$errCompany.html(error.responseJSON.message).show();
-			$formCompany.find('button[type="submit"]').attr('disabled', false);
-		}
-
-		$modalCompany.on('show.bs.modal', function(evt) {
-			$formCompany.clearForm();
-			$errCompany.hide();
-		});
+		modalForm($modalCompany, $listCompany, $formCompany, $errCompany);
 	}
 
 	function formTag() {
@@ -112,30 +123,45 @@ $(function() {
 			$formTag = $('.form-tag'),
 			$errTag = $('.alert-tag-error');
 
-		$formTag.validate();
-		$formTag.ajaxForm({
-			dataType: 'json',
-			success: onFormTagSuccess,
-			error: onFormTagError,
-			beforeSubmit
-		});
+		modalForm($modalTag, $listTag, $formTag, $errTag);
+	}
 
-		function onFormTagSuccess(data, statusText, xhr) {
-			$modalTag.modal('hide');
-			$('<option selected>').val(data.id).html(data.name).appendTo($listTag);
-			$listTag.selectpicker('refresh');
-			$formTag.find('button[type="submit"]').attr('disabled', false);
+	function formCountry() {
+		var $modalCountry = $('#modalCountry'),
+			$listCountry = $('#listCountry'),
+			$listCity = $('#listCity'),
+			$formCountry = $('.form-country'),
+			$errCountry = $('.alert-country-error');
+
+		function onCountryChange(evt) {
+			var countryID = $(evt.target).val();
+
+			$.getJSON('/admin/cities', { countryID: countryID }).then(onSuccess, onError);
+			$('input:hidden[name="countryID"]').val(countryID);
 		}
 
-		function onFormTagError(error) {
-			$errTag.html(error.responseJSON.message).show();
-			$formTag.find('button[type="submit"]').attr('disabled', false);
+		function onSuccess(cities) {
+			$listCity.empty();
+			cities.forEach(function(city) {
+				$('<option>').val(city.id).html(city.name).appendTo($listCity);
+			});
+			$listCity.selectpicker('refresh');
 		}
 
-		$modalTag.on('show.bs.modal', function(evt) {
-			$formTag.clearForm();
-			$errTag.hide();
-		});
+		function onError(err) {
+
+		}
+
+		modalForm($modalCountry, $listCountry, $formCountry, $errCountry, onCountryChange);
+	}
+
+	function formCity() {
+		var $modalCity = $('#modalCity'),
+			$listCity = $('#listCity'),
+			$formCity = $('.form-city'),
+			$errCity = $('.alert-city-error');
+
+		modalForm($modalCity, $listCity, $formCity, $errCity);
 	}
 
 	function beforeSubmit(arr, $form, options) {

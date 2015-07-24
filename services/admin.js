@@ -33,8 +33,9 @@ function getQuest(id, done) {
 			compaines: rows[1],
 			tags: rows[2],
 			leagues: rows[3],
-			cities: rows[4],
-			stations: rows[5]
+			countries: rows[4],
+			cities: rows[5],
+			stations: rows[6]
 		};
 		data.imgs = [];
 
@@ -78,16 +79,40 @@ function createTag(name, done) {
 	});
 }
 
+function createCountry(name, done) {
+	var query = util.format('call quests.pCountryCreate("%s")', name);
+
+	db.execQuery(query, function(err, rows, fields) {
+		if (err) {
+			return done(err);
+		}
+
+		return done(null, rows[0][0]);
+	});
+}
+
+function createCity(name, countryID, done) {
+	var query = util.format('call quests.pCityCreate("%s", %d)', name, countryID);
+
+	db.execQuery(query, function(err, rows, fields) {
+		if (err) {
+			return done(err);
+		}
+
+		return done(null, rows[0][0]);
+	});
+}
+
 function editQuest(quest, done) {
 	console.log(quest);
 
 	var tagsQuery = db.intArrToInsertStatement(quest.tagsID),
 		stationsQuery = db.intArrToInsertStatement(quest.stationsID),
-		s = 'call quests.pQuestEdit(%s, "%s", "%s", "%s", %d, %s, %s, "%s", %s, %d, "%s", "%s", %d, %d, %s, %s, "%s")',
+		s = 'call quests.pQuestEdit(%s, "%s", "%s", "%s", %d, %s, %s, "%s", %s, %d, %d, "%s", "%s", %d, %d, %s, %s, "%s")',
 		query = util.format(s, quest.id || null, quest.name, quest.descr, quest.url,
 			quest.companyID, quest.playerFrom || null, quest.playerTo || null,
-			tagsQuery, quest.leagueID || null, quest.cityID, stationsQuery,
-			quest.address, quest.lat, quest.lng,
+			tagsQuery, quest.leagueID || null, quest.countryID, quest.cityID,
+			stationsQuery, quest.address, quest.lat, quest.lng,
 			quest.priceFrom || null, quest.priceTo || null, quest.videoUrl);
 
 	console.log(query);
@@ -130,6 +155,18 @@ function importStations(done) {
 	}
 }
 
+function getCities(countryID, done) {
+	var query = util.format('call quests.pCountryCities(%s)', countryID || null);
+
+	db.execQuery(query, function(err, rows, fields) {
+		if (err) {
+			return done(err);
+		}
+
+		return done(null, rows[0]);
+	});
+}
+
 module.exports = {
 	getQuestList: getQuestList,
 	getQuest: getQuest,
@@ -138,5 +175,8 @@ module.exports = {
 	getQuestFiles: getQuestFiles,
 	createCompany: createCompany,
 	createTag: createTag,
+	createCountry: createCountry,
+	createCity: createCity,
+	getCities: getCities,
 	importStations: importStations
 };
