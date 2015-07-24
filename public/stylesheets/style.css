@@ -6,3 +6,7 @@ body {
 .error {
 	color: #f00;
 }
+
+.center {
+	text-align: center;
+}
