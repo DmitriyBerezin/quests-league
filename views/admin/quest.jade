@@ -124,6 +124,22 @@ block content
 			div.col-sm-7
 				input(type='text', id='txtVideoUrl', name='videoUrl', value=video_url, placeholder='Ссылка на видео').form-control
 
+		hr
+
+		h4.chapter-header CEO данные
+		div.form-group
+			label(for='txtCeoTitle').col-sm-2.control-label Title
+			div.col-sm-7
+				input(type='text', id='txtCeoTitle', name='ceoTitle', value=ceo_title, placeholder='Title').form-control
+		div.form-group
+			label(for='txtCeoDescription').col-sm-2.control-label Description
+			div.col-sm-7
+				input(type='text', id='txtCeoDescription', name='ceoDescription', value=ceo_description, placeholder='Description').form-control
+		div.form-group
+			label(for='txtCeoKeywords').col-sm-2.control-label Keywords
+			div.col-sm-7
+				input(type='text', id='txtCeoKeywords', name='ceoKeywords', value=ceo_keywords, placeholder='Keywords').form-control
+
 		div.form-group.button-group
 			button(type='submit').btn.btn-primary.btn-save Сохранить изменения
 

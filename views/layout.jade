@@ -4,7 +4,10 @@ html
 		meta(charset="UTF-8")
 		meta(http-equiv="X-UA-Compatible", content="IE=edge")
 		meta(name="viewport", content="width=device-width, initial-scale=1")
-		title= title
+		if ceo
+			meta(name="description", content=ceo.description)
+			meta(name="keywords", content=ceo.keywords)
+			title= ceo.title
 		link(rel='stylesheet', href='/lib/bootstrap-3.3.5-dist/css/bootstrap.min.css')
 		//- link(rel='stylesheet', href='/lib/bootstrap-3.3.5-dist/css/bootstrap-theme.min.css')
 		link(rel='stylesheet', href='/lib/font-awesome-4.3.0/css/font-awesome.min.css')

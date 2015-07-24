@@ -174,6 +174,9 @@ CREATE TABLE `tquest` (
   `price_to` int(11) DEFAULT NULL,
   `video_url` varchar(45) DEFAULT NULL,
   `country_id` int(11) NOT NULL,
+  `ceo_title` varchar(1000) DEFAULT NULL,
+  `ceo_description` varchar(1000) DEFAULT NULL,
+  `ceo_keywords` varchar(1000) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_company_id_idx` (`company_id`),
   KEY `fk_city_id_idx` (`city_id`),
@@ -539,7 +542,10 @@ CREATE PROCEDURE `pQuestEdit`(
     lng decimal(10, 8),
     price_from int,
     price_to int,
-    video_url varchar(45)
+    video_url varchar(45),
+    ceo_title varchar(1000),
+    ceo_description varchar(1000),
+    ceo_keywords varchar(1000)
 )
 BEGIN
   declare q_id int;
@@ -562,14 +568,17 @@ BEGIN
         tq.lng = lng,
         tq.price_from = price_from,
         tq.price_to = price_to,
-        tq.video_url = video_url
+        tq.video_url = video_url,
+        tq.ceo_title = ceo_title,
+        tq.ceo_description = ceo_description,
+        tq.ceo_keywords = ceo_keywords
     where tq.id = id;
       set q_id = id;
     end;
   else
     begin
-      insert into tquest(`name`, descr, url, company_id, players_from, players_to, league_id, country_id, city_id, address, lat, lng, price_from, price_to, video_url) 
-        values(name, descr, url, company_id, players_from, players_to, league_id, country_id, city_id, address, lat, lng, price_from, price_to, video_url);
+      insert into tquest(`name`, descr, url, company_id, players_from, players_to, league_id, country_id, city_id, address, lat, lng, price_from, price_to, video_url, ceo_title, ceo_description, ceo_keywords) 
+        values(name, descr, url, company_id, players_from, players_to, league_id, country_id, city_id, address, lat, lng, price_from, price_to, video_url, ceo_title, ceo_description, ceo_keywords);
       set q_id = LAST_INSERT_ID();
     end;
   end if;
@@ -652,14 +661,15 @@ DELIMITER ;
 /*!50003 SET character_set_results = utf8 */ ;
 /*!50003 SET collation_connection  = utf8_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 CREATE PROCEDURE `pQuestGet1`(quest_id int)
 BEGIN
     declare company_id int;
 
   select q.id, q.name, c.name as company_name, q.url, q.descr, q.address, 
-    q.players_from, q.players_to, q.price_from, q.price_to, q.lat, q.lng
+    q.players_from, q.players_to, q.price_from, q.price_to, q.lat, q.lng,
+    q.ceo_title, ceo_description, ceo_keywords
     from tquest q inner join tcompany c on q.company_id = c.id 
     where q.id = quest_id;
         
@@ -925,4 +935,4 @@ ALTER DATABASE `quests` CHARACTER SET utf8 COLLATE utf8_general_ci ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-07-24 12:02:33
+-- Dump completed on 2015-07-24 13:45:21
