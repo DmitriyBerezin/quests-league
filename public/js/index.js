@@ -29,6 +29,10 @@ $(function() {
 	applyQueryParams();
 
 	function onSeachFormBeforeSubmit() {
+		if (query === $inputSearch.val()) {
+			return false;
+		}
+
 		$preloader.show();
 		$listView.html('');
 	}
