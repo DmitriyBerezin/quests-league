@@ -108,13 +108,13 @@ function editQuest(quest, done) {
 
 	var tagsQuery = db.intArrToInsertStatement(quest.tagsID),
 		stationsQuery = db.intArrToInsertStatement(quest.stationsID),
-		s = 'call quests.pQuestEdit(%s, "%s", "%s", "%s", %d, %s, %s, "%s", %s, %d, %d, "%s", "%s", %d, %d, %s, %s, "%s", "%s", "%s", "%s")',
+		s = 'call quests.pQuestEdit(%s, "%s", "%s", "%s", %d, %s, %s, "%s", %s, %d, %d, "%s", "%s", %d, %d, %s, %s, "%s", "%s", "%s", "%s", "%s")',
 		query = util.format(s, quest.id || null, quest.name, quest.descr, quest.url,
 			quest.companyID, quest.playerFrom || null, quest.playerTo || null,
 			tagsQuery, quest.leagueID || null, quest.countryID, quest.cityID,
 			stationsQuery, quest.address, quest.lat, quest.lng,
 			quest.priceFrom || null, quest.priceTo || null, quest.videoUrl,
-			quest.ceoTitle, quest.ceoDescription, quest.ceoKeywords);
+			quest.ceoTitle, quest.ceoDescription, quest.ceoKeywords, quest.sefName);
 
 	console.log(query);
 	db.execQuery(query, function(err, rows, fields) {

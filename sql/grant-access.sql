@@ -12,6 +12,8 @@ grant execute on procedure pCountryCities to 'moderator';
 
 
 grant execute on procedure pQuestGet1 to 'moderator';
+grant execute on procedure pQuestGetIdBySefName to 'moderator';
+
 
 insert into tcountry value('Россия');
 update tcity set country_id = 1;

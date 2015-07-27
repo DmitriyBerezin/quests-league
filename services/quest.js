@@ -48,6 +48,19 @@ function getQuest(id, done) {
 	});
 }
 
+function getQuestIdBySefName(sefName, done) {
+	var query = util.format('call quests.pQuestGetIdBySefName("%s")', sefName);
+
+	db.execQuery(query, function(err, rows, fields) {
+		if (err) {
+			return done(err);
+		}
+
+		var id = rows[0].length > 0 ? rows[0][0].id : 0;
+		return done(null, id);
+	});
+}
+
 function search(q, done) {
 	var dbQuery,
 		quests = [],
@@ -98,5 +111,6 @@ function prepareSearchQuery(q) {
 
 module.exports = {
 	getQuest: getQuest,
+	getQuestIdBySefName: getQuestIdBySefName,
 	search: search
 };
