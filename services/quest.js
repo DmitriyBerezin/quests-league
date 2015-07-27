@@ -21,6 +21,11 @@ function getQuest(id, done) {
 		res.quests = rows[2];
 		res.stations = rows[3];
 		res.imgs = [];
+		res.ceo = {
+			title: res.ceo_title,
+			description: res.ceo_description,
+			keywords: res.ceo_keywords
+		};
 
 		filesFunc[id] = admin.getQuestFiles.bind(null, id);
 		for (var i = 0; i < res.quests.length; ++i) {
@@ -40,6 +45,19 @@ function getQuest(id, done) {
 
 			return done(null, res);
 		});
+	});
+}
+
+function getQuestIdBySefName(sefName, done) {
+	var query = util.format('call quests.pQuestGetIdBySefName("%s")', sefName);
+
+	db.execQuery(query, function(err, rows, fields) {
+		if (err) {
+			return done(err);
+		}
+
+		var id = rows[0].length > 0 ? rows[0][0].id : 0;
+		return done(null, id);
 	});
 }
 
@@ -93,5 +111,6 @@ function prepareSearchQuery(q) {
 
 module.exports = {
 	getQuest: getQuest,
+	getQuestIdBySefName: getQuestIdBySefName,
 	search: search
 };

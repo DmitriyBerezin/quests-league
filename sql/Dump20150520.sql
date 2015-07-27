@@ -1,10 +1,10 @@
 CREATE DATABASE  IF NOT EXISTS `quests` /*!40100 DEFAULT CHARACTER SET utf8 */;
 USE `quests`;
--- MySQL dump 10.13  Distrib 5.6.19, for osx10.7 (i386)
+-- MySQL dump 10.13  Distrib 5.6.24, for Win64 (x86_64)
 --
--- Host: quests.cp0uujwgrxiz.eu-west-1.rds.amazonaws.com    Database: quests
+-- Host: localhost    Database: quests
 -- ------------------------------------------------------
--- Server version 5.6.23-log
+-- Server version 5.6.24
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -44,7 +44,10 @@ CREATE TABLE `tcity` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `time_zone` int(11) DEFAULT NULL,
   `name` varchar(45) NOT NULL,
-  PRIMARY KEY (`id`)
+  `country_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_tcity_country_id_idx` (`country_id`),
+  CONSTRAINT `fk_tcity_country_id` FOREIGN KEY (`country_id`) REFERENCES `tcountry` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Таблица городов';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -96,6 +99,21 @@ CREATE TABLE `tcompanyprofile` (
   KEY `fk_tcompanyprofile_company_id_idx` (`company_id`),
   CONSTRAINT `fk_tcompanyprofile_company_id` FOREIGN KEY (`company_id`) REFERENCES `tcompany` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Таблица профиля компании-оператора (тарифный план, управление услугами)';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `tcountry`
+--
+
+DROP TABLE IF EXISTS `tcountry`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tcountry` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(45) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name_UNIQUE` (`name`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -155,13 +173,21 @@ CREATE TABLE `tquest` (
   `price_from` int(11) DEFAULT NULL,
   `price_to` int(11) DEFAULT NULL,
   `video_url` varchar(45) DEFAULT NULL,
+  `country_id` int(11) NOT NULL,
+  `ceo_title` varchar(1000) DEFAULT NULL,
+  `ceo_description` varchar(1000) DEFAULT NULL,
+  `ceo_keywords` varchar(1000) DEFAULT NULL,
+  `sef_name` varchar(150) DEFAULT NULL,
   PRIMARY KEY (`id`),
+  UNIQUE KEY `sef_UNIQUE` (`sef_name`),
   KEY `fk_company_id_idx` (`company_id`),
   KEY `fk_city_id_idx` (`city_id`),
   KEY `fk_tquest_league_id_idx` (`league_id`),
+  KEY `fk_tquest_country_id_idx` (`country_id`),
   FULLTEXT KEY `ft_name_descr_address` (`name`,`descr`,`address`),
   CONSTRAINT `fk_tquest_city_id` FOREIGN KEY (`city_id`) REFERENCES `tcity` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_tquest_company_id` FOREIGN KEY (`company_id`) REFERENCES `tcompany` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_tquest_country_id` FOREIGN KEY (`country_id`) REFERENCES `tcountry` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_tquest_league_id` FOREIGN KEY (`league_id`) REFERENCES `tleague` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Таблица квестов';
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -383,6 +409,29 @@ CREATE TABLE `txuserachievement` (
 --
 -- Dumping routines for database 'quests'
 --
+/*!50003 DROP PROCEDURE IF EXISTS `pCityCreate` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE PROCEDURE `pCityCreate`(
+  `name` varchar(45),
+    country_id int
+)
+BEGIN
+  insert into tcity(`name`, country_id) values(`name`, country_id);
+    select LAST_INSERT_ID() as id, `name` as `name`;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `pCompanyCreate` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -397,6 +446,45 @@ CREATE PROCEDURE `pCompanyCreate`(`name` varchar(100), url varchar(45))
 BEGIN
   insert into tcompany(`name`, site) values(`name`, url);
   select LAST_INSERT_ID() as id, `name` as `name`;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `pCountryCities` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE PROCEDURE `pCountryCities`(country_id int)
+BEGIN
+  select * from tcity c where c.country_id = country_id;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `pCountryCreate` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE PROCEDURE `pCountryCreate`(`name` varchar(45))
+BEGIN
+  insert into tcountry(`name`) values(`name`);
+    select LAST_INSERT_ID() as id, `name` as `name`;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -436,7 +524,7 @@ ALTER DATABASE `quests` CHARACTER SET utf8 COLLATE utf8_general_ci ;
 /*!50003 SET character_set_results = utf8 */ ;
 /*!50003 SET collation_connection  = utf8_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 CREATE PROCEDURE `pQuestEdit`(
   id int,
@@ -448,6 +536,7 @@ CREATE PROCEDURE `pQuestEdit`(
     players_to int,
     tags_list varchar(1000),
     league_id int,
+    country_id int,
     city_id int,
     stations_list varchar(1000),
     address varchar(1000),
@@ -455,7 +544,11 @@ CREATE PROCEDURE `pQuestEdit`(
     lng decimal(10, 8),
     price_from int,
     price_to int,
-    video_url varchar(45)
+    video_url varchar(45),
+    ceo_title varchar(1000),
+    ceo_description varchar(1000),
+    ceo_keywords varchar(1000),
+    sef_name varchar(100)
 )
 BEGIN
   declare q_id int;
@@ -471,20 +564,25 @@ BEGIN
         tq.players_from = players_from,
         tq.players_to = players_to,
         tq.league_id = league_id,
+        tq.country_id = country_id,
         tq.city_id = city_id,
         tq.address = address,
         tq.lat = lat,
         tq.lng = lng,
         tq.price_from = price_from,
         tq.price_to = price_to,
-        tq.video_url = video_url
+        tq.video_url = video_url,
+        tq.ceo_title = ceo_title,
+        tq.ceo_description = ceo_description,
+        tq.ceo_keywords = ceo_keywords,
+        tq.sef_name = sef_name
     where tq.id = id;
       set q_id = id;
     end;
   else
     begin
-      insert into tquest(`name`, descr, url, company_id, players_from, players_to, league_id, city_id, address, lat, lng, price_from, price_to, video_url) 
-        values(name, descr, url, company_id, players_from, players_to, league_id, city_id, address, lat, lng, price_from, price_to, video_url);
+      insert into tquest(`name`, descr, url, company_id, players_from, players_to, league_id, country_id, city_id, address, lat, lng, price_from, price_to, video_url, ceo_title, ceo_description, ceo_keywords, sef_name) 
+        values(name, descr, url, company_id, players_from, players_to, league_id, country_id, city_id, address, lat, lng, price_from, price_to, video_url, ceo_title, ceo_description, ceo_keywords, sef_name);
       set q_id = LAST_INSERT_ID();
     end;
   end if;
@@ -517,7 +615,6 @@ DELIMITER ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `pQuestGet` */;
-ALTER DATABASE `quests` CHARACTER SET latin1 COLLATE latin1_swedish_ci ;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
@@ -531,7 +628,11 @@ CREATE PROCEDURE `pQuestGet`(
   quest_id int
 )
 BEGIN
-  select * from tquest where id = quest_id;
+   declare country_id int;
+   
+   select q.country_id into country_id from tquest q where id = quest_id;
+   
+   select * from tquest where id = quest_id;
     
     select id, name from tcompany;
     
@@ -542,7 +643,9 @@ BEGIN
     
     select id, name from tleague;
     
-    select id, name from tcity;
+    select id, name from tcountry;
+    
+    select id, name from tcity c where c.country_id = country_id;
     
     select t.*, case when tx.quest_id is null then 0 else 1 end as selected  
     from tstation t 
@@ -554,7 +657,6 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
-ALTER DATABASE `quests` CHARACTER SET utf8 COLLATE utf8_general_ci ;
 /*!50003 DROP PROCEDURE IF EXISTS `pQuestGet1` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -563,14 +665,15 @@ ALTER DATABASE `quests` CHARACTER SET utf8 COLLATE utf8_general_ci ;
 /*!50003 SET character_set_results = utf8 */ ;
 /*!50003 SET collation_connection  = utf8_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 CREATE PROCEDURE `pQuestGet1`(quest_id int)
 BEGIN
     declare company_id int;
 
   select q.id, q.name, c.name as company_name, q.url, q.descr, q.address, 
-    q.players_from, q.players_to, q.price_from, q.price_to, q.lat, q.lng
+    q.players_from, q.players_to, q.price_from, q.price_to, q.lat, q.lng,
+    q.ceo_title, q.ceo_description, q.ceo_keywords
     from tquest q inner join tcompany c on q.company_id = c.id 
     where q.id = quest_id;
         
@@ -596,6 +699,25 @@ BEGIN
     from tstation t 
     left join txqueststation tx on t.id = tx.station_id
         and tx.quest_id = quest_id;*/
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `pQuestGetIdBySefName` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE PROCEDURE `pQuestGetIdBySefName`(sef_name varchar(150))
+BEGIN
+  select q.id from tquest q where q.sef_name = sef_name;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -836,4 +958,4 @@ ALTER DATABASE `quests` CHARACTER SET utf8 COLLATE utf8_general_ci ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-07-18 13:25:58
+-- Dump completed on 2015-07-27 13:10:08

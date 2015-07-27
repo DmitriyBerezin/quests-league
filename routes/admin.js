@@ -71,6 +71,36 @@ router.post('/tag', function(req, res, next) {
 	});
 });
 
+router.post('/country', function(req, res, next) {
+	admin.createCountry(req.body.name, function(err, data) {
+		if (err) {
+			return next(err);
+		}
+
+		res.status(200).send(data);
+	});
+});
+
+router.post('/city', function(req, res, next) {
+	admin.createCity(req.body.name, req.body.countryID, function(err, data) {
+		if (err) {
+			return next(err);
+		}
+
+		res.status(200).send(data);
+	});
+});
+
+router.get('/cities', function(req, res, next) {
+	admin.getCities(req.query.countryID, function(err, data) {
+		if (err) {
+			return next(err);
+		}
+
+		res.status(200).send(data);
+	});
+});
+
 router.get('/stations/import', function(req, res, next) {
 	admin.importStations(function(err, data) {
 		if (err) {

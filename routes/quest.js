@@ -13,8 +13,24 @@ router.get('/search', function(req, res, next) {
 	});
 });
 
-router.get('/:id', function(req, res, next) {
-	quest.getQuest(req.params.id, function(err, data) {
+router.get('/:idOrSef', function(req, res, next) {
+	var id = +req.params.idOrSef,
+		sefName;
+
+	if (isNaN(id)) {
+		id = null;
+		sefName = req.params.idOrSef;
+
+		quest.getQuestIdBySefName(sefName, function(err, id) {
+			if (err) {
+				return next(err);
+			}
+
+			res.redirect(301, '/quest/' + id);
+		});
+	}
+
+	quest.getQuest(id, function(err, data) {
 		if (err) {
 			return next(err);
 		}
