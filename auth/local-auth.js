@@ -137,7 +137,7 @@ function verifyEnd(req, res, next) {
 					return next(err);
 				}
 
-				res.render('verified');
+				res.render('auth/verification-complete');
 			});
 		}
 		else {

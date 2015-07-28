@@ -73,7 +73,10 @@ router.post('/login', passport.authenticate('local', {
 // Sign Up
 router.post('/signup',
 	localAuth.signUp,
-	authUtils.successRedirect
+	localAuth.sendVerificationMail,
+	function(req, res, next) {
+		res.render('auth/verification-need');
+	}
 );
 router.get('/verify-start', localAuth.verifyStart, function(req, res) {
 	res.status(200).send({});
