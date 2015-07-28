@@ -72,7 +72,6 @@ function signUp(req, res, next) {
 		return next(err);
 	}
 
-
 	hashPassword(req.body.password, callback, errback);
 }
 

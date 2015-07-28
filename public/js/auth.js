@@ -1,11 +1,21 @@
 $(function() {
 	var $formLogin = $('.form-login'),
-		$formSignup = $('.form-signup'),
-		options;
+		$formSignup = $('.form-signup');
 
-	options = {
+	$formLogin.validate({
 		errorElement: 'div'
-	};
-	$formLogin.validate(options);
-	$formSignup.validate(options);
+	});
+
+	$formSignup.validate({
+		errorElement: 'div',
+		rules: {
+			password: {
+				minlength: 6
+			},
+			passwordConfirmation : {
+				minlength: 6,
+				equalTo: '#sigupPassword'
+			}
+		}
+	});
 });

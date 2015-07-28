@@ -72,6 +72,19 @@ router.post('/login', passport.authenticate('local', {
 
 // Sign Up
 router.post('/signup',
+	function(req, res, next) {
+		if (!req.body.name ||
+			!req.body.email ||
+			!req.body.password ||
+			req.body.password.length < 6 ||
+			req.body.password !== req.body.passwordConfirmation) {
+			var err = new Error('Неверные параметры запроса.');
+			err.status = 401;
+			return next(err);
+		}
+
+		return next();
+	},
 	localAuth.signUp,
 	localAuth.sendVerificationMail,
 	function(req, res, next) {
