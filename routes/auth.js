@@ -16,40 +16,40 @@ router.get('/login', function(req, res, next) {
 // Facebook
 router.get('/facebook', passport.authenticate('facebook'));
 
-router.get('/facebook/callback', passport.authenticate('facebook', { 
-	failureRedirect: '/auth/login' 
+router.get('/facebook/callback', passport.authenticate('facebook', {
+	failureRedirect: '/auth/login'
 }), authUtils.successRedirect);
 
 
 // Twitter
 router.get('/twitter', passport.authenticate('twitter'));
 
-router.get('/twitter/callback', passport.authenticate('twitter', { 
-	failureRedirect: '/auth/login' 
+router.get('/twitter/callback', passport.authenticate('twitter', {
+	failureRedirect: '/auth/login'
 }), authUtils.successRedirect);
 
 
 // VKontakte
 router.get('/vkontakte', passport.authenticate('vkontakte'));
 
-router.get('/vkontakte/callback', passport.authenticate('vkontakte', { 
-	failureRedirect: '/auth/login' 
+router.get('/vkontakte/callback', passport.authenticate('vkontakte', {
+	failureRedirect: '/auth/login'
 }), authUtils.successRedirect);
 
 
 // MailRu
 router.get('/mailru', passport.authenticate('mailru'));
 
-router.get('/mailru/callback', passport.authenticate('mailru', { 
-	failureRedirect: '/auth/login' 
+router.get('/mailru/callback', passport.authenticate('mailru', {
+	failureRedirect: '/auth/login'
 }), authUtils.successRedirect);
 
 
 // Google
 router.get('/google', passport.authenticate('google', { scope: ['https://www.googleapis.com/auth/plus.login'] }));
 
-router.get('/google/callback', passport.authenticate('google', { 
-	failureRedirect: '/auth/login' 
+router.get('/google/callback', passport.authenticate('google', {
+	failureRedirect: '/auth/login'
 }), authUtils.successRedirect);
 
 
@@ -57,8 +57,8 @@ router.get('/google/callback', passport.authenticate('google', {
 // Instagram
 router.get('/instagram', passport.authenticate('instagram'));
 
-router.get('/instagram/callback', passport.authenticate('instagram', { 
-	failureRedirect: '/auth/login' 
+router.get('/instagram/callback', passport.authenticate('instagram', {
+	failureRedirect: '/auth/login'
 }), authUtils.successRedirect);
 
 
@@ -71,12 +71,14 @@ router.post('/login', passport.authenticate('local', {
 
 
 // Sign Up
-router.post('/signup', 
-	localAuth.signUp, 
-	localAuth.sendVerificationMail,
+router.post('/signup',
+	localAuth.signUp,
 	authUtils.successRedirect
 );
-router.get('/verify', localAuth.verify);
+router.get('/verify-start', localAuth.verifyStart, function(req, res) {
+	res.status(200).send({});
+});
+router.get('/verify-end', localAuth.verifyEnd);
 
 
 // Log out

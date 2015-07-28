@@ -28,9 +28,9 @@
 .header-socials {
   margin-bottom: 38px;
 }
-.header-socials img {
+/*.header-socials img {
   margin-right: 20px;
-}
+}*/
 footer {
   padding-bottom: 20px;
 }
@@ -815,4 +815,24 @@ div.select-stacked div.select + .select {
   body {
     padding-top: 40px;
   }
+}
+
+.auth-block {
+  text-align: right;
+  margin-bottom: 15px;
+}
+
+.auth-block-login {
+  margin-right: 20px;
+  margin-left: 50px;
+}
+
+.alert-not-verified {
+  display: inline-block;
+  padding: 7px;
+  margin-bottom: 0;
+}
+
+.verify-link {
+  margin: 0 20px 0 10px;
 }

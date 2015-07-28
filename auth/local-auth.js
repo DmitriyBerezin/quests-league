@@ -3,7 +3,7 @@ var passport = require('passport'),
 	util = require('util'),
 	crypto = require('crypto'),
 	bcrypt = require('bcrypt'),
-	
+
 	db = require('../services/database'),
 	mailer = require('../services/mailer'),
 	authUtils = require('./utils');
@@ -17,31 +17,27 @@ passport.use(new LocalStrategy({
 	function(email, password, done) {
 		function callback(res) {
 			if (res) {
-				if (row.verified_flag === 1) {
-					return done(null, row);	
-				}
-				
-				return done(null, row, { info: 'Account is not verified' });
+				return done(null, row);
 			}
 
-			return done(null, false, { message: 'Incorrect password' });
+			return done(null, false, { message: 'Учетной записи с такими параметрами не существует' });
 		}
 
 		function errback(err) {
 			return done(err);
 		}
 
-		
+
 		var query = util.format('call quests.pUserGet("%s")', email),
 			row;
-		
+
 		db.execQuery(query, function(err, rows, fields) {
 			if (err) {
 				return done(err);
 			}
 
 			if (!rows[0].length) {
-				return done(err, false, { message: 'Incorrect email' });
+				return done(err, false, { message: 'Учетной записи с такими параметрами не существует' });
 			}
 
 			row = rows[0][0];
@@ -68,7 +64,7 @@ function signUp(req, res, next) {
 
 				return next();
 			});
-
+			console.log(req.user);
 		});
 	}
 
@@ -76,7 +72,7 @@ function signUp(req, res, next) {
 		return next(err);
 	}
 
-	
+
 	hashPassword(req.body.password, callback, errback);
 }
 
@@ -92,7 +88,7 @@ function sendVerificationMail(req, res, next) {
 
 		var token = buf.toString('hex'),
 			id = req.user.id
-			query = util.format('call quests.pUserSetVerificationToken(%d, "%s")', 
+			query = util.format('call quests.pUserSetVerificationToken(%d, "%s")',
 				id, token);
 
 		db.execQuery(query, function(err, rows, fields) {
@@ -100,11 +96,15 @@ function sendVerificationMail(req, res, next) {
 				return next(err);
 			}
 
+			console.log(token);
+			return next();
+
 			var mailOptions = {
 				//to: req.body.email,
 				to: 'ivan.questoff@yandex.ru',
 				subject: 'Verify account',
-				html: util.format('<a href="http://localhost:3000/auth/verify?token=%s&id=%d">Verify account</a>', token, id)
+				html: util.format('<a href="%s://%s:3000/auth/verify-end?token=%s&id=%d">Verify account</a>',
+					req.protocol, req.baseUrl, token, id)
 			};
 			mailer.sendMail(mailOptions, function(err, info) {
 				if (err) {
@@ -117,7 +117,11 @@ function sendVerificationMail(req, res, next) {
 	});
 }
 
-function verify(req, res, next) {
+function verifyStart(req, res, next) {
+	sendVerificationMail(req, res, next);
+}
+
+function verifyEnd(req, res, next) {
 	var id = req.query.id,
 		token = req.query.token,
 		query = util.format('call quests.pUserVerify(%d, "%s")', id, token);
@@ -127,7 +131,23 @@ function verify(req, res, next) {
 			return next(err);
 		}
 
-		res.redirect('/user/lk');
+		if (rows[0].length === 1) {
+			req.login(rows[0][0], function(err) {
+				if (err) {
+					return next(err);
+				}
+
+				res.render('verified');
+			});
+		}
+		else {
+			var msg = 'Аккаунт не подтвержден, так как переданы не правильные данные. ' +
+					'Пожалуйста, попробуйте еще раз или обратитесь в поддержку.',
+				err = new Error(msg);
+			err.status = 401;
+			console.log(err);
+			next(err);
+		}
 	});
 }
 
@@ -161,5 +181,6 @@ function checkPassword(psw, hash, cb, eb) {
 module.exports = {
 	signUp: signUp,
 	sendVerificationMail: sendVerificationMail,
-	verify: verify
+	verifyStart: verifyStart,
+	verifyEnd: verifyEnd
 };

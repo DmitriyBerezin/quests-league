@@ -13,6 +13,18 @@ header
 						span
 							b ВСЕ КВЕСТЫ В ОДНОМ МЕСТЕ
 			.col-sm-7
+				div.auth-block
+					if user
+						if user.verified_flag
+							div Добро пожаловать, #{user.name}
+						else
+							.alert.alert-warning.alert-not-verified
+								| #{user.name}, Ваш аккаунт не подтвержден.
+								a(href='#').verify-link Подтвердить
+					else
+						a(href='/auth/login') Регистрация
+						a(href='/auth/login').auth-block-login Вход
+
 				.header-socials.text-right.hidden-xs
 					img(src='/images/socials.png', alt='socials')
 				//- nav.navbar.navbar-default
@@ -39,3 +51,16 @@ header
 				//- 			li
 				//- 				a(href='#') Статьи
 				//- 	// /.navbar-collapse
+
+	div(id='modalVerify', tabIndex='-1', role='dialog').modal.fade
+		div(role='document').modal-dialog
+			div.modal-content
+				div.modal-header
+					button(type='button', data-dismiss='modal' aria-label='Close').close
+						span(aria-hidden='true') &times;
+					h4 Подтверждение аккаунта
+				div.modal-body На указанный Вами электронный адрес направлена инструкция по
+					| подтвержлению аккаунта. Она очень простая :) После подтверждения аккаунта
+					| Вам будут доступны все возможности нашего портала.
+
+
