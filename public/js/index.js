@@ -29,9 +29,9 @@ $(function() {
 	applyQueryParams();
 
 	function onSeachFormBeforeSubmit() {
-		if (query === $inputSearch.val()) {
-			return false;
-		}
+		// if (query === $inputSearch.val()) {
+		// 	return false;
+		// }
 
 		$preloader.show();
 		$listView.html('');
@@ -82,9 +82,7 @@ $(function() {
 		// Initial search
 		query = getUrlParameter('q');
 		$inputSearch.val(query);
-		if (query) {
-			$formSeach.submit();
-		}
+		$formSeach.submit();
 
 		// Init view
 		$viewSwitch.removeClass('active');
