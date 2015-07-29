@@ -313,7 +313,7 @@ CREATE TABLE `tuser` (
   `password` varchar(250) DEFAULT NULL,
   `token` varchar(250) DEFAULT NULL,
   `last_visit` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `verified_flag` bit(1) DEFAULT NULL,
+  `verified_flag` int(11) DEFAULT NULL,
   `role` varchar(5) DEFAULT NULL COMMENT 'adm',
   PRIMARY KEY (`id`),
   UNIQUE KEY `email_UNIQUE` (`email`),
@@ -757,7 +757,7 @@ DELIMITER ;
 /*!50003 SET character_set_results = utf8 */ ;
 /*!50003 SET collation_connection  = utf8_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 CREATE PROCEDURE `pQuestSearch`(q varchar(100))
 BEGIN
@@ -986,4 +986,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-07-29 12:33:02
+-- Dump completed on 2015-07-29 13:16:45
