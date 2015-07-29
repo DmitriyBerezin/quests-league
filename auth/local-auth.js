@@ -3,10 +3,12 @@ var passport = require('passport'),
 	util = require('util'),
 	crypto = require('crypto'),
 	bcrypt = require('bcrypt'),
+	path = require('path'),
 
 	db = require('../services/database'),
 	mailer = require('../services/mailer'),
-	authUtils = require('./utils');
+	authUtils = require('./utils'),
+	utils = require('../services/utils');
 
 
 passport.use(new LocalStrategy({
@@ -86,7 +88,8 @@ function sendVerificationMail(req, res, next) {
 		}
 
 		var token = buf.toString('hex'),
-			id = req.user.id
+			id = req.user.id,
+			email = req.user.email,
 			query = util.format('call quests.pUserSetVerificationToken(%d, "%s")',
 				id, token);
 
@@ -95,29 +98,40 @@ function sendVerificationMail(req, res, next) {
 				return next(err);
 			}
 
-			console.log(token);
-			return next();
+			var mailOptions,
+				tmplFile = path.join(__dirname, '../views/mail/verify-account.jade'),
+				urlData = {
+					protocol: req.protocol,
+					baseUrl: req.baseUrl,
+					token: token,
+					id: id
+				};
 
-			var mailOptions = {
-				//to: req.body.email,
-				to: 'ivan.questoff@yandex.ru',
-				subject: 'Verify account',
-				html: util.format('<a href="%s://%s:3000/auth/verify-end?token=%s&id=%d">Verify account</a>',
-					req.protocol, req.baseUrl, token, id)
-			};
-			mailer.sendMail(mailOptions, function(err, info) {
+			utils.tmpl2Str(tmplFile, urlData, function(err, html) {
 				if (err) {
 					return next(err);
 				}
 
-				return next();
-			});
+				mailOptions = {
+					to: email,
+					subject: 'Подтверждение аккаунта на попртале Лига Квестов',
+					html: html
+				};
+
+				mailer.sendMail(mailOptions, function(err, info) {
+					if (err) {
+						return next(err);
+					}
+
+					return next();
+				});
+			})
 		});
 	});
 }
 
 function verifyStart(req, res, next) {
-	sendVerificationMail(req, res, next);
+	return sendVerificationMail(req, res, next);
 }
 
 function verifyEnd(req, res, next) {
