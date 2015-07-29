@@ -64,10 +64,23 @@ router.get('/instagram/callback', passport.authenticate('instagram', {
 
 
 // Email & password
-router.post('/login', passport.authenticate('local', {
-	failureRedirect: '/auth/login',
-	failureFlash: true
-}), authUtils.successRedirect);
+router.post('/login',
+	function(req, res, next) {
+		if (!req.body.email ||
+			!req.body.password) {
+			var err = new Error('Неверные параметры запроса.');
+			err.status = 400;
+			return next(err);
+		}
+
+		return next();
+	},
+	passport.authenticate('local', {
+		failureRedirect: '/auth/login',
+		failureFlash: true
+	}),
+	authUtils.successRedirect
+);
 
 
 // Sign Up
@@ -79,7 +92,7 @@ router.post('/signup',
 			req.body.password.length < 6 ||
 			req.body.password !== req.body.passwordConfirmation) {
 			var err = new Error('Неверные параметры запроса.');
-			err.status = 401;
+			err.status = 400;
 			return next(err);
 		}
 
@@ -88,9 +101,12 @@ router.post('/signup',
 	localAuth.signUp,
 	localAuth.sendVerificationMail,
 	function(req, res, next) {
-		res.render('auth/verification-need');
+		res.redirect('/auth/verify-need');
 	}
 );
+router.get('/verify-need', function(req, res) {
+	res.render('auth/verification-need')
+});
 router.get('/verify-start', localAuth.verifyStart, function(req, res) {
 	res.status(200).send({});
 });

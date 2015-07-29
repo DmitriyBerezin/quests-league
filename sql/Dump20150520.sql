@@ -178,6 +178,7 @@ CREATE TABLE `tquest` (
   `ceo_description` varchar(1000) DEFAULT NULL,
   `ceo_keywords` varchar(1000) DEFAULT NULL,
   `sef_name` varchar(150) DEFAULT NULL,
+  `top` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `sef_UNIQUE` (`sef_name`),
   KEY `fk_company_id_idx` (`company_id`),
@@ -313,6 +314,7 @@ CREATE TABLE `tuser` (
   `token` varchar(250) DEFAULT NULL,
   `last_visit` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `verified_flag` bit(1) DEFAULT NULL,
+  `role` varchar(5) DEFAULT NULL COMMENT 'adm',
   PRIMARY KEY (`id`),
   UNIQUE KEY `email_UNIQUE` (`email`),
   UNIQUE KEY `phone_UNIQUE` (`phone`),
@@ -667,7 +669,9 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE PROCEDURE `pQuestGet1`(quest_id int)
+CREATE PROCEDURE `pQuestGet1`(
+  quest_id int
+)
 BEGIN
     declare company_id int;
 
@@ -757,25 +761,49 @@ DELIMITER ;
 DELIMITER ;;
 CREATE PROCEDURE `pQuestSearch`(q varchar(100))
 BEGIN
-   select q.id, q.name, c.name as company_name, q.url, q.descr, q.address, 
+  if q <> '' and q is not null then
+  begin
+    select q.id, q.name, c.name as company_name, q.url, q.descr, q.address, 
     q.players_from, q.players_to, q.price_from, q.price_to, q.lat, q.lng,
     stations.stations_name as stations
-  from tquest q
-  inner join tcompany c on q.company_id = c.id
+    from tquest q
+    inner join tcompany c on q.company_id = c.id
     left join (
     select qt.quest_id, group_concat(qt.tag_name separator ' ') tags_name
     from (select tx.quest_id as quest_id, t.id as tag_id, t.name as tag_name from txquesttag tx inner join ttag t on tx.tag_id = t.id) qt
     group by qt.quest_id
-  ) tags on q.id = tags.quest_id
+    ) tags on q.id = tags.quest_id
     left join (
     select qs.quest_id, group_concat(qs.station_name separator ' ') stations_name
     from (select tx.quest_id as quest_id, s.id as station_id, s.name as station_name from txqueststation tx inner join tstation s on tx.station_id = s.id) qs
     group by qs.quest_id
-  ) stations on q.id = stations.quest_id
-  WHERE MATCH (q.name, q.descr, q.address) AGAINST (q IN BOOLEAN MODE)
+    ) stations on q.id = stations.quest_id
+    WHERE MATCH (q.name, q.descr, q.address) AGAINST (q IN BOOLEAN MODE)
      or MATCH (c.name) AGAINST (q IN BOOLEAN MODE)
        or MATCH (tags.tags_name) AGAINST (q IN BOOLEAN MODE)
        or MATCH (stations.stations_name) AGAINST (q IN BOOLEAN MODE);
+  end;
+ else
+  begin
+        select q.id, q.name, c.name as company_name, q.url, q.descr, q.address, 
+      q.players_from, q.players_to, q.price_from, q.price_to, q.lat, q.lng,
+      stations.stations_name as stations
+      from tquest q
+      inner join tcompany c on q.company_id = c.id
+      left join (
+      select qt.quest_id, group_concat(qt.tag_name separator ' ') tags_name
+      from (select tx.quest_id as quest_id, t.id as tag_id, t.name as tag_name from txquesttag tx inner join ttag t on tx.tag_id = t.id) qt
+      group by qt.quest_id
+      ) tags on q.id = tags.quest_id
+      left join (
+      select qs.quest_id, group_concat(qs.station_name separator ' ') stations_name
+      from (select tx.quest_id as quest_id, s.id as station_id, s.name as station_name from txqueststation tx inner join tstation s on tx.station_id = s.id) qs
+      group by qs.quest_id
+      ) stations on q.id = stations.quest_id
+          where top is not null
+          order by top;
+    end;
+ end if;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -845,7 +873,6 @@ DELIMITER ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
 ALTER DATABASE `quests` CHARACTER SET utf8 COLLATE utf8_general_ci ;
 /*!50003 DROP PROCEDURE IF EXISTS `pUserGet` */;
-ALTER DATABASE `quests` CHARACTER SET latin1 COLLATE latin1_swedish_ci ;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
@@ -857,14 +884,15 @@ ALTER DATABASE `quests` CHARACTER SET latin1 COLLATE latin1_swedish_ci ;
 DELIMITER ;;
 CREATE PROCEDURE `pUserGet`(email varchar(45))
 BEGIN
-  select * from tuser t where t.email = email;
+  update tuser t set last_visit = default where t.email = email and t.auth_type = 'local';
+    
+    select * from tuser t where t.email = email and t.auth_type = 'local';
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
-ALTER DATABASE `quests` CHARACTER SET utf8 COLLATE utf8_general_ci ;
 /*!50003 DROP PROCEDURE IF EXISTS `pUserOAuth` */;
 ALTER DATABASE `quests` CHARACTER SET latin1 COLLATE latin1_swedish_ci ;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -928,7 +956,6 @@ DELIMITER ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
 ALTER DATABASE `quests` CHARACTER SET utf8 COLLATE utf8_general_ci ;
 /*!50003 DROP PROCEDURE IF EXISTS `pUserVerify` */;
-ALTER DATABASE `quests` CHARACTER SET latin1 COLLATE latin1_swedish_ci ;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
@@ -941,13 +968,14 @@ DELIMITER ;;
 CREATE PROCEDURE `pUserVerify`(id int, token varchar(250))
 BEGIN
   update tuser u set u.verified_flag = 1 where u.id = id and u.token = token;
+  
+  select * from tuser u where u.id = id and u.verified_flag = 1;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
-ALTER DATABASE `quests` CHARACTER SET utf8 COLLATE utf8_general_ci ;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -958,4 +986,4 @@ ALTER DATABASE `quests` CHARACTER SET utf8 COLLATE utf8_general_ci ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-07-27 13:10:08
+-- Dump completed on 2015-07-29 12:33:02
