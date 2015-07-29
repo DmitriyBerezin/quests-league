@@ -90,6 +90,7 @@ function sendVerificationMail(req, res, next) {
 		var token = buf.toString('hex'),
 			id = req.user.id,
 			email = req.user.email,
+			name = req.user.name,
 			query = util.format('call quests.pUserSetVerificationToken(%d, "%s")',
 				id, token);
 
@@ -100,14 +101,15 @@ function sendVerificationMail(req, res, next) {
 
 			var mailOptions,
 				tmplFile = path.join(__dirname, '../views/mail/verify-account.jade'),
-				urlData = {
+				data = {
+					userName: name,
 					protocol: req.protocol,
 					baseUrl: req.baseUrl,
 					token: token,
 					id: id
 				};
 
-			utils.tmpl2Str(tmplFile, urlData, function(err, html) {
+			utils.tmpl2Str(tmplFile, data, function(err, html) {
 				if (err) {
 					return next(err);
 				}
