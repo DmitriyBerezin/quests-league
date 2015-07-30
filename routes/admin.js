@@ -110,7 +110,26 @@ router.get('/stations/import', function(req, res, next) {
 			return next(err);
 		}
 
-		res.status(200).send();
+		res.sendStatus(200);
+	});
+});
+
+router.put('/comment/approve', function(req, res, next) {
+	var id = req.body.id,
+		comment = req.body.comment;
+
+	if (!id) {
+		var err = new Error('Parameter id is required');
+		err.status = 400;
+		return next(err);
+	}
+
+	admin.approveComment(id, comment, function(err) {
+		if (err) {
+			return next(err);
+		}
+
+		res.sendStatus(200);
 	});
 });
 

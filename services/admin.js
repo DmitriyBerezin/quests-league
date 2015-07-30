@@ -168,6 +168,19 @@ function getCities(countryID, done) {
 	});
 }
 
+function approveComment(id, comment, done) {
+	var query = util.format('call quests.pCommentApprove(%d, "%s")',
+			id || null, comment);
+
+	db.execQuery(query, function(err, rows, fields) {
+		if (err) {
+			return done(err);
+		}
+
+		return done();
+	});
+}
+
 module.exports = {
 	getQuestList: getQuestList,
 	getQuest: getQuest,
@@ -179,5 +192,6 @@ module.exports = {
 	createCountry: createCountry,
 	createCity: createCity,
 	getCities: getCities,
-	importStations: importStations
+	importStations: importStations,
+	approveComment: approveComment
 };

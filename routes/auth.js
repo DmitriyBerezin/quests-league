@@ -108,7 +108,7 @@ router.get('/verify-need', function(req, res) {
 	res.render('auth/verification-need')
 });
 router.get('/verify-start', localAuth.verifyStart, function(req, res) {
-	res.status(200).send({});
+	res.sendStatus(200);
 });
 router.get('/verify-end', localAuth.verifyEnd);
 
