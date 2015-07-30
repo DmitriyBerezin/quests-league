@@ -5,10 +5,9 @@ var passport = require('passport'),
 	bcrypt = require('bcrypt'),
 	path = require('path'),
 
-	db = require('../services/database'),
-	mailer = require('../services/mailer'),
-	authUtils = require('./utils'),
-	utils = require('../services/utils');
+	db = require('./database'),
+	mailer = require('./mailer'),
+	utils = require('./utils');
 
 
 passport.use(new LocalStrategy({

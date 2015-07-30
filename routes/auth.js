@@ -2,9 +2,9 @@ var express = require('express');
 var router = express.Router();
 var passport = require('passport');
 
-require('../auth/oauth-strategies.js');
-var localAuth = require('../auth/local-auth.js');
-var authUtils = require('../auth/utils');
+require('../services/auth-oauth');
+var localAuth = require('../services/auth-local');
+var utils = require('../services/utils');
 
 
 router.get('/login', function(req, res, next) {
@@ -18,7 +18,7 @@ router.get('/facebook', passport.authenticate('facebook'));
 
 router.get('/facebook/callback', passport.authenticate('facebook', {
 	failureRedirect: '/auth/login'
-}), authUtils.successRedirect);
+}), utils.successRedirect);
 
 
 // Twitter
@@ -26,7 +26,7 @@ router.get('/twitter', passport.authenticate('twitter'));
 
 router.get('/twitter/callback', passport.authenticate('twitter', {
 	failureRedirect: '/auth/login'
-}), authUtils.successRedirect);
+}), utils.successRedirect);
 
 
 // VKontakte
@@ -34,7 +34,7 @@ router.get('/vkontakte', passport.authenticate('vkontakte'));
 
 router.get('/vkontakte/callback', passport.authenticate('vkontakte', {
 	failureRedirect: '/auth/login'
-}), authUtils.successRedirect);
+}), utils.successRedirect);
 
 
 // MailRu
@@ -42,7 +42,7 @@ router.get('/mailru', passport.authenticate('mailru'));
 
 router.get('/mailru/callback', passport.authenticate('mailru', {
 	failureRedirect: '/auth/login'
-}), authUtils.successRedirect);
+}), utils.successRedirect);
 
 
 // Google
@@ -50,7 +50,7 @@ router.get('/google', passport.authenticate('google', { scope: ['https://www.goo
 
 router.get('/google/callback', passport.authenticate('google', {
 	failureRedirect: '/auth/login'
-}), authUtils.successRedirect);
+}), utils.successRedirect);
 
 
 
@@ -59,7 +59,7 @@ router.get('/instagram', passport.authenticate('instagram'));
 
 router.get('/instagram/callback', passport.authenticate('instagram', {
 	failureRedirect: '/auth/login'
-}), authUtils.successRedirect);
+}), utils.successRedirect);
 
 
 
@@ -79,7 +79,7 @@ router.post('/login',
 		failureRedirect: '/auth/login',
 		failureFlash: true
 	}),
-	authUtils.successRedirect
+	utils.successRedirect
 );
 
 

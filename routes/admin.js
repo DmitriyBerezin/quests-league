@@ -2,9 +2,9 @@ var express = require('express');
 var router = express.Router();
 
 var admin = require('../services/admin'),
-	authUtils = require('../auth/utils');
+	utils = require('../services/utils');
 
-router.all('*', authUtils.requreAdminRole);
+router.all('*', utils.requreAdminRole);
 
 router.get('/quest/list', function(req, res, next) {
 	admin.getQuestList(function(err, data) {
