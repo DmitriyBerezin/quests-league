@@ -159,7 +159,7 @@ function verifyEnd(req, res, next) {
 			var msg = 'Аккаунт не подтвержден, так как переданы не правильные данные. ' +
 					'Пожалуйста, попробуйте еще раз или обратитесь в поддержку.',
 				err = new Error(msg);
-			err.status = 401;
+			err.status = 400;
 			console.log(err);
 			next(err);
 		}
