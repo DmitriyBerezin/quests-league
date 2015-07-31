@@ -1,7 +1,10 @@
 var express = require('express');
 var router = express.Router();
 
-var comment = require('../services/comment');
+var service = require('../services/comment'),
+	utils = require('../services/utils');
+
+router.all('*', utils.requireAuthentication);
 
 router.get('/quest/:questID/comment', function(req, res, next) {
 	var questID = req.params.questID,
@@ -13,7 +16,7 @@ router.get('/quest/:questID/comment', function(req, res, next) {
 		return next(err);
 	}
 
-	comment.getComment(null, questID, userID, function(err, comment) {
+	service.getComment(null, questID, userID, function(err, comment) {
 		if (err) {
 			return next(err);
 		}
@@ -22,7 +25,7 @@ router.get('/quest/:questID/comment', function(req, res, next) {
 	});
 });
 
-router.get('/comment/:id', function(req, res, next) {
+router.get('/:id', function(req, res, next) {
 	var id = req.params.id;
 
 	if (!id) {
@@ -31,7 +34,7 @@ router.get('/comment/:id', function(req, res, next) {
 		return next(err);
 	}
 
-	comment.getComment(id, null, null, function(err, comment) {
+	service.getComment(id, null, null, function(err, comment) {
 		if (err) {
 			return next(err);
 		}
@@ -40,7 +43,7 @@ router.get('/comment/:id', function(req, res, next) {
 	});
 });
 
-router.post('/comment', function(req, res, next) {
+router.post('/', function(req, res, next) {
 	var questID = req.body.questID,
 		userID = req.user.id,
 		comment = req.body.comment;
@@ -51,16 +54,16 @@ router.post('/comment', function(req, res, next) {
 		return next(err);
 	}
 
-	comment.editComment(null, questID, userID, comment, function(err) {
+	service.editComment(null, questID, userID, comment, function(err, comment) {
 		if (err) {
 			return next(err);
 		}
 
-		res.sendStatus(200);
+		res.status(200).send(comment);
 	});
 });
 
-router.put('/comment', function(req, res, next) {
+router.put('/', function(req, res, next) {
 	var id = req.body.id,
 		comment = req.body.comment;
 
@@ -70,16 +73,16 @@ router.put('/comment', function(req, res, next) {
 		return next(err);
 	}
 
-	comment.editComment(id, null, null, comment, function(err) {
+	service.editComment(id, null, null, comment, function(err) {
 		if (err) {
 			return next(err);
 		}
 
-		res.sendStatus(200);
+		res.status(200).send({});
 	});
 });
 
-router.del('/comment', function(req, res, next) {
+router.delete('/', function(req, res, next) {
 	var id = req.body.id;
 
 	if (!id) {
@@ -88,12 +91,12 @@ router.del('/comment', function(req, res, next) {
 		return next(err);
 	}
 
-	comment.delComment(id, function(err) {
+	service.delComment(id, function(err) {
 		if (err) {
 			return next(err);
 		}
 
-		res.sendStatus(200);
+		res.status(200).send({});
 	});
 });
 

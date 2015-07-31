@@ -577,7 +577,7 @@ div.select-stacked div.select + .select {
   height: 300px;
 }
 .reviews-actions {
-  margin: 50px 0;
+  margin-bottom: 50px;
 }
 .reviews-actions a {
   margin-right: 15px;

@@ -20,6 +20,7 @@ function getQuest(id, done) {
 		res.tags = rows[1];
 		res.quests = rows[2];
 		res.stations = rows[3];
+		res.comments = rows[4];
 		res.imgs = [];
 		res.ceo = {
 			title: res.ceo_title,

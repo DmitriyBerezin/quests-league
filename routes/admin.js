@@ -110,7 +110,7 @@ router.get('/stations/import', function(req, res, next) {
 			return next(err);
 		}
 
-		res.sendStatus(200);
+		res.status(200).send({});
 	});
 });
 
@@ -129,7 +129,7 @@ router.put('/comment/approve', function(req, res, next) {
 			return next(err);
 		}
 
-		res.sendStatus(200);
+		res.status(200).send({});
 	});
 });
 

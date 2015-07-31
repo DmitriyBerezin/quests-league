@@ -10,7 +10,7 @@ function getComment(id, questID, userID, done) {
 			return done(err);
 		}
 
-		return done(rows[0][0]);
+		return done(null, rows[0][0]);
 	});
 }
 
@@ -23,7 +23,7 @@ function editComment(id, questID, userID, comment, done) {
 			return done(err);
 		}
 
-		return done();
+		return done(null, rows[0][rows[0].length - 1]);
 	});
 }
 

@@ -1,0 +1,16 @@
+mixin commentWidget(comment)
+	article.media
+		//- .media-left
+		//- 	a(href='#')
+		//- 		img.media-object.img-circle(src='http://placehold.it/100x100', alt='...')
+		.media-body
+			h4.media-heading
+				| #{comment.user_name}
+				span.small.text-muted= comment.date
+			p.comment-text= comment.comment
+			//- div
+			//- 	i.fa.fa-star
+			//- 	i.fa.fa-star
+			//- 	i.fa.fa-star
+			//- 	i.fa.fa-star
+			//- 	i.fa.fa-star

@@ -16,6 +16,7 @@ var users = require('./routes/users');
 var auth = require('./routes/auth');
 var admin = require('./routes/admin');
 var quest = require('./routes/quest');
+var comment = require('./routes/comment');
 
 var mailer = require('./services/mailer');
 
@@ -50,6 +51,7 @@ app.use('/users', users);
 app.use('/auth', auth);
 app.use('/admin', admin);
 app.use('/quest', quest);
+app.use('/comment', comment);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

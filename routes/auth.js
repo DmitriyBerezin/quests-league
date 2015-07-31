@@ -8,6 +8,10 @@ var utils = require('../services/utils');
 
 
 router.get('/login', function(req, res, next) {
+	if (req.query.returnUrl) {
+		req.session.returnUrl = req.query.returnUrl;
+	}
+
 	res.render('login', { message: req.flash('error') });
 });
 
@@ -108,7 +112,7 @@ router.get('/verify-need', function(req, res) {
 	res.render('auth/verification-need')
 });
 router.get('/verify-start', localAuth.verifyStart, function(req, res) {
-	res.sendStatus(200);
+	res.status(200).send({});
 });
 router.get('/verify-end', localAuth.verifyEnd);
 

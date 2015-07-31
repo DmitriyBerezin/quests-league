@@ -372,8 +372,8 @@ CREATE TABLE `txquestuser` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `quest_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
-  `date` datetime DEFAULT NULL,
-  `success_flag` bit(1) NOT NULL,
+  `date` datetime DEFAULT CURRENT_TIMESTAMP,
+  `success_flag` int(11) DEFAULT NULL,
   `comment` varchar(1000) DEFAULT NULL,
   `ratio` int(11) DEFAULT NULL,
   `images` varchar(500) DEFAULT NULL COMMENT 'Пути к картинкам, разделенные ;',
@@ -450,7 +450,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `pCommentApprove`(
     comment varchar(1000)
 )
 BEGIN
-  update txquestuser tx set tx.comemnt = comment, tx.approved = 1 where tx.id = id;
+  update txquestuser tx set tx.comemnt = comment, tx.approved_flag = 1 where tx.id = id;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -504,10 +504,18 @@ BEGIN
     begin
       update txquestuser tx set tx.comment = comment, tx.approved = null
             where tx.id = id;
+            
+            select tx.id, tx.user_id, tx.comment, DATE_FORMAT(tx.date, '%d.%m.%x') as date, u.name as user_name 
+      from txquestuser tx inner join tuser u on tx.user_id = u.id
+      where tx.id = id;
     end;
     else
     begin
       insert into txquestuser(quest_id, user_id, comment) values(quest_id, user_id, comment);
+            
+            select tx.id, tx.user_id, tx.comment, DATE_FORMAT(tx.date, '%d.%m.%x') as date, u.name as user_name 
+      from txquestuser tx inner join tuser u on tx.user_id = u.id
+      where tx.quest_id = quest_id and user_id = user_id;
     end;
   end if;
 END ;;
@@ -809,6 +817,11 @@ BEGIN
     select s.id, s.name from tstation s inner join txqueststation tx on s.id = tx.station_id
     where tx.quest_id = quest_id;
     
+    -- Select comments
+    select tx.id, tx.user_id, tx.comment, DATE_FORMAT(tx.date, '%d.%m.%x') as date, u.name as user_name 
+    from txquestuser tx inner join tuser u on tx.user_id = u.id
+    where tx.quest_id = quest_id/* and tx.approved_flag = 1*/;
+    
     /*select t.*, case when tx.quest_id is null then 0 else 1 end as selected  
     from ttag t 
     left join txquesttag tx on t.id = tx.tag_id
@@ -1101,4 +1114,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-07-30 17:47:37
+-- Dump completed on 2015-07-31 14:46:58

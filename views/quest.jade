@@ -5,7 +5,12 @@ block style
 	link(rel='stylesheet', href='/stylesheets/app.css')
 	link(rel='stylesheet', href='/stylesheets/quest.css')
 
+block script
+	script(src='/lib/jquery.form.min.js')
+	script(src='/js/quest.js')
+
 block content
+	include ./widgets/comment-widget.jade
 	include ./header.jade
 
 	.container-fluid
@@ -147,77 +152,58 @@ block content
 								hr.no-margin-top
 								p !{descr}
 		// QUEST INFO
-		//- .row
-		//- 	.col-md-12
-		//- 		div
-		//- 			// Nav tabs
-		//- 			ul.nav.nav-tabs(role='tablist')
-		//- 				li.active(role='presentation')
-		//- 					a(href='#reviews', aria-controls='reviews', role='tab', data-toggle='tab') Отзывы
-		//- 				li(role='presentation')
-		//- 					a(href='#map', aria-controls='map', role='tab', data-toggle='tab') Карта
-		//- 				li(role='presentation')
-		//- 					a(href='#video', aria-controls='video', role='tab', data-toggle='tab') Видео
-		//- 			// Tab panes
-		//- 			.tab-content
-		//- 				#reviews.tab-pane.active(role='tabpanel')
-		//- 					.panel.panel-gray
-		//- 						| Тут пока нет отзывов
-		//- 					article.media
-		//- 						.media-left
-		//- 							a(href='#')
-		//- 								img.media-object.img-circle(src='http://placehold.it/100x100', alt='...')
-		//- 						.media-body
-		//- 							h4.media-heading
-		//- 								| Аркадий Укупник 
-		//- 								span.small.text-muted 30 августа, 2014 год
-		//- 							p
-		//- 								i
-		//- 									| Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc hendrerit arcu nec
-		//- 									| sapien
-		//- 									| sollicitudin, non consectetur velit ullamcorper. Quisque nisl nulla, efficitur
-		//- 									| nec
-		//- 									| tellus a, fermentum dignissim lacus.
-		//- 							div
-		//- 								i.fa.fa-star
-		//- 								i.fa.fa-star
-		//- 								i.fa.fa-star
-		//- 								i.fa.fa-star
-		//- 								i.fa.fa-star
-		//- 					article.media
-		//- 						.media-left
-		//- 							a(href='#')
-		//- 								img.media-object.img-circle(src='http://placehold.it/100x100', alt='...')
-		//- 						.media-body
-		//- 							h4.media-heading
-		//- 								| Аркадий Укупник 
-		//- 								span.small.text-muted 30 августа, 2014 год
-		//- 							p
-		//- 								i
-		//- 									| Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc hendrerit arcu nec
-		//- 									| sapien
-		//- 									| sollicitudin, non consectetur velit ullamcorper. Quisque nisl nulla, efficitur
-		//- 									| nec
-		//- 									| tellus a, fermentum dignissim lacus.
-		//- 							div
-		//- 								i.fa.fa-star
-		//- 								i.fa.fa-star
-		//- 								i.fa.fa-star
-		//- 								i.fa.fa-star
-		//- 								i.fa.fa-star
-		//- 					.text-center.reviews-actions
-		//- 						a.btn.btn-warning(href='#')
-		//- 							| Оставить отзыв
-		//- 						br.visible-xs
-		//- 						a.show-more(href='#')
-		//- 							i Показать ещё отзывы
-		//- 						br.visible-xs
-		//- 						a.schedule-link(href='#')
-		//- 							i.fa.fa-arrow-down
-		//- 							| расписание ниже
-		//- 				#map.tab-pane(role='tabpanel')
-		//- 					iframe(src='https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d287424.1771205896!2d37.632494949999995!3d55.749792000000014!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x46b54afc73d4b0c9%3A0x3d44d6cc5757cf4c!2sMoskwa%2C+Rosja!5e0!3m2!1spl!2spl!4v1436016243560', style='border:0', allowfullscreen='')
-		//- 				#video.tab-pane(role='tabpanel') ...
+		.row
+			.col-md-12
+				div
+					// Nav tabs
+					ul.nav.nav-tabs(role='tablist')
+						li.active(role='presentation')
+							a(href='#reviews', aria-controls='reviews', role='tab', data-toggle='tab') Отзывы
+						//- li(role='presentation')
+						//- 	a(href='#map', aria-controls='map', role='tab', data-toggle='tab') Карта
+						//- li(role='presentation')
+						//- 	a(href='#video', aria-controls='video', role='tab', data-toggle='tab') Видео
+					// Tab panes
+					.tab-content
+						#reviews.tab-pane.active(role='tabpanel')
+							if comments.length === 0
+								.panel.panel-gray
+									| Пока нет отзывов
+							else
+								each comment in comments
+									+commentWidget(comment)
+						.alert-comment-success.alert.alert-success Спасибо, Ваш отзыв добавлен
+							button(type='button', data-dismiss='alert', aria-label='Close').close
+								span(aria-hidden='true') &times;
+						.text-center.add-comment-block
+							if user
+								if user.verified_flag
+									button(type='button').btn-add-comment.btn.btn-warning Оставить отзыв
+								else
+									.alert.alert-warning Чтобы оставить отзыв необходимо
+										a(href='#').verify-link подтвердить аккаунт
+							else
+								.alert.alert-warning Чтобы оставить отзыв необходимо
+									a(href='/auth/login?returnUrl=').login-link войти
+						.text-center.form-comment-block
+							form(action='/comment', method='post').form-comment
+								textarea(name='comment').form-control
+								input(type='hidden', name='questID', value=id)
+								div.comment-warning
+									| Внимание! Ваш отзыв будет добавлен после прочтения модераторами портала.
+									| В отзыве не допускается писать ответы к загадкам квеста, использовать нецензурные выражения,
+									| а также сведения, противоречащие законодательству России.
+								button(type='submit').btn-edit-comment.btn.btn-success Отправить
+								//- br.visible-xs
+								//- a.show-more(href='#')
+								//- 	i Показать ещё отзывы
+								//- br.visible-xs
+								//- a.schedule-link(href='#')
+								//- 	i.fa.fa-arrow-down
+								//- 	| расписание ниже
+						//- #map.tab-pane(role='tabpanel')
+						//- 	iframe(src='https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d287424.1771205896!2d37.632494949999995!3d55.749792000000014!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x46b54afc73d4b0c9%3A0x3d44d6cc5757cf4c!2sMoskwa%2C+Rosja!5e0!3m2!1spl!2spl!4v1436016243560', style='border:0', allowfullscreen='')
+						//- #video.tab-pane(role='tabpanel') ...
 		//- // TABS
 		//- .row
 		//- 	.col-md-12

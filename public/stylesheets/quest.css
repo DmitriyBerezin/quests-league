@@ -27,3 +27,29 @@
 	margin-left: 10px;
 	color: #000;
 }
+
+.login-link {
+	margin-left: 5px;
+}
+
+.form-comment-block {
+	display: none;
+}
+
+.alert-comment-success {
+	display: none;
+}
+
+.alert-comment-error {
+	margin-top: 10px;
+}
+
+.comment-text {
+	font-style: italic;
+}
+
+.comment-warning {
+	text-align: left;
+	font-size: 80%;
+	color: #db7e4f;
+}
