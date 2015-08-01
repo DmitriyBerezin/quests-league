@@ -103,7 +103,7 @@ function sendVerificationMail(req, res, next) {
 				data = {
 					userName: name,
 					protocol: req.protocol,
-					baseUrl: req.baseUrl,
+					hostname: req.hostname,
 					token: token,
 					id: id
 				};
