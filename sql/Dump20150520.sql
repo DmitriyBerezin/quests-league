@@ -313,7 +313,8 @@ CREATE TABLE `tuser` (
   `password` varchar(250) DEFAULT NULL,
   `token` varchar(250) DEFAULT NULL,
   `last_visit` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `verified_flag` bit(1) DEFAULT NULL,
+  `verified_flag` int(11) DEFAULT NULL,
+  `role` varchar(5) DEFAULT NULL COMMENT 'adm',
   PRIMARY KEY (`id`),
   UNIQUE KEY `email_UNIQUE` (`email`),
   UNIQUE KEY `phone_UNIQUE` (`phone`),
@@ -872,7 +873,6 @@ DELIMITER ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
 ALTER DATABASE `quests` CHARACTER SET utf8 COLLATE utf8_general_ci ;
 /*!50003 DROP PROCEDURE IF EXISTS `pUserGet` */;
-ALTER DATABASE `quests` CHARACTER SET latin1 COLLATE latin1_swedish_ci ;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
@@ -884,14 +884,15 @@ ALTER DATABASE `quests` CHARACTER SET latin1 COLLATE latin1_swedish_ci ;
 DELIMITER ;;
 CREATE PROCEDURE `pUserGet`(email varchar(45))
 BEGIN
-  select * from tuser t where t.email = email;
+  update tuser t set last_visit = default where t.email = email and t.auth_type = 'local';
+    
+    select * from tuser t where t.email = email and t.auth_type = 'local';
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
-ALTER DATABASE `quests` CHARACTER SET utf8 COLLATE utf8_general_ci ;
 /*!50003 DROP PROCEDURE IF EXISTS `pUserOAuth` */;
 ALTER DATABASE `quests` CHARACTER SET latin1 COLLATE latin1_swedish_ci ;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -985,4 +986,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-07-28 17:46:54
+-- Dump completed on 2015-07-29 13:16:45

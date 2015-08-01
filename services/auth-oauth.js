@@ -8,8 +8,7 @@ var util = require('util'),
 	InstagramStrategy = require('passport-instagram').Strategy,
 
 	config = require('../config/config'),
-	db = require('../services/database'),
-	authUtils = require('./utils.js'),
+	db = require('./database'),
 
 	providers = {
 		FACEBOOK: 'fb',

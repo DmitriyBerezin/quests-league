@@ -1,12 +1,19 @@
 
 module.exports = {
 	database: {
-		host: 'quests.cp0uujwgrxiz.eu-west-1.rds.amazonaws.com',
-		// host: 'localhost',
-		port: 3306,
-		user: 'moderator',
-		password: process.env.RDS_PSW || 'root',
-		connectionLimit: 10
+		web: {
+			host: 'quests.cp0uujwgrxiz.eu-west-1.rds.amazonaws.com',
+			port: 3306,
+			user: 'web',
+			password: process.env.RDS_WEB_PSW || 'root',
+			connectionLimit: 10
+		},
+		admin: {
+			host: 'quests.cp0uujwgrxiz.eu-west-1.rds.amazonaws.com',
+			port: 3306,
+			user: 'moderator',
+			password: process.env.RDS_ADM_PSW || 'root'
+		}
 	},
 
 	auth: {

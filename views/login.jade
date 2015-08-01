@@ -1,46 +1,68 @@
 extends layout
 
-block content
-	div
-		form(action='/auth/signup', method='post')
-			div
-				label Name
-				input(type='text', name='name')
-			div
-				label Email
-				input(type='text', name='email')
-			div
-				label Password
-				input(type='password', name='password')
-			div
-				label Password confirmation
-				input(type='password', name='passwordConfirmation')
-			div
-				input(type='submit', value='Sign Up')
+block style
+	link(rel='stylesheet', href='/stylesheets/style.css')
+	link(rel='stylesheet', href='/stylesheets/auth.css')
 
-	div
-		div.error= message
-		form(action='/auth/login', method='post')
-			div
-				label Email
-				input(type='text', name='email')
-			div
-				label Password
-				input(type='password', name='password')
-			div
-				input(type='submit', value='Log In')
-	
-	div
-		ul
-			li
-				a(href="/auth/facebook") Login with Facebook
-			li
-				a(href="/auth/twitter") Login with Twitter
-			li
-				a(href="/auth/vkontakte") Login with VKontakte
-			li
-				a(href="/auth/mailru") Login with MailRu
-			li
-				a(href="/auth/google") Login with Google
-			li
-				a(href="/auth/instagram") Login with Instagram
+block script
+	script(src='/lib/jquery-validation/jquery.validate.min.js')
+	script(src='/lib/jquery-validation/messages_ru.min.js')
+	script(src='/js/auth.js')
+
+block content
+	.container.auth-container
+		if message.length > 0
+			.alert.alert-danger= message
+				button(type='button', data-dismiss='alert', aria-label='Close').close
+					span(aria-hidden='true') &times;
+		.row
+			.col-sm-6.sol-xs-12
+				h3 Вход
+				form(action='/auth/login', method='post').form-horizontal.form-login
+					.form-group
+						label.col-sm-2.control-label Email
+						.col-sm-7
+							input(type='email', name='email', required).form-control
+					.form-group
+						label.col-sm-2.control-label Пароль
+						.col-sm-7
+							input(type='password', name='password', required).form-control
+					.form-group.button-group
+						input(type='submit', value='Вход').btn.btn-primary
+
+			.col-sm-6.sol-xs-12
+				h3 Регистрация
+				form(action='/auth/signup', method='post').form-horizontal.form-signup
+					.form-group
+						label.col-sm-2.control-label Имя
+						.col-sm-7
+							input(type='text', name='name', required).form-control
+					.form-group
+						label.col-sm-2.control-label Email
+						.col-sm-7
+							input(type='email', name='email', required).form-control
+					.form-group
+						label.col-sm-2.control-label Пароль
+						.col-sm-7
+							input(type='password', id='sigupPassword', name='password', required).form-control
+					.form-group
+						label.col-sm-2.control-label Повторите пароль
+						.col-sm-7
+							input(type='password', name='passwordConfirmation', required).form-control
+					.form-group.button-group
+						input(type='submit', value='Регистрация').btn.btn-success
+
+		.row
+			ul.list-inline.list-unstyled.list-social
+				li
+					a(href="/auth/facebook") Facebook
+				li
+					a(href="/auth/twitter") Twitter
+				li
+					a(href="/auth/vkontakte") VKontakte
+				li
+					a(href="/auth/mailru") MailRu
+				li
+					a(href="/auth/google") Google
+				li
+					a(href="/auth/instagram") Instagram

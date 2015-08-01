@@ -3,10 +3,11 @@ var passport = require('passport'),
 	util = require('util'),
 	crypto = require('crypto'),
 	bcrypt = require('bcrypt'),
-	
-	db = require('../services/database'),
-	mailer = require('../services/mailer'),
-	authUtils = require('./utils');
+	path = require('path'),
+
+	db = require('./database'),
+	mailer = require('./mailer'),
+	utils = require('./utils');
 
 
 passport.use(new LocalStrategy({
@@ -17,31 +18,27 @@ passport.use(new LocalStrategy({
 	function(email, password, done) {
 		function callback(res) {
 			if (res) {
-				if (row.verified_flag === 1) {
-					return done(null, row);	
-				}
-				
-				return done(null, row, { info: 'Account is not verified' });
+				return done(null, row);
 			}
 
-			return done(null, false, { message: 'Incorrect password' });
+			return done(null, false, { message: 'Учетной записи с такими параметрами не существует' });
 		}
 
 		function errback(err) {
 			return done(err);
 		}
 
-		
+
 		var query = util.format('call quests.pUserGet("%s")', email),
 			row;
-		
+
 		db.execQuery(query, function(err, rows, fields) {
 			if (err) {
 				return done(err);
 			}
 
 			if (!rows[0].length) {
-				return done(err, false, { message: 'Incorrect email' });
+				return done(err, false, { message: 'Учетной записи с такими параметрами не существует' });
 			}
 
 			row = rows[0][0];
@@ -68,7 +65,7 @@ function signUp(req, res, next) {
 
 				return next();
 			});
-
+			console.log(req.user);
 		});
 	}
 
@@ -76,7 +73,6 @@ function signUp(req, res, next) {
 		return next(err);
 	}
 
-	
 	hashPassword(req.body.password, callback, errback);
 }
 
@@ -91,8 +87,10 @@ function sendVerificationMail(req, res, next) {
 		}
 
 		var token = buf.toString('hex'),
-			id = req.user.id
-			query = util.format('call quests.pUserSetVerificationToken(%d, "%s")', 
+			id = req.user.id,
+			email = req.user.email,
+			name = req.user.name,
+			query = util.format('call quests.pUserSetVerificationToken(%d, "%s")',
 				id, token);
 
 		db.execQuery(query, function(err, rows, fields) {
@@ -100,24 +98,44 @@ function sendVerificationMail(req, res, next) {
 				return next(err);
 			}
 
-			var mailOptions = {
-				//to: req.body.email,
-				to: 'ivan.questoff@yandex.ru',
-				subject: 'Verify account',
-				html: util.format('<a href="http://localhost:3000/auth/verify?token=%s&id=%d">Verify account</a>', token, id)
-			};
-			mailer.sendMail(mailOptions, function(err, info) {
+			var mailOptions,
+				tmplFile = path.join(__dirname, '../views/mail/verify-account.jade'),
+				data = {
+					userName: name,
+					protocol: req.protocol,
+					hostname: req.hostname,
+					token: token,
+					id: id
+				};
+
+			utils.tmpl2Str(tmplFile, data, function(err, html) {
 				if (err) {
 					return next(err);
 				}
 
-				return next();
-			});
+				mailOptions = {
+					to: email,
+					subject: 'Подтверждение аккаунта на попртале Лига Квестов',
+					html: html
+				};
+
+				mailer.sendMail(mailOptions, function(err, info) {
+					if (err) {
+						return next(err);
+					}
+
+					return next();
+				});
+			})
 		});
 	});
 }
 
-function verify(req, res, next) {
+function verifyStart(req, res, next) {
+	return sendVerificationMail(req, res, next);
+}
+
+function verifyEnd(req, res, next) {
 	var id = req.query.id,
 		token = req.query.token,
 		query = util.format('call quests.pUserVerify(%d, "%s")', id, token);
@@ -127,7 +145,23 @@ function verify(req, res, next) {
 			return next(err);
 		}
 
-		res.redirect('/user/lk');
+		if (rows[0].length === 1) {
+			req.login(rows[0][0], function(err) {
+				if (err) {
+					return next(err);
+				}
+
+				res.render('auth/verification-complete');
+			});
+		}
+		else {
+			var msg = 'Аккаунт не подтвержден, так как переданы не правильные данные. ' +
+					'Пожалуйста, попробуйте еще раз или обратитесь в поддержку.',
+				err = new Error(msg);
+			err.status = 400;
+			console.log(err);
+			next(err);
+		}
 	});
 }
 
@@ -161,5 +195,6 @@ function checkPassword(psw, hash, cb, eb) {
 module.exports = {
 	signUp: signUp,
 	sendVerificationMail: sendVerificationMail,
-	verify: verify
+	verifyStart: verifyStart,
+	verifyEnd: verifyEnd
 };

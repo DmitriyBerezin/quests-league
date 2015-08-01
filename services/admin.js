@@ -6,7 +6,7 @@ function getQuestList(done) {
 	var query = 'call quests.pQuestList()',
 		data;
 
-	db.execQuery(query, function(err, rows, fields) {
+	db.execQueryAsAdm(query, function(err, rows, fields) {
 		if (err) {
 			return done(err);
 		}
@@ -23,7 +23,7 @@ function getQuest(id, done) {
 	var query = util.format('call quests.pQuestGet(%s)', id || null),
 		data;
 
-	db.execQuery(query, function(err, rows, fields) {
+	db.execQueryAsAdm(query, function(err, rows, fields) {
 		if (err) {
 			return done(err);
 		}
@@ -58,7 +58,7 @@ function getQuest(id, done) {
 function createCompany(name, url, done) {
 	var query = util.format('call quests.pCompanyCreate("%s", "%s")', name, url);
 
-	db.execQuery(query, function(err, rows, fields) {
+	db.execQueryAsAdm(query, function(err, rows, fields) {
 		if (err) {
 			return done(err);
 		}
@@ -70,7 +70,7 @@ function createCompany(name, url, done) {
 function createTag(name, done) {
 	var query = util.format('call quests.pTagCreate("%s")', name);
 
-	db.execQuery(query, function(err, rows, fields) {
+	db.execQueryAsAdm(query, function(err, rows, fields) {
 		if (err) {
 			return done(err);
 		}
@@ -82,7 +82,7 @@ function createTag(name, done) {
 function createCountry(name, done) {
 	var query = util.format('call quests.pCountryCreate("%s")', name);
 
-	db.execQuery(query, function(err, rows, fields) {
+	db.execQueryAsAdm(query, function(err, rows, fields) {
 		if (err) {
 			return done(err);
 		}
@@ -94,7 +94,7 @@ function createCountry(name, done) {
 function createCity(name, countryID, done) {
 	var query = util.format('call quests.pCityCreate("%s", %d)', name, countryID);
 
-	db.execQuery(query, function(err, rows, fields) {
+	db.execQueryAsAdm(query, function(err, rows, fields) {
 		if (err) {
 			return done(err);
 		}
@@ -117,7 +117,7 @@ function editQuest(quest, done) {
 			quest.ceoTitle, quest.ceoDescription, quest.ceoKeywords, quest.sefName);
 
 	console.log(query);
-	db.execQuery(query, function(err, rows, fields) {
+	db.execQueryAsAdm(query, function(err, rows, fields) {
 		if (err) {
 			return done(err);
 		}
@@ -144,7 +144,7 @@ function importStations(done) {
 		query = 'call quests.pStationCreate("%s")';
 
 	for (var i = 0, l = stations.length; i < l; ++i) {
-		db.execQuery(util.format(query, stations[i]['_metroName']), function(err, rows, fields) {
+		db.execQueryAsAdm(util.format(query, stations[i]['_metroName']), function(err, rows, fields) {
 			if (err) {
 				return done(err);
 			}
@@ -159,7 +159,7 @@ function importStations(done) {
 function getCities(countryID, done) {
 	var query = util.format('call quests.pCountryCities(%s)', countryID || null);
 
-	db.execQuery(query, function(err, rows, fields) {
+	db.execQueryAsAdm(query, function(err, rows, fields) {
 		if (err) {
 			return done(err);
 		}

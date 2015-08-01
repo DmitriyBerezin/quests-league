@@ -11,8 +11,15 @@ grant execute on procedure pCityCreate to 'moderator';
 grant execute on procedure pCountryCities to 'moderator';
 
 
-grant execute on procedure pQuestGet1 to 'moderator';
-grant execute on procedure pQuestGetIdBySefName to 'moderator';
+CREATE USER 'web' IDENTIFIED BY 'questweb';
+
+grant execute on procedure pQuestGet1 to 'web';
+grant execute on procedure pQuestGetIdBySefName to 'web';
+grant execute on procedure pQuestSearch to 'web';
+grant execute on procedure pUserCreate to 'web';
+grant execute on procedure pUserGet to 'web';
+grant execute on procedure pUserSetVerificationToken to 'web';
+grant execute on procedure pUserVerify to 'web';
 
 update tquest q set q.top = 1 where id = 8;
 
