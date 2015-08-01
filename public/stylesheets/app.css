@@ -830,8 +830,13 @@ div.select-stacked div.select + .select {
   display: inline-block;
   padding: 7px;
   margin-bottom: 0;
+  margin-top: 10px;
 }
 
 .verify-link {
-  margin: 0 20px 0 10px;
+  margin-left: 10px;
+}
+
+.logout-link {
+  margin-left: 30px;
 }

@@ -15,11 +15,11 @@ header
 			.col-sm-7
 				div.auth-block
 					if user
-						if user.verified_flag
-							div Добро пожаловать, #{user.name}
-						else
+						div Добро пожаловать, #{user.name}
+							a(href='/auth/logout').logout-link Выйти
+						if !user.verified_flag
 							.alert.alert-warning.alert-not-verified
-								| #{user.name}, Ваш аккаунт не подтвержден.
+								| Ваш аккаунт не подтвержден.
 								a(href='#').verify-link Подтвердить
 					else
 						a(href='/auth/login') Регистрация
