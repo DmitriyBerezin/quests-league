@@ -12,6 +12,7 @@ grant execute on procedure pCountryCities to 'moderator';
 grant execute on procedure pCommentApprove to 'moderator';
 grant execute on procedure pCommentDel to 'moderator';
 grant execute on procedure pCommentGet to 'moderator';
+grant execute on procedure pCommentList to 'moderator';
 
 
 

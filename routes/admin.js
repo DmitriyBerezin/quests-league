@@ -145,4 +145,14 @@ router.post('/comment/approve', function(req, res, next) {
 	});
 });
 
+router.get('/comment/list', function(req, res, next) {
+	admin.getCommentList(function(err, comments) {
+		if (err) {
+			return next(err);
+		}
+
+		res.render('admin/comment-list', { comments: comments });
+	});
+});
+
 module.exports = router;

@@ -184,7 +184,7 @@ function approveComment(id, comment, done) {
 	var query = util.format('call quests.pCommentApprove(%d, "%s")',
 			id || null, comment);
 
-	db.execQuery(query, function(err, rows, fields) {
+	db.execQueryAsAdm(query, function(err, rows, fields) {
 		if (err) {
 			return done(err);
 		}
@@ -192,6 +192,20 @@ function approveComment(id, comment, done) {
 		return done();
 	});
 }
+
+function getCommentList(done) {
+	var query = 'call quests.pCommentList()',
+		data;
+
+	db.execQueryAsAdm(query, function(err, rows, fields) {
+		if (err) {
+			return done(err);
+		}
+
+		return done(null, rows[0]);
+	});
+}
+
 
 module.exports = {
 	getQuestList: getQuestList,
@@ -206,5 +220,6 @@ module.exports = {
 	getCities: getCities,
 	importStations: importStations,
 	getComment: getComment,
-	approveComment: approveComment
+	approveComment: approveComment,
+	getCommentList: getCommentList
 };
