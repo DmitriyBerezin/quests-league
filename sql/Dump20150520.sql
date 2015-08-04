@@ -445,7 +445,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pCommentApprove`(
+CREATE PROCEDURE `pCommentApprove`(
   id int,
     comment varchar(1000)
 )
@@ -467,13 +467,13 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pCommentDel`(
-  id int,
-    user_id int
+CREATE PROCEDURE `pCommentDel`(
+  _id int,
+    _user_id int
 )
 BEGIN
-  update txquestuser tx set tx.comment = null 
-    where tx.id = id and (tx.user_id = user_id or user_id in 
+    delete from txquestuser
+    where id = _id and (user_id = _user_id or user_id in 
     (
     select id from tuser where role = 'adm'
     ));
@@ -493,21 +493,21 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pCommentEdit`(
+CREATE PROCEDURE `pCommentEdit`(
   id int,
     quest_id int,
     user_id int,
     comment varchar(1000)
 )
 BEGIN
-  if EXISTS(SELECT * FROM txquestuser tx where tx.id = id) then
-    begin
-      update txquestuser tx set tx.comment = comment, tx.approved = null
-            where tx.id = id;
+  if id is not null then
+    begin 
+      update txquestuser tx set tx.comment = comment, tx.approved_flag = null
+            where tx.id = id and tx.user_id = user_id;
             
             select tx.id, tx.user_id, tx.comment, DATE_FORMAT(tx.date, '%d.%m.%x') as date, u.name as user_name 
       from txquestuser tx inner join tuser u on tx.user_id = u.id
-      where tx.id = id;
+      where tx.id = id and tx.user_id = user_id;
     end;
     else
     begin
@@ -793,7 +793,8 @@ DELIMITER ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 CREATE PROCEDURE `pQuestGet1`(
-  quest_id int
+  quest_id int,
+    user_id int
 )
 BEGIN
     declare company_id int;
@@ -817,10 +818,15 @@ BEGIN
     select s.id, s.name from tstation s inner join txqueststation tx on s.id = tx.station_id
     where tx.quest_id = quest_id;
     
-    -- Select comments
+    -- Select user comment
     select tx.id, tx.user_id, tx.comment, DATE_FORMAT(tx.date, '%d.%m.%x') as date, u.name as user_name 
     from txquestuser tx inner join tuser u on tx.user_id = u.id
-    where tx.quest_id = quest_id/* and tx.approved_flag = 1*/;
+    where tx.quest_id = quest_id and tx.user_id = user_id;
+    
+    -- Select other comments
+    select tx.id, tx.user_id, tx.comment, DATE_FORMAT(tx.date, '%d.%m.%x') as date, u.name as user_name 
+    from txquestuser tx inner join tuser u on tx.user_id = u.id
+    where tx.quest_id = quest_id and tx.user_id != user_id and tx.approved_flag = 1;
     
     /*select t.*, case when tx.quest_id is null then 0 else 1 end as selected  
     from ttag t 
@@ -1114,4 +1120,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-07-31 14:46:58
+-- Dump completed on 2015-08-04 11:59:28

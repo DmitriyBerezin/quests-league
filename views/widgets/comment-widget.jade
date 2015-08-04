@@ -1,5 +1,5 @@
 mixin commentWidget(comment)
-	article.media
+	article.media.comment
 		//- .media-left
 		//- 	a(href='#')
 		//- 		img.media-object.img-circle(src='http://placehold.it/100x100', alt='...')
@@ -14,3 +14,9 @@ mixin commentWidget(comment)
 			//- 	i.fa.fa-star
 			//- 	i.fa.fa-star
 			//- 	i.fa.fa-star
+
+mixin editableCommentWidget(comment)
+	b Ваш отзыв
+	span(data-comment-id=comment.id).user-comment-remove.pseudo-link Удалить
+	span(data-comment-id=comment.id).user-comment-edit.pseudo-link Изменить
+	+commentWidget(comment)

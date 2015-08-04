@@ -835,3 +835,9 @@ div.select-stacked div.select + .select {
 .verify-link {
   margin: 0 20px 0 10px;
 }
+
+.pseudo-link {
+  border-bottom: 1px dashed;
+  padding-bottom: .1em;
+  cursor: pointer;
+}

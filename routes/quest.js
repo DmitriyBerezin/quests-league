@@ -15,7 +15,8 @@ router.get('/search', function(req, res, next) {
 
 router.get('/:idOrSef', function(req, res, next) {
 	var id = +req.params.idOrSef,
-		sefName;
+		sefName,
+		userID = req.user ? req.user.id : null;
 
 	if (isNaN(id)) {
 		id = null;
@@ -30,7 +31,7 @@ router.get('/:idOrSef', function(req, res, next) {
 		});
 	}
 
-	quest.getQuest(id, function(err, data) {
+	quest.getQuest(id, userID, function(err, data) {
 		if (err) {
 			return next(err);
 		}

@@ -43,6 +43,21 @@ router.get('/:id', function(req, res, next) {
 	});
 });
 
+// TODO: should be PUT method
+router.post('/:id', function(req, res, next) {
+	var id = req.params.id,
+		userID = req.user.id,
+		comment = req.body.comment;
+
+	service.editComment(id, null, userID, comment, function(err, comment) {
+		if (err) {
+			return next(err);
+		}
+
+		res.status(200).send(comment);
+	});
+});
+
 router.post('/', function(req, res, next) {
 	var questID = req.body.questID,
 		userID = req.user.id,
@@ -91,7 +106,7 @@ router.delete('/', function(req, res, next) {
 		return next(err);
 	}
 
-	service.delComment(id, function(err) {
+	service.delComment(id, req.user.id, function(err) {
 		if (err) {
 			return next(err);
 		}

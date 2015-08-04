@@ -13,6 +13,8 @@ block content
 	include ./widgets/comment-widget.jade
 	include ./header.jade
 
+	input(type='hidden', name='id', value=id)
+
 	.container-fluid
 		.row
 			.col-md-12.no-padding
@@ -165,17 +167,7 @@ block content
 						//- 	a(href='#video', aria-controls='video', role='tab', data-toggle='tab') Видео
 					// Tab panes
 					.tab-content
-						#reviews.tab-pane.active(role='tabpanel')
-							if comments.length === 0
-								.panel.panel-gray
-									| Пока нет отзывов
-							else
-								each comment in comments
-									+commentWidget(comment)
-						.alert-comment-success.alert.alert-success Спасибо, Ваш отзыв добавлен
-							button(type='button', data-dismiss='alert', aria-label='Close').close
-								span(aria-hidden='true') &times;
-						.text-center.add-comment-block
+						.text-center.add-comment-block(style="display: #{userComment ? 'none' : 'block'}")
 							if user
 								if user.verified_flag
 									button(type='button').btn-add-comment.btn.btn-warning Оставить отзыв
@@ -190,10 +182,19 @@ block content
 								textarea(name='comment').form-control
 								input(type='hidden', name='questID', value=id)
 								div.comment-warning
-									| Внимание! Ваш отзыв будет добавлен после прочтения модераторами портала.
+									| Внимание! Ваш отзыв будет виден остальным пользователям после прочтения модераторами портала.
 									| В отзыве не допускается писать ответы к загадкам квеста, использовать нецензурные выражения,
 									| а также сведения, противоречащие законодательству России.
 								button(type='submit').btn-edit-comment.btn.btn-success Отправить
+								button(type='button').btn-cancel-comment.btn.btn-default Отмена
+						#reviews.tab-pane.active(role='tabpanel')
+							.panel-no-comments.panel.panel-gray(style="display: #{userComment || (otherComments && otherComments.length > 0) ? 'none' : 'block'}") Пока нет отзывов
+							.user-comment(style="display: #{userComment ? 'block' : 'none'}")
+								if userComment
+									+editableCommentWidget(userComment)
+							.other-comments
+								each comment in otherComments
+									+commentWidget(comment)
 								//- br.visible-xs
 								//- a.show-more(href='#')
 								//- 	i Показать ещё отзывы

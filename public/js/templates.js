@@ -7,7 +7,28 @@ jade_mixins["commentWidget"] = function(comment){
 var block = (this && this.block), attributes = (this && this.attributes) || {};
 buf.push("<article class=\"media\"><div class=\"media-body\"><h4 class=\"media-heading\">" + (jade.escape((jade_interp = comment.user_name) == null ? '' : jade_interp)) + "<span class=\"small text-muted\">" + (jade.escape(null == (jade_interp = comment.date) ? "" : jade_interp)) + "</span></h4><p class=\"comment-text\">" + (jade.escape(null == (jade_interp = comment.comment) ? "" : jade_interp)) + "</p></div></article>");
 };
+
+
+
+
+
 jade_mixins["commentWidget"](comment);}.call(this,"comment" in locals_for_with?locals_for_with.comment:typeof comment!=="undefined"?comment:undefined));;return buf.join("");
+}
+function tmplEditableComment(locals) {
+var buf = [];
+var jade_mixins = {};
+var jade_interp;
+;var locals_for_with = (locals || {});(function (comment) {
+jade_mixins["commentWidget"] = function(comment){
+var block = (this && this.block), attributes = (this && this.attributes) || {};
+buf.push("<article class=\"media\"><div class=\"media-body\"><h4 class=\"media-heading\">" + (jade.escape((jade_interp = comment.user_name) == null ? '' : jade_interp)) + "<span class=\"small text-muted\">" + (jade.escape(null == (jade_interp = comment.date) ? "" : jade_interp)) + "</span></h4><p class=\"comment-text\">" + (jade.escape(null == (jade_interp = comment.comment) ? "" : jade_interp)) + "</p></div></article>");
+};
+jade_mixins["editableCommentWidget"] = function(comment){
+var block = (this && this.block), attributes = (this && this.attributes) || {};
+buf.push("<b>Ваш отзыв</b><span" + (jade.attr("data-comment-id", comment.id, true, false)) + " class=\"user-comment-remove pseudo-link\">Удалить</span><span" + (jade.attr("data-comment-id", comment.id, true, false)) + " class=\"user-comment-edit pseudo-link\">Изменить</span>");
+jade_mixins["commentWidget"](comment);
+};
+jade_mixins["editableCommentWidget"](comment);}.call(this,"comment" in locals_for_with?locals_for_with.comment:typeof comment!=="undefined"?comment:undefined));;return buf.join("");
 }
 function tmplErrorAlert(locals) {
 var buf = [];
