@@ -49,7 +49,7 @@ router.post('/:id', function(req, res, next) {
 		userID = req.user.id,
 		comment = req.body.comment;
 
-	service.editComment(id, null, userID, comment, function(err, comment) {
+	service.editComment(id, null, userID, comment, req.protocol, req.hostname, function(err, comment) {
 		if (err) {
 			return next(err);
 		}
@@ -69,7 +69,7 @@ router.post('/', function(req, res, next) {
 		return next(err);
 	}
 
-	service.editComment(null, questID, userID, comment, function(err, comment) {
+	service.editComment(null, questID, userID, comment, req.protocol, req.hostname, function(err, comment) {
 		if (err) {
 			return next(err);
 		}

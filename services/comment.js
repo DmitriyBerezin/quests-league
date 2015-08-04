@@ -1,5 +1,6 @@
 var util = require('util'),
-	db = require('./database');
+	db = require('./database'),
+	mail = require('./mailer');
 
 function getComment(id, questID, userID, done) {
 	var query = util.format('call quests.pCommentGet(%s, %s, %s)',
@@ -14,7 +15,7 @@ function getComment(id, questID, userID, done) {
 	});
 }
 
-function editComment(id, questID, userID, comment, done) {
+function editComment(id, questID, userID, comment, protocol, hostname, done) {
 	var query = util.format('call quests.pCommentEdit(%s, %s, %s, "%s")',
 			id || null, questID || null, userID || null, comment);
 
@@ -23,7 +24,21 @@ function editComment(id, questID, userID, comment, done) {
 			return done(err);
 		}
 
-		return done(null, rows[0][rows[0].length - 1]);
+		var comment = rows[0][rows[0].length - 1],
+			body = util.format('<a href="%s://%s/admin/comment/approve/%d" target="lqAdmin">Отмодерировать отзыв</a>',
+				protocol, hostname, comment.id),
+			mailOptions = {
+				subject: 'Добавлен/изменен отзыв',
+				html: body
+			};
+
+		mail.sendMail2Admins(mailOptions, function(err) {
+			if (err) {
+				return done(err);
+			}
+
+			return done(null, comment);
+		});
 	});
 }
 

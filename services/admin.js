@@ -1,6 +1,6 @@
 var util = require('util'),
-	db = require('../services/database'),
-	s3 = require('../services/aws-s3');
+	db = require('./database'),
+	s3 = require('./aws-s3');
 
 function getQuestList(done) {
 	var query = 'call quests.pQuestList()',
@@ -168,6 +168,18 @@ function getCities(countryID, done) {
 	});
 }
 
+function getComment(id, done) {
+	var query = util.format('call quests.pCommentGet(%d)', id);
+
+	db.execQueryAsAdm(query, function(err, rows, fields) {
+		if (err) {
+			return done(err);
+		}
+
+		return done(null, rows[0].length > 0 ? rows[0][0] : null);
+	});
+}
+
 function approveComment(id, comment, done) {
 	var query = util.format('call quests.pCommentApprove(%d, "%s")',
 			id || null, comment);
@@ -193,5 +205,6 @@ module.exports = {
 	createCity: createCity,
 	getCities: getCities,
 	importStations: importStations,
+	getComment: getComment,
 	approveComment: approveComment
 };

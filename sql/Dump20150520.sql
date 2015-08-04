@@ -378,6 +378,7 @@ CREATE TABLE `txquestuser` (
   `ratio` int(11) DEFAULT NULL,
   `images` varchar(500) DEFAULT NULL COMMENT 'Пути к картинкам, разделенные ;',
   `approved_flag` int(11) DEFAULT NULL,
+  `deleted_flag` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_txquestuser_quest_id_idx` (`quest_id`),
   KEY `fk_txquestuser_user_id_idx` (`user_id`),
@@ -450,7 +451,7 @@ CREATE PROCEDURE `pCommentApprove`(
     comment varchar(1000)
 )
 BEGIN
-  update txquestuser tx set tx.comemnt = comment, tx.approved_flag = 1 where tx.id = id;
+  update txquestuser tx set tx.comment = comment, tx.approved_flag = 1 where tx.id = id;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -472,7 +473,7 @@ CREATE PROCEDURE `pCommentDel`(
     _user_id int
 )
 BEGIN
-    delete from txquestuser
+    update txquestuser tx set tx.deleted_flag = 1
     where id = _id and (user_id = _user_id or user_id in 
     (
     select id from tuser where role = 'adm'
@@ -534,23 +535,12 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pCommentGet`(
-  id int,
-    quest_id int,
-    user_id int
+CREATE PROCEDURE `pCommentGet`(
+  id int
 )
 BEGIN
-  if id is not null then
-    begin
-      select tx.id, tx.quest_id, tx.user_id, tx.comment from txquestuser
-        where tx.id = id;
-    end;
-  else
-    begin
-      select tx.id, tx.quest_id, tx.user_id, tx.comment from txquestuser
-        where tx.quest_id = quest_id and tx.user_id = user_id;
-    end;
-  end if;
+  select tx.id, tx.quest_id, tx.user_id, tx.comment, DATE_FORMAT(tx.date, '%d.%m.%x') as date from txquestuser tx
+    where tx.id = id;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -627,7 +617,7 @@ ALTER DATABASE `quests` CHARACTER SET latin1 COLLATE latin1_swedish_ci ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE PROCEDURE `pQuestDuctionaries`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pQuestDuctionaries`()
 BEGIN
   select id, name from tcompany;
     select id, name from ttag;
@@ -821,12 +811,12 @@ BEGIN
     -- Select user comment
     select tx.id, tx.user_id, tx.comment, DATE_FORMAT(tx.date, '%d.%m.%x') as date, u.name as user_name 
     from txquestuser tx inner join tuser u on tx.user_id = u.id
-    where tx.quest_id = quest_id and tx.user_id = user_id;
+    where tx.quest_id = quest_id and (deleted_flag is null or deleted_flag != 1) and tx.user_id = user_id;
     
     -- Select other comments
     select tx.id, tx.user_id, tx.comment, DATE_FORMAT(tx.date, '%d.%m.%x') as date, u.name as user_name 
     from txquestuser tx inner join tuser u on tx.user_id = u.id
-    where tx.quest_id = quest_id and tx.user_id != user_id and tx.approved_flag = 1;
+    where tx.quest_id = quest_id and (deleted_flag is null or deleted_flag != 1) and tx.user_id != user_id and tx.approved_flag = 1;
     
     /*select t.*, case when tx.quest_id is null then 0 else 1 end as selected  
     from ttag t 
@@ -1120,4 +1110,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-08-04 11:59:28
+-- Dump completed on 2015-08-04 17:35:23

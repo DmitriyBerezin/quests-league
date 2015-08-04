@@ -25,7 +25,6 @@ grant execute on procedure pUserGet to 'web';
 grant execute on procedure pUserSetVerificationToken to 'web';
 grant execute on procedure pUserVerify to 'web';
 grant execute on procedure pCommentEdit to 'web';
-grant execute on procedure pCommentGet to 'web';
 grant execute on procedure pCommentDel to 'web';
 
 

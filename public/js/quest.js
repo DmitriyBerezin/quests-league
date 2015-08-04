@@ -35,7 +35,7 @@ $(function() {
 	function onFormCommentError(res) {
 		var error = 'Отзыв не был добавлен: ' + res.responseJSON.message;
 
-		$formComment.append(tmplErrorAlert({ msg: error }));
+		$formComment.append(tmplAlert({ msg: error, className: 'alert-danger' }));
 	}
 
 	function onBtnAddCommentClick(evt) {
@@ -48,7 +48,13 @@ $(function() {
 
 	function onBtnCancelCommentClick(evt) {
 		$writeCommentBlock.hide();
-		$userComment.show();
+		if ($userComment.html()) {
+			$userComment.show();
+		}
+		else {
+			$userComment.hide();
+			$addCommentBlock.show();
+		}
 	}
 
 	function onUserCommentEditClick(evt) {

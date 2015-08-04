@@ -114,7 +114,19 @@ router.get('/stations/import', function(req, res, next) {
 	});
 });
 
-router.put('/comment/approve', function(req, res, next) {
+router.get('/comment/approve/:id', function(req, res, next) {
+	var commentID = req.params.id;
+
+	admin.getComment(commentID, function(err, comment) {
+		if (err) {
+			return next(err);
+		}
+
+		res.render('admin/comment', comment);
+	});
+});
+
+router.post('/comment/approve', function(req, res, next) {
 	var id = req.body.id,
 		comment = req.body.comment;
 
