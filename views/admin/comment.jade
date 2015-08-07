@@ -8,7 +8,8 @@ block script
 	script(src='/js/admin/comment.js')
 
 block content
-	.alert.alert-warning Прочтите отзыв и при необходимости отредактируйте или удалите его
+	.alert.alert-warning Прочтите отзыв и при необходимости отредактируйте или удалите его.
+		a(href='/admin/comment/list') Все отзывы для модерации
 
 	form(method='post', action='/admin/comment/approve').form-horizontal.form-comment
 		input(type='hidden', name='id', value=id)
@@ -26,6 +27,9 @@ block content
 			label.col-sm-2.control-label Отзыв
 			div.col-sm-7
 				textarea(name='comment').form-control= comment
+
+		if approved_flag == 1
+			.alert.alert-success Этот отзыв уже проверен модераторами.
 
 		div.button-group
 			button(type='submit').btn-approve.btn.btn-primary Отзыв проверен

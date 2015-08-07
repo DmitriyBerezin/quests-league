@@ -539,7 +539,7 @@ CREATE PROCEDURE `pCommentGet`(
   id int
 )
 BEGIN
-  select tx.id, tx.quest_id, tx.user_id, tx.comment, DATE_FORMAT(tx.date, '%d.%m.%x') as date from txquestuser tx
+  select tx.id, tx.quest_id, tx.user_id, tx.comment, tx.approved_flag, DATE_FORMAT(tx.date, '%d.%m.%x') as date from txquestuser tx
     where tx.id = id;
 END ;;
 DELIMITER ;
@@ -1133,4 +1133,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-08-04 18:19:44
+-- Dump completed on 2015-08-07 14:44:22
