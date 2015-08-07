@@ -110,7 +110,48 @@ router.get('/stations/import', function(req, res, next) {
 			return next(err);
 		}
 
-		res.status(200).send();
+		res.status(200).send({});
+	});
+});
+
+router.get('/comment/approve/:id', function(req, res, next) {
+	var commentID = req.params.id;
+
+	admin.getComment(commentID, function(err, comment) {
+		if (err) {
+			return next(err);
+		}
+
+		res.render('admin/comment', comment);
+	});
+});
+
+router.post('/comment/approve', function(req, res, next) {
+	var id = req.body.id,
+		comment = req.body.comment;
+
+	if (!id) {
+		var err = new Error('Parameter id is required');
+		err.status = 400;
+		return next(err);
+	}
+
+	admin.approveComment(id, comment, function(err) {
+		if (err) {
+			return next(err);
+		}
+
+		res.status(200).send({});
+	});
+});
+
+router.get('/comment/list', function(req, res, next) {
+	admin.getCommentList(function(err, comments) {
+		if (err) {
+			return next(err);
+		}
+
+		res.render('admin/comment-list', { comments: comments });
 	});
 });
 

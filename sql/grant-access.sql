@@ -9,6 +9,11 @@ grant execute on procedure pStationCreate to 'moderator';
 grant execute on procedure pCountryCreate to 'moderator';
 grant execute on procedure pCityCreate to 'moderator';
 grant execute on procedure pCountryCities to 'moderator';
+grant execute on procedure pCommentApprove to 'moderator';
+grant execute on procedure pCommentDel to 'moderator';
+grant execute on procedure pCommentGet to 'moderator';
+grant execute on procedure pCommentList to 'moderator';
+
 
 
 CREATE USER 'web' IDENTIFIED BY 'questweb';
@@ -20,6 +25,8 @@ grant execute on procedure pUserCreate to 'web';
 grant execute on procedure pUserGet to 'web';
 grant execute on procedure pUserSetVerificationToken to 'web';
 grant execute on procedure pUserVerify to 'web';
+grant execute on procedure pCommentEdit to 'web';
+grant execute on procedure pCommentDel to 'web';
 
 update tquest q set q.top = 1 where id = 8;
 

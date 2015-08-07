@@ -9,6 +9,11 @@ function sendMail(options, cb) {
 	transporter.sendMail(options, cb);
 }
 
+function sendMail2Admins(options, cb) {
+	options.to = config.mail.groups.admins.join(';');
+	sendMail(options, cb);
+}
+
 function sendErrorLogMail(err, cb) {
 	var options = {
 		from: 'ivan.questoff@yandex.ru',
@@ -24,5 +29,6 @@ function sendErrorLogMail(err, cb) {
 
 module.exports = {
 	sendMail: sendMail,
+	sendMail2Admins: sendMail2Admins,
 	sendErrorLogMail: sendErrorLogMail
 };

@@ -372,11 +372,13 @@ CREATE TABLE `txquestuser` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `quest_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
-  `date` datetime DEFAULT NULL,
-  `success_flag` bit(1) NOT NULL,
+  `date` datetime DEFAULT CURRENT_TIMESTAMP,
+  `success_flag` int(11) DEFAULT NULL,
   `comment` varchar(1000) DEFAULT NULL,
   `ratio` int(11) DEFAULT NULL,
   `images` varchar(500) DEFAULT NULL COMMENT 'Пути к картинкам, разделенные ;',
+  `approved_flag` int(11) DEFAULT NULL,
+  `deleted_flag` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_txquestuser_quest_id_idx` (`quest_id`),
   KEY `fk_txquestuser_user_id_idx` (`user_id`),
@@ -428,6 +430,140 @@ CREATE PROCEDURE `pCityCreate`(
 BEGIN
   insert into tcity(`name`, country_id) values(`name`, country_id);
     select LAST_INSERT_ID() as id, `name` as `name`;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `pCommentApprove` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE PROCEDURE `pCommentApprove`(
+  id int,
+    comment varchar(1000)
+)
+BEGIN
+  update txquestuser tx set tx.comment = comment, tx.approved_flag = 1 where tx.id = id;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `pCommentDel` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE PROCEDURE `pCommentDel`(
+  _id int,
+    _user_id int
+)
+BEGIN
+    update txquestuser tx set tx.deleted_flag = 1
+    where id = _id and (user_id = _user_id or user_id in 
+    (
+    select id from tuser where role = 'adm'
+    ));
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `pCommentEdit` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE PROCEDURE `pCommentEdit`(
+  id int,
+    quest_id int,
+    user_id int,
+    comment varchar(1000)
+)
+BEGIN
+  if id is not null then
+    begin 
+      update txquestuser tx set tx.comment = comment, tx.approved_flag = null
+            where tx.id = id and tx.user_id = user_id;
+            
+            select tx.id, tx.user_id, tx.comment, DATE_FORMAT(tx.date, '%d.%m.%x') as date, u.name as user_name 
+      from txquestuser tx inner join tuser u on tx.user_id = u.id
+      where tx.id = id and tx.user_id = user_id;
+    end;
+    else
+    begin
+      insert into txquestuser(quest_id, user_id, comment) values(quest_id, user_id, comment);
+            
+            select tx.id, tx.user_id, tx.comment, DATE_FORMAT(tx.date, '%d.%m.%x') as date, u.name as user_name 
+      from txquestuser tx inner join tuser u on tx.user_id = u.id
+      where tx.quest_id = quest_id and user_id = user_id;
+    end;
+  end if;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `pCommentGet` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE PROCEDURE `pCommentGet`(
+  id int
+)
+BEGIN
+  select tx.id, tx.quest_id, tx.user_id, tx.comment, DATE_FORMAT(tx.date, '%d.%m.%x') as date from txquestuser tx
+    where tx.id = id;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `pCommentList` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE PROCEDURE `pCommentList`()
+BEGIN
+  select q.id as quest_id, q.name as quest_name, c.id as comment_id, c.comment, DATE_FORMAT(c.date, '%d.%m.%x') as date 
+    from tquest q inner join txquestuser c on q.id = c.quest_id
+  where (c.approved_flag is null or c.approved_flag != 1)
+    and (c.deleted_flag is null or c.deleted_flag != 1)
+  order by quest_id, c.date;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -504,7 +640,7 @@ ALTER DATABASE `quests` CHARACTER SET latin1 COLLATE latin1_swedish_ci ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE PROCEDURE `pQuestDuctionaries`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pQuestDuctionaries`()
 BEGIN
   select id, name from tcompany;
     select id, name from ttag;
@@ -670,7 +806,8 @@ DELIMITER ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 CREATE PROCEDURE `pQuestGet1`(
-  quest_id int
+  quest_id int,
+    user_id int
 )
 BEGIN
     declare company_id int;
@@ -693,6 +830,16 @@ BEGIN
     -- Select stations
     select s.id, s.name from tstation s inner join txqueststation tx on s.id = tx.station_id
     where tx.quest_id = quest_id;
+    
+    -- Select user comment
+    select tx.id, tx.user_id, tx.comment, DATE_FORMAT(tx.date, '%d.%m.%x') as date, u.name as user_name 
+    from txquestuser tx inner join tuser u on tx.user_id = u.id
+    where tx.quest_id = quest_id and (deleted_flag is null or deleted_flag != 1) and tx.user_id = user_id;
+    
+    -- Select other comments
+    select tx.id, tx.user_id, tx.comment, DATE_FORMAT(tx.date, '%d.%m.%x') as date, u.name as user_name 
+    from txquestuser tx inner join tuser u on tx.user_id = u.id
+    where tx.quest_id = quest_id and (deleted_flag is null or deleted_flag != 1) and tx.user_id != user_id and tx.approved_flag = 1;
     
     /*select t.*, case when tx.quest_id is null then 0 else 1 end as selected  
     from ttag t 
@@ -986,4 +1133,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-07-29 13:16:45
+-- Dump completed on 2015-08-04 18:19:44

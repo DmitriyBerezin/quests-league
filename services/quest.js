@@ -5,8 +5,8 @@ var util = require('util'),
 	s3 = require('./aws-s3'),
 	admin = require('./admin');
 
-function getQuest(id, done) {
-	var query = util.format('call quests.pQuestGet1(%s)', id || null),
+function getQuest(id, userID, done) {
+	var query = util.format('call quests.pQuestGet1(%s, %s)', id || null, userID || null),
 		res;
 
 	db.execQuery(query, function(err, rows, fields) {
@@ -20,6 +20,8 @@ function getQuest(id, done) {
 		res.tags = rows[1];
 		res.quests = rows[2];
 		res.stations = rows[3];
+		res.userComment = rows[4].length > 0 ? rows[4][0] : null;
+		res.otherComments = rows[5];
 		res.imgs = [];
 		res.ceo = {
 			title: res.ceo_title,

@@ -1,0 +1,32 @@
+extends ../layout
+
+block style
+	link(rel='stylesheet', href='/stylesheets/admin/quest.css')
+
+block script
+	script(src='/lib/jquery.form.min.js')
+	script(src='/js/admin/comment.js')
+
+block content
+	.alert.alert-warning Прочтите отзыв и при необходимости отредактируйте или удалите его
+
+	form(method='post', action='/admin/comment/approve').form-horizontal.form-comment
+		input(type='hidden', name='id', value=id)
+
+		div.form-group
+			label.col-sm-2.control-label Квест
+			div.col-sm-7
+				a(href='/quest/#{quest_id}', target='_lgQuest') Квест
+
+		div.form-group
+			label.col-sm-2.control-label Дата/время
+			div.col-sm-7= date
+
+		div.form-group
+			label.col-sm-2.control-label Отзыв
+			div.col-sm-7
+				textarea(name='comment').form-control= comment
+
+		div.button-group
+			button(type='submit').btn-approve.btn.btn-primary Отзыв проверен
+			button(type='button').btn-remove.btn.btn-danger Удалить отзыв

@@ -8,6 +8,10 @@ var utils = require('../services/utils');
 
 
 router.get('/login', function(req, res, next) {
+	if (req.query.returnUrl) {
+		req.session.returnUrl = req.query.returnUrl;
+	}
+
 	res.render('login', { message: req.flash('error') });
 });
 

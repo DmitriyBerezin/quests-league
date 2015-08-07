@@ -68,6 +68,16 @@ module.exports = {
 				user: 'ivan.questoff',
 				pass: 'Quest123'
 			}
+		},
+
+		groups: {
+			admins: [
+				'questadm2015@gmail.com'
+			],
+
+			log: [
+				'questadm2015@gmail.com'
+			]
 		}
 	},
 

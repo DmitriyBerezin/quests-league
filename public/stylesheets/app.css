@@ -577,7 +577,7 @@ div.select-stacked div.select + .select {
   height: 300px;
 }
 .reviews-actions {
-  margin: 50px 0;
+  margin-bottom: 50px;
 }
 .reviews-actions a {
   margin-right: 15px;
@@ -839,4 +839,10 @@ div.select-stacked div.select + .select {
 
 .logout-link {
   margin-left: 30px;
+}
+
+.pseudo-link {
+  border-bottom: 1px dashed;
+  padding-bottom: .1em;
+  cursor: pointer;
 }
