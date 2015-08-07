@@ -77,6 +77,13 @@ block content
 					option
 					each item in dic.leagues
 						option(value=item.id, selected= item.id === league_id)= item.name
+		div.form-group
+			label(for='listComplexity').col-sm-2.control-label Сложность
+			div.col-sm-7
+				select(id='listComplexity', name='complexityID', data-width='auto').form-control.selectpicker
+					option
+					each item in dic.complexity
+						option(value=item.id, selected= item.id === complexity_id)= item.name
 
 		hr
 

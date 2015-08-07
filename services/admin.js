@@ -35,7 +35,8 @@ function getQuest(id, done) {
 			leagues: rows[3],
 			countries: rows[4],
 			cities: rows[5],
-			stations: rows[6]
+			stations: rows[6],
+			complexity: rows[7]
 		};
 		data.imgs = [];
 
@@ -108,13 +109,14 @@ function editQuest(quest, done) {
 
 	var tagsQuery = db.intArrToInsertStatement(quest.tagsID),
 		stationsQuery = db.intArrToInsertStatement(quest.stationsID),
-		s = 'call quests.pQuestEdit(%s, "%s", "%s", "%s", %d, %s, %s, "%s", %s, %d, %d, "%s", "%s", %d, %d, %s, %s, "%s", "%s", "%s", "%s", "%s")',
+		s = 'call quests.pQuestEdit(%s, "%s", "%s", "%s", %d, %s, %s, "%s", %s, %d, %d, "%s", "%s", %d, %d, %s, %s, "%s", "%s", "%s", "%s", "%s", %s)',
 		query = util.format(s, quest.id || null, quest.name, quest.descr, quest.url,
 			quest.companyID, quest.playerFrom || null, quest.playerTo || null,
 			tagsQuery, quest.leagueID || null, quest.countryID, quest.cityID,
 			stationsQuery, quest.address, quest.lat, quest.lng,
 			quest.priceFrom || null, quest.priceTo || null, quest.videoUrl,
-			quest.ceoTitle, quest.ceoDescription, quest.ceoKeywords, quest.sefName);
+			quest.ceoTitle, quest.ceoDescription, quest.ceoKeywords, quest.sefName,
+			quest.complexityID || null);
 
 	console.log(query);
 	db.execQueryAsAdm(query, function(err, rows, fields) {

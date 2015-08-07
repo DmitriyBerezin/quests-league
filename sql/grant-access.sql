@@ -58,3 +58,9 @@ update tquest q set q.top = 15 where id = 99;
 update tquest q set q.top = 16 where id = 108;
 update tquest q set q.top = 17 where id = 126;
 update tquest q set q.top = 18 where id = 138;
+
+
+insert into tcomplexity(name) values('Простой');
+insert into tcomplexity(name) values('Средний');
+insert into tcomplexity(name) values('Сложный');
+insert into tcomplexity(name) values('Непроходимый');

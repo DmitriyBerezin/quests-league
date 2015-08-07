@@ -102,6 +102,21 @@ CREATE TABLE `tcompanyprofile` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `tcomplexity`
+--
+
+DROP TABLE IF EXISTS `tcomplexity`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tcomplexity` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(45) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name_UNIQUE` (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `tcountry`
 --
 
@@ -179,15 +194,18 @@ CREATE TABLE `tquest` (
   `ceo_keywords` varchar(1000) DEFAULT NULL,
   `sef_name` varchar(150) DEFAULT NULL,
   `top` int(11) DEFAULT NULL,
+  `complexity_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `sef_UNIQUE` (`sef_name`),
   KEY `fk_company_id_idx` (`company_id`),
   KEY `fk_city_id_idx` (`city_id`),
   KEY `fk_tquest_league_id_idx` (`league_id`),
   KEY `fk_tquest_country_id_idx` (`country_id`),
+  KEY `fk_tquest_complexity_id_idx` (`complexity_id`),
   FULLTEXT KEY `ft_name_descr_address` (`name`,`descr`,`address`),
   CONSTRAINT `fk_tquest_city_id` FOREIGN KEY (`city_id`) REFERENCES `tcity` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_tquest_company_id` FOREIGN KEY (`company_id`) REFERENCES `tcompany` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_tquest_complexity_id` FOREIGN KEY (`complexity_id`) REFERENCES `tcomplexity` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_tquest_country_id` FOREIGN KEY (`country_id`) REFERENCES `tcountry` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_tquest_league_id` FOREIGN KEY (`league_id`) REFERENCES `tleague` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Таблица квестов';
@@ -686,7 +704,8 @@ CREATE PROCEDURE `pQuestEdit`(
     ceo_title varchar(1000),
     ceo_description varchar(1000),
     ceo_keywords varchar(1000),
-    sef_name varchar(100)
+    sef_name varchar(100),
+    complexity_id int
 )
 BEGIN
   declare q_id int;
@@ -713,14 +732,15 @@ BEGIN
         tq.ceo_title = ceo_title,
         tq.ceo_description = ceo_description,
         tq.ceo_keywords = ceo_keywords,
-        tq.sef_name = sef_name
+        tq.sef_name = sef_name,
+        tq.complexity_id = complexity_id
     where tq.id = id;
       set q_id = id;
     end;
   else
     begin
-      insert into tquest(`name`, descr, url, company_id, players_from, players_to, league_id, country_id, city_id, address, lat, lng, price_from, price_to, video_url, ceo_title, ceo_description, ceo_keywords, sef_name) 
-        values(name, descr, url, company_id, players_from, players_to, league_id, country_id, city_id, address, lat, lng, price_from, price_to, video_url, ceo_title, ceo_description, ceo_keywords, sef_name);
+      insert into tquest(`name`, descr, url, company_id, players_from, players_to, league_id, country_id, city_id, address, lat, lng, price_from, price_to, video_url, ceo_title, ceo_description, ceo_keywords, sef_name, complexity_id) 
+        values(name, descr, url, company_id, players_from, players_to, league_id, country_id, city_id, address, lat, lng, price_from, price_to, video_url, ceo_title, ceo_description, ceo_keywords, sef_name, complexity_id);
       set q_id = LAST_INSERT_ID();
     end;
   end if;
@@ -789,6 +809,8 @@ BEGIN
     from tstation t 
     left join txqueststation tx on t.id = tx.station_id
         and tx.quest_id = quest_id;
+        
+  select id, name from tcomplexity order by id;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -1133,4 +1155,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-08-04 18:19:44
+-- Dump completed on 2015-08-06 19:27:02
