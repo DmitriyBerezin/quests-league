@@ -116,6 +116,34 @@ router.get('/verify-start', localAuth.verifyStart, function(req, res) {
 });
 router.get('/verify-end', localAuth.verifyEnd);
 
+router.get('/change-password', utils.requireAuthentication, function(req, res) {
+	res.render('auth/change-password');
+});
+router.post('/change-password', utils.requireAuthentication,
+	function(req, res, next) {
+		var oldPassword = req.body.oldPassword,
+			newPassword = req.body.newPassword;
+
+		if (!oldPassword ||
+			!newPassword ||
+			newPassword.length < 6 ||
+			newPassword !== req.body.newPasswordConfirm) {
+			var err = new Error('Неверные параметры запроса.');
+			err.status = 400;
+			return next(err);
+		}
+
+		localAuth.changePassword(req.user.id, req.user.password, oldPassword, newPassword, function(err, password) {
+			if (err) {
+				return next(err);
+			}
+
+			req.user.password = password;
+			res.status(200).send({});
+		});
+	}
+);
+
 
 // Log out
 router.get('/logout', function(req, res, next) {

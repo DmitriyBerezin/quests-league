@@ -3,7 +3,7 @@ var buf = [];
 var jade_mixins = {};
 var jade_interp;
 ;var locals_for_with = (locals || {});(function (className, msg) {
-buf.push("<div" + (jade.cls(['alert-comment-error','alert',className], [null,null,true])) + ">" + (jade.escape(null == (jade_interp = msg) ? "" : jade_interp)) + "<button type=\"button\" data-dismiss=\"alert\" aria-label=\"Close\" class=\"close\"><span aria-hidden=\"true\">&times;</span></button></div>");}.call(this,"className" in locals_for_with?locals_for_with.className:typeof className!=="undefined"?className:undefined,"msg" in locals_for_with?locals_for_with.msg:typeof msg!=="undefined"?msg:undefined));;return buf.join("");
+buf.push("<div" + (jade.cls(['alert-comment-error','alert',className], [null,null,true])) + ">" + (((jade_interp = msg) == null ? '' : jade_interp)) + "<button type=\"button\" data-dismiss=\"alert\" aria-label=\"Close\" class=\"close\"><span aria-hidden=\"true\">&times;</span></button></div>");}.call(this,"className" in locals_for_with?locals_for_with.className:typeof className!=="undefined"?className:undefined,"msg" in locals_for_with?locals_for_with.msg:typeof msg!=="undefined"?msg:undefined));;return buf.join("");
 }
 function tmplComment(locals) {
 var buf = [];
