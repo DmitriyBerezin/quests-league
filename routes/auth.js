@@ -144,6 +144,51 @@ router.post('/change-password', utils.requireAuthentication,
 	}
 );
 
+router.get('/forgot-password', function(req, res, next) {
+	res.render('auth/forgot-password');
+});
+router.post('/forgot-password', function(req, res, next) {
+	var email = req.body.email;
+
+	if (!email) {
+		var err = new Error('Неверные параметры запроса.');
+		err.status = 400;
+		return next(err);
+	}
+
+	localAuth.forgotPasswordMail(email, req.protocol, req.hostname, function(err) {
+		if (err) {
+			return next(err);
+		}
+
+		res.status(200).send({});
+	});
+});
+
+router.get('/reset-password', function(req, res, next) {
+	res.render('auth/reset-password');
+});
+router.post('/reset-password', function(req, res, next) {
+	var newPassword = req.body.newPassword,
+		token = req.body.token;
+
+	if (!token ||
+		!newPassword ||
+		newPassword.length < 6 ||
+		newPassword !== req.body.newPasswordConfirm) {
+		var err = new Error('Неверные параметры запроса.');
+		err.status = 400;
+		return next(err);
+	}
+
+	localAuth.resetPassword(token, newPassword, function(err) {
+		if (err) {
+			return next(err);
+		}
+
+		res.status(200).send({});
+	});
+});
 
 // Log out
 router.get('/logout', function(req, res, next) {

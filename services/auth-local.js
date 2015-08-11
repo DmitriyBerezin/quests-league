@@ -172,7 +172,7 @@ function changePassword(userID, userPassword, oldPassword, newPassword, done) {
 		}
 
 		if (!res) {
-			var err = new Error('Неверно указан текущтй пароль.');
+			var err = new Error('Неверно указан текущий пароль.');
 			err.status = 400;
 			return done(err);
 		}
@@ -192,6 +192,88 @@ function changePassword(userID, userPassword, oldPassword, newPassword, done) {
 
 				return done(null, password);
 			});
+		});
+	});
+}
+
+function forgotPasswordMail(email, protocol, hostname, done) {
+	crypto.randomBytes(48, function(err, buf) {
+		if (err) {
+			return done(err);
+		}
+
+		var token = buf.toString('hex'),
+			query = util.format('call quests.pUserSetForgotPasswordToken("%s", "%s")',
+				email, token);
+
+		db.execQuery(query, function(err, rows, fields) {
+			if (err) {
+				return done(err);
+			}
+
+			var res = +rows[0][0].success === 1,
+				mailOptions,
+				tmplFile = path.join(__dirname, '../views/mail/forgot-password.jade'),
+				data = {
+					protocol: protocol,
+					hostname: hostname,
+					token: token
+				};
+
+			if (!res) {
+				var err = new Error('Указанный email не зарегистрирован в системе.');
+				err.status = 400;
+				return done(err);
+			}
+
+			utils.tmpl2Str(tmplFile, data, function(err, html) {
+				if (err) {
+					return done(err);
+				}
+
+				mailOptions = {
+					to: email,
+					subject: 'Восстановление пароля на попртале Лига Квестов',
+					html: html
+				};
+
+				console.log(token);
+				return done();
+
+				mailer.sendMail(mailOptions, function(err, info) {
+					if (err) {
+						return done(err);
+					}
+
+					return done();
+				});
+			})
+		});
+	});
+}
+
+function resetPassword(token, newPassword, done) {
+	hashPassword(newPassword, function(err, password) {
+		if (err) {
+			return done(err);
+		}
+
+		var query = util.format('call quests.pUserResetPassword("%s", "%s")',
+			token, password);
+
+		db.execQuery(query, function(err, rows, fields) {
+			if (err) {
+				return done(err);
+			}
+
+			var success = +rows[0][0].success === 1;
+			if (!success) {
+				var err = new Error('Несанкционированная попытка сбросить пароль.');
+				err.status = 500;
+				return done(err);
+			}
+
+			return done(null);
 		});
 	});
 }
@@ -222,5 +304,7 @@ module.exports = {
 	sendVerificationMail: sendVerificationMail,
 	verifyStart: verifyStart,
 	verifyEnd: verifyEnd,
-	changePassword: changePassword
+	changePassword: changePassword,
+	forgotPasswordMail: forgotPasswordMail,
+	resetPassword: resetPassword,
 };
