@@ -826,19 +826,9 @@ div.select-stacked div.select + .select {
   margin-left: 50px;
 }
 
-.alert-not-verified {
-  display: inline-block;
-  padding: 7px;
-  margin-bottom: 0;
-  margin-top: 10px;
-}
-
-.verify-link {
-  margin-left: 10px;
-}
-
-.logout-link {
-  margin-left: 30px;
+.not-verified-sign {
+  margin: 0 5px;
+  color: orange;
 }
 
 .pseudo-link {
