@@ -4,6 +4,7 @@ var passport = require('passport'),
 	crypto = require('crypto'),
 	bcrypt = require('bcrypt'),
 	path = require('path'),
+	async = require('async'),
 
 	db = require('./database'),
 	mailer = require('./mailer'),
@@ -16,18 +17,17 @@ passport.use(new LocalStrategy({
 	},
 
 	function(email, password, done) {
-		function callback(res) {
+		function callback(err, res) {
+			if (err) {
+				return done(err);
+			}
+
 			if (res) {
 				return done(null, row);
 			}
 
 			return done(null, false, { message: 'Учетной записи с такими параметрами не существует' });
 		}
-
-		function errback(err) {
-			return done(err);
-		}
-
 
 		var query = util.format('call quests.pUserGet("%s")', email),
 			row;
@@ -42,13 +42,17 @@ passport.use(new LocalStrategy({
 			}
 
 			row = rows[0][0];
-			checkPassword(password, row.password, callback, errback)
+			checkPassword(password, row.password, callback)
 		});
 	}
 ));
 
 function signUp(req, res, next) {
-	function callback(hash) {
+	function callback(err, hash) {
+		if (err) {
+			return next(err);
+		}
+
 		var query = util.format('call quests.pUserCreate("%s", "%s", "%s")',
 				req.body.name, req.body.email, hash),
 			mailOptions;
@@ -69,11 +73,7 @@ function signUp(req, res, next) {
 		});
 	}
 
-	function errback(err) {
-		return next(err);
-	}
-
-	hashPassword(req.body.password, callback, errback);
+	hashPassword(req.body.password, callback);
 }
 
 function sendVerificationMail(req, res, next) {
@@ -165,30 +165,137 @@ function verifyEnd(req, res, next) {
 	});
 }
 
-function hashPassword(psw, cb, eb) {
-	bcrypt.genSalt(10, function(err, salt) {
+function changePassword(userID, userPassword, oldPassword, newPassword, done) {
+	checkPassword(oldPassword, userPassword, function(err, res) {
 		if (err) {
-			return eb(err);
+			return done(err);
 		}
 
-		bcrypt.hash(psw, salt, function(err, hash) {
+		if (!res) {
+			var err = new Error('Неверно указан текущий пароль.');
+			err.status = 400;
+			return done(err);
+		}
+
+		hashPassword(newPassword, function(err, password) {
 			if (err) {
-				return eb(err);
+				return done(err);
 			}
 
-			return cb(hash);
+			var query = util.format('call quests.pUserChangePassword(%d, "%s")',
+				userID, password);
+
+			db.execQuery(query, function(err, rows, fields) {
+				if (err) {
+					return done(err);
+				}
+
+				return done(null, password);
+			});
 		});
 	});
 }
 
-function checkPassword(psw, hash, cb, eb) {
-	bcrypt.compare(psw, hash, function(err, res) {
+function forgotPasswordMail(email, protocol, hostname, done) {
+	crypto.randomBytes(48, function(err, buf) {
 		if (err) {
-			return eb(err);
+			return done(err);
 		}
 
-		return cb(res);
+		var token = buf.toString('hex'),
+			query = util.format('call quests.pUserSetForgotPasswordToken("%s", "%s")',
+				email, token);
+
+		db.execQuery(query, function(err, rows, fields) {
+			if (err) {
+				return done(err);
+			}
+
+			var res = +rows[0][0].success === 1,
+				mailOptions,
+				tmplFile = path.join(__dirname, '../views/mail/forgot-password.jade'),
+				data = {
+					protocol: protocol,
+					hostname: hostname,
+					token: token
+				};
+
+			if (!res) {
+				var err = new Error('Указанный email не зарегистрирован в системе.');
+				err.status = 400;
+				return done(err);
+			}
+
+			utils.tmpl2Str(tmplFile, data, function(err, html) {
+				if (err) {
+					return done(err);
+				}
+
+				mailOptions = {
+					to: email,
+					subject: 'Восстановление пароля на попртале Лига Квестов',
+					html: html
+				};
+
+				console.log(token);
+				return done();
+
+				mailer.sendMail(mailOptions, function(err, info) {
+					if (err) {
+						return done(err);
+					}
+
+					return done();
+				});
+			})
+		});
 	});
+}
+
+function resetPassword(token, newPassword, done) {
+	hashPassword(newPassword, function(err, password) {
+		if (err) {
+			return done(err);
+		}
+
+		var query = util.format('call quests.pUserResetPassword("%s", "%s")',
+			token, password);
+
+		db.execQuery(query, function(err, rows, fields) {
+			if (err) {
+				return done(err);
+			}
+
+			var success = +rows[0][0].success === 1;
+			if (!success) {
+				var err = new Error('Несанкционированная попытка сбросить пароль.');
+				err.status = 500;
+				return done(err);
+			}
+
+			return done(null);
+		});
+	});
+}
+
+function hashPassword(psw, done) {
+	bcrypt.genSalt(10, function(err, salt) {
+		if (err) {
+			return done(err);
+		}
+
+		bcrypt.hash(psw, salt, function(err, hash) {
+			if (err) {
+				return done(err);
+			}
+
+			return done(null, hash);
+		});
+	});
+}
+
+function checkPassword(psw, hash, done) {
+	bcrypt.compare(psw, hash, done);
 }
 
 
@@ -196,5 +303,8 @@ module.exports = {
 	signUp: signUp,
 	sendVerificationMail: sendVerificationMail,
 	verifyStart: verifyStart,
-	verifyEnd: verifyEnd
+	verifyEnd: verifyEnd,
+	changePassword: changePassword,
+	forgotPasswordMail: forgotPasswordMail,
+	resetPassword: resetPassword,
 };

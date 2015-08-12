@@ -15,12 +15,21 @@ header
 			.col-sm-7
 				div.auth-block
 					if user
-						div Добро пожаловать, #{user.name}
-							a(href='/auth/logout').logout-link Выйти
-						if !user.verified_flag
-							.alert.alert-warning.alert-not-verified
-								| Ваш аккаунт не подтвержден.
-								a(href='#').verify-link Подтвердить
+						.dropdown
+							span(id='dropdownProfile', data-toggle='dropdown', aria-haspopup='true', aria-expanded='true').pseudo-link.dropdown-toggle= user.name
+								if !user.verified_flag
+									i(title='Ваш аккаунт не подтвержден').glyphicon.glyphicon-exclamation-sign.not-verified-sign
+								span.caret
+							ul(aria-labelledby='dropdownProfile').dropdown-menu.dropdown-menu-right
+								if !user.verified_flag
+									li
+										a(href='#').verify-link Подтвердить аккаунт
+											i(title='Ваш аккаунт не подтвержден').glyphicon.glyphicon-exclamation-sign.not-verified-sign
+								li
+									a(href='/auth/change-password') Изменить пароль
+								li
+									a(href='/auth/logout') Выйти
+
 					else
 						a(href='/auth/login') Регистрация
 						a(href='/auth/login').auth-block-login Вход

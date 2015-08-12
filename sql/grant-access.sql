@@ -27,6 +27,11 @@ grant execute on procedure pUserSetVerificationToken to 'web';
 grant execute on procedure pUserVerify to 'web';
 grant execute on procedure pCommentEdit to 'web';
 grant execute on procedure pCommentDel to 'web';
+grant execute on procedure pUserChangePassword to 'web';
+grant execute on procedure pUserResetPassword to 'web';
+grant execute on procedure pUserSetForgotPasswordToken to 'web';
+
+
 
 update tquest q set q.top = 1 where id = 8;
 
