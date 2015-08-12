@@ -237,9 +237,6 @@ function forgotPasswordMail(email, protocol, hostname, done) {
 					html: html
 				};
 
-				console.log(token);
-				return done();
-
 				mailer.sendMail(mailOptions, function(err, info) {
 					if (err) {
 						return done(err);
