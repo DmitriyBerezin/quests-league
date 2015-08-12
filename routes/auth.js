@@ -12,7 +12,7 @@ router.get('/login', function(req, res, next) {
 		req.session.returnUrl = req.query.returnUrl;
 	}
 
-	res.render('login', { message: req.flash('error') });
+	res.render('auth/login', { message: req.flash('error') });
 });
 
 

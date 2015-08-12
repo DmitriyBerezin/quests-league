@@ -1,13 +1,4 @@
-extends layout
-
-block style
-	link(rel='stylesheet', href='/stylesheets/style.css')
-	link(rel='stylesheet', href='/stylesheets/auth.css')
-
-block script
-	script(src='/lib/jquery-validation/jquery.validate.min.js')
-	script(src='/lib/jquery-validation/messages_ru.min.js')
-	script(src='/js/auth.js')
+extends auth
 
 block content
 	.container.auth-container
@@ -29,6 +20,9 @@ block content
 							input(type='password', name='password', required).form-control
 					.form-group.button-group
 						input(type='submit', value='Вход').btn.btn-primary
+
+				.center.forgot-password
+					a(href='/auth/forgot-password') Забыли пароль?
 
 			.col-sm-6.sol-xs-12
 				h3 Регистрация
