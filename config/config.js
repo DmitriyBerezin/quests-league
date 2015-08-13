@@ -25,9 +25,10 @@ module.exports = {
 				callbackURL: '/auth/facebook/callback'
 			},
 
+			// https://apps.twitter.com/app/8659230
 			twitter: {
-				consumerKey: '426894947484457',
-				consumerSecret: '4e334911f900ff8246dead4d312d4fae',
+				consumerKey: 'x3z283bQrgbt6ZDNUJDtTWrbY',
+				consumerSecret: 'vfmrQlixzzb8oQUP2X4A108Mz1rV6EHsfDOjKBjhfsiXnMGL3i',
 				callbackURL: '/auth/twitter/callback'
 			},
 
@@ -51,9 +52,10 @@ module.exports = {
 				callbackURL: '/auth/google/callback'
 			},
 
+			// https://instagram.com/developer/clients/manage/
 			instagram: {
-				clientID: '733832',
-				clientSecret: 'veJ58I5Kajjud9iwDAvAW6M8',
+				clientID: '350568d4cf7a492ab482173e086c8640',
+				clientSecret: 'c01f8c59772048a7a05ae0287eb743b0',
 				callbackURL: '/auth/instagram/callback'
 			}
 		}

@@ -335,6 +335,8 @@ CREATE TABLE `tuser` (
   `verified_flag` int(11) DEFAULT NULL,
   `role` varchar(5) DEFAULT NULL COMMENT 'adm',
   `password_token` varchar(250) DEFAULT NULL,
+  `profile` varchar(20000) DEFAULT NULL,
+  `oauth_token` varchar(250) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `email_UNIQUE` (`email`),
   UNIQUE KEY `phone_UNIQUE` (`phone`),
@@ -1137,7 +1139,6 @@ DELIMITER ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `pUserOAuth` */;
-ALTER DATABASE `quests` CHARACTER SET latin1 COLLATE latin1_swedish_ci ;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
@@ -1150,33 +1151,33 @@ DELIMITER ;;
 CREATE PROCEDURE `pUserOAuth`(
   auth_type varchar(5),
   token varchar(250), 
-    email varchar(45),
-    `name` varchar(45)
+  email varchar(45),
+    `name` varchar(45),
+    `profile` varchar(20000)
 )
 BEGIN
   declare new_flag bit(1);
     
-    if EXISTS(SELECT * FROM tuser u  where u.auth_type = auth_type and u.token = token) then
+  if EXISTS(SELECT * FROM tuser u  where u.auth_type = auth_type and u.oauth_token = token) then
     begin
-    update tuser set last_visit = CURRENT_TIMESTAMP;
-        set new_flag = 0;
-  end;
+      update tuser u set u.last_visit = CURRENT_TIMESTAMP, u.profile = profile;
+      set new_flag = 0;
+    end;
   else
-  begin
-        insert into tuser(token, auth_type, email, `name`, verified_flag) 
-        values(token, auth_type, email, `name`, 1);
-        set new_flag = 1;
-  end;
+    begin
+      insert into tuser(oauth_token, auth_type, email, `name`, verified_flag, `profile`) 
+        values(token, auth_type, email, `name`, 1, `profile`);
+      set new_flag = 1;
+    end;
   end if;
     
-    select *, new_flag as `new_flag` from tuser u where u.auth_type = auth_type and u.token = token;
+    select *, new_flag as `new_flag` from tuser u where u.auth_type = auth_type and u.oauth_token = token;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
-ALTER DATABASE `quests` CHARACTER SET utf8 COLLATE utf8_general_ci ;
 /*!50003 DROP PROCEDURE IF EXISTS `pUserResetPassword` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;

@@ -21,107 +21,60 @@ var util = require('util'),
 
 passport.use(new FacebookStrategy(config.auth.strategies.facebook,
 	function(accessToken, refreshToken, profile, done) {
-		function callback(data) {
-			return done(null, data);
-		}
-
-		function errback(err) {
-			return done(err);
-		}
-
-		oauthAuthorization(providers.FACEBOOK, 
-			accessToken, profile.emails, profile.displayName, callback, errback);
+		oauthAuthorization(providers.FACEBOOK,
+			accessToken, profile, done);
 	}
 ));
 
 passport.use(new TwitterStrategy(config.auth.strategies.twitter,
 	function(accessToken, refreshToken, profile, done) {
-		function callback(data) {
-			return done(null, data);
-		}
-
-		function errback(err) {
-			return done(err);
-		}
-
-		oauthAuthorization(providers.TWITTER, 
-			accessToken, profile.emails, profile.displayName, callback, errback);
+		oauthAuthorization(providers.TWITTER,
+			accessToken, profile, done);
 	}
 ));
 
 passport.use(new VKontakteStrategy(config.auth.strategies.vkontakte,
 	function(accessToken, refreshToken, profile, done) {
-		function callback(data) {
-			return done(null, data);
-		}
-
-		function errback(err) {
-			return done(err);
-		}
-
-		oauthAuthorization(providers.VKONTAKTE, 
-			accessToken, profile.emails, profile.displayName, callback, errback);
+		oauthAuthorization(providers.VKONTAKTE,
+			accessToken, profile, done);
 	}
 ));
 
 passport.use(new MailRuStrategy(config.auth.strategies.mailru,
 	function(accessToken, refreshToken, profile, done) {
-		function callback(data) {
-			return done(null, data);
-		}
-
-		function errback(err) {
-			return done(err);
-		}
-
-		oauthAuthorization(providers.MAILRU, 
-			accessToken, profile.emails, profile.displayName, callback, errback);
+		oauthAuthorization(providers.MAILRU,
+			accessToken, profile, done);
 	}
 ));
 
 
 passport.use(new GoogleStrategy(config.auth.strategies.google,
 	function(accessToken, refreshToken, profile, done) {
-		function callback(data) {
-			return done(null, data);
-		}
-
-		function errback(err) {
-			return done(err);
-		}
-
-		oauthAuthorization(providers.GOOGLE, 
-			accessToken, profile.emails, profile.displayName, callback, errback);
+		oauthAuthorization(providers.GOOGLE,
+			accessToken, profile, done);
 	}
 ));
 
 
 passport.use(new InstagramStrategy(config.auth.strategies.instagram,
 	function(accessToken, refreshToken, profile, done) {
-		function callback(data) {
-			return done(null, data);
-		}
-
-		function errback(err) {
-			return done(err);
-		}
-
-		oauthAuthorization(providers.INSTAGRAM, 
-			accessToken, profile.emails, profile.displayName, callback, errback);
+		oauthAuthorization(providers.INSTAGRAM,
+			accessToken, profile, done);
 	}
 ));
 
 
-function oauthAuthorization(provider, token, emails, name, cb, eb) {
-	var email = (emails && emails.length > 0) ? emails[0].value : '',
-		query = util.format('call quests.pUserOAuth("%s", "%s", "%s", "%s");', 
-			provider, token, email, name);
+function oauthAuthorization(provider, token, profile, done) {
+	var email = (profile.emails && profile.emails.length > 0) ? profile.emails[0].value : '',
+		name = profile.displayName,
+		query = util.format('call quests.pUserOAuth("%s", "%s", "%s", "%s", "%s");',
+			provider, token, email, name, JSON.stringify(profile));
 
-	db.execQuery(query, function(err, rows, fields) { 
+	db.execQuery(query, function(err, rows, fields) {
 		if (err) {
-			return eb(err);
+			return done(err);
 		}
 
-		cb(rows[0][0]);
+		return done(null, rows[0].length > 0 ? rows[0][0] : null);
 	});
 }
