@@ -15,4 +15,14 @@ $(function() {
 
 		$.getJSON('/auth/verify-start').then(cb, eb);
 	}
+
+	App.geo.getCity(onCitySuccess, onCityError);
+
+	function onCitySuccess(city) {
+		console.log(city)
+	}
+
+	function onCityError(error) {
+		console.log(error);
+	}
 });
