@@ -107,7 +107,7 @@ block content
 		div.form-group
 			label(for='listStation').col-sm-2.control-label Метро
 			div.col-sm-7
-				select(id='listStation', name='stationsID', multiple, data-width='auto', data-live-search='true', required).form-control.selectpicker
+				select(id='listStation', name='stationsID', multiple, data-width='auto', data-live-search='true').form-control.selectpicker
 					each item in dic.stations
 						option(value=item.id, selected= item.selected === 1)= item.name
 		div.form-group
