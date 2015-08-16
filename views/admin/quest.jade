@@ -153,6 +153,8 @@ block content
 
 		div.form-group.button-group
 			button(type='submit').btn.btn-primary.btn-save Сохранить изменения
+			if id
+				a(href='#').remove-quest Удалить квест
 
 		div.alert-quest-error.alert.alert-danger
 		div.alert-quest-success.alert.alert-success Ура! Информация изменена
@@ -162,7 +164,7 @@ block content
 
 	//- Quest images
 	h4.chapter-header Картинки
-	form(method='post', action='/admin/quest/file').form-horizontal.form-quest
+	form(method='post', action='/admin/quest/file').form-horizontal
 		input(type='hidden', name='id', value=id)
 
 		div.form-group

@@ -56,6 +56,18 @@ function getQuest(id, done) {
 	});
 }
 
+function removeQuest(id, done) {
+	var query = util.format('call quests.pQuestDel(%d)', id);
+
+	db.execQueryAsAdm(query, function(err, rows, fields) {
+		if (err) {
+			return done(err);
+		}
+
+		return done(null);
+	});
+}
+
 function createCompany(name, url, done) {
 	var query = util.format('call quests.pCompanyCreate("%s", "%s")', name, url);
 
@@ -213,6 +225,7 @@ module.exports = {
 	getQuestList: getQuestList,
 	getQuest: getQuest,
 	editQuest: editQuest,
+	removeQuest: removeQuest,
 	addQuestFile: addQuestFile,
 	getQuestFiles: getQuestFiles,
 	createCompany: createCompany,

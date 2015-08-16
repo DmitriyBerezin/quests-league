@@ -3,6 +3,7 @@ $(function() {
 		$warnFiles = $('.alert-files'),
 		$imgsContainer = $('.imgs-container'),
 		$errorFile = $('.alert-file-upload-text'),
+		$removeQuest = $('.remove-quest'),
 		$id = $('input[name="id"]');
 
 	$('input[type="file"]').fileupload({
@@ -20,6 +21,8 @@ $(function() {
 				.parent().show();
 		}
 	});
+
+	$removeQuest.click(onRemoveQuestClick);
 
 	toggleFileInput();
 	formQuest();
@@ -166,5 +169,31 @@ $(function() {
 
 	function beforeSubmit(arr, $form, options) {
 		$form.find('button[type="submit"]').prop('disabled', true);
+	}
+
+	function onRemoveQuestClick(evt) {
+		function onQuestRemoveSuccess() {
+			window.location.href = '/admin/quest/list';
+		}
+
+		function onQuestRemoveError(res) {
+			var error = 'Квест не удален: ' + res.responseJSON.message;
+
+			$(tmplAlert({ msg: error, className: 'alert-danger' })).appendTo('.form-quest').show();
+		}
+
+		if (confirm('Вы чтоно хотите удалить квест?')) {
+			$.ajax({
+				url: '/admin/quest',
+				type: 'DELETE',
+				data: {
+					id: $id.val()
+				},
+				success: onQuestRemoveSuccess,
+				error: onQuestRemoveError
+			});
+		}
+
+		evt.preventDefault();
 	}
 });

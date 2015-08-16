@@ -36,6 +36,24 @@ router.post('/quest', function(req, res, next) {
 	});
 });
 
+router.delete('/quest', function(req, res, next) {
+	var id = req.body.id;
+
+	if (!id) {
+		var err = new Error('Не передан id квеста');
+		err.status = 400;
+		return next(err);
+	}
+
+	admin.removeQuest(id, function(err) {
+		if (err) {
+			return next(err);
+		}
+
+		res.status(200).send({});
+	});
+});
+
 router.post('/quest/file', function(req, res, next) {
 	var id = req.body.id,
 		fileName = req.files.files.originalname,
