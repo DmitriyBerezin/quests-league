@@ -122,6 +122,16 @@ router.get('/cities', function(req, res, next) {
 	});
 });
 
+router.get('/stations', function(req, res, next) {
+	admin.getStations(req.query.cityID, function(err, data) {
+		if (err) {
+			return next(err);
+		}
+
+		res.status(200).send(data);
+	});
+});
+
 router.get('/stations/import', function(req, res, next) {
 	admin.importStations(function(err, data) {
 		if (err) {

@@ -153,9 +153,9 @@ function getQuestFiles(questID, done) {
 }
 
 function importStations(done) {
-	var data = require('../sql/moscow-metro'),
+	var data = require('../sql/spb-metro'),
 		stations = data.root.row,
-		query = 'call quests.pStationCreate("%s")';
+		query = 'call quests.pStationCreate("%s", 3)';
 
 	for (var i = 0, l = stations.length; i < l; ++i) {
 		db.execQueryAsAdm(util.format(query, stations[i]['_metroName']), function(err, rows, fields) {
@@ -172,6 +172,18 @@ function importStations(done) {
 
 function getCities(countryID, done) {
 	var query = util.format('call quests.pCountryCities(%s)', countryID || null);
+
+	db.execQueryAsAdm(query, function(err, rows, fields) {
+		if (err) {
+			return done(err);
+		}
+
+		return done(null, rows[0]);
+	});
+}
+
+function getStations(cityID, done) {
+	var query = util.format('call quests.pCityStations(%s)', cityID || null);
 
 	db.execQueryAsAdm(query, function(err, rows, fields) {
 		if (err) {
@@ -233,6 +245,7 @@ module.exports = {
 	createCountry: createCountry,
 	createCity: createCity,
 	getCities: getCities,
+	getStations: getStations,
 	importStations: importStations,
 	getComment: getComment,
 	approveComment: approveComment,

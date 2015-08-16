@@ -456,6 +456,27 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `pCityStations` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE PROCEDURE `pCityStations`(
+  city_id int
+)
+BEGIN
+  select * from tstation c where c.city_id = city_id;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `pCommentApprove` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -810,8 +831,10 @@ CREATE PROCEDURE `pQuestGet`(
 )
 BEGIN
    declare country_id int;
+   declare city_id int;
    
    select q.country_id into country_id from tquest q where id = quest_id;
+   select q.city_id into city_id from tquest q where id = quest_id;
    
    select * from tquest where id = quest_id;
     
@@ -831,7 +854,8 @@ BEGIN
     select t.*, case when tx.quest_id is null then 0 else 1 end as selected  
     from tstation t 
     left join txqueststation tx on t.id = tx.station_id
-        and tx.quest_id = quest_id;
+        and tx.quest_id = quest_id
+  where t.city_id = city_id;
         
   select id, name from tcomplexity order by id;
 END ;;
@@ -1013,9 +1037,12 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE PROCEDURE `pStationCreate`(`name` varchar(45))
+CREATE PROCEDURE `pStationCreate`(
+  `name` varchar(45),
+    city_id int
+)
 BEGIN
-  insert into tstation(`name`) values(`name`);
+  insert into tstation(`name`, city_id) values(`name`, city_id);
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -1248,4 +1275,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-08-16 13:52:57
+-- Dump completed on 2015-08-16 14:27:50

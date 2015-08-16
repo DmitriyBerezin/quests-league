@@ -149,6 +149,7 @@ $(function() {
 				$('<option>').val(city.id).html(city.name).appendTo($listCity);
 			});
 			$listCity.selectpicker('refresh');
+			$listCity.change();
 		}
 
 		function onError(err) {
@@ -161,10 +162,30 @@ $(function() {
 	function formCity() {
 		var $modalCity = $('#modalCity'),
 			$listCity = $('#listCity'),
+			$listStation = $('#listStation'),
 			$formCity = $('.form-city'),
 			$errCity = $('.alert-city-error');
 
-		modalForm($modalCity, $listCity, $formCity, $errCity);
+		function onCityChange(evt) {
+			var cityID = $(evt.target).val();
+
+			$.getJSON('/admin/stations', { cityID: cityID }).then(onSuccess, onError);
+			$('input:hidden[name="cityID"]').val(cityID);
+		}
+
+		function onSuccess(stations) {
+			$listStation.empty();
+			stations.forEach(function(station) {
+				$('<option>').val(station.id).html(station.name).appendTo($listStation);
+			});
+			$listStation.selectpicker('refresh');
+		}
+
+		function onError(err) {
+
+		}
+
+		modalForm($modalCity, $listCity, $formCity, $errCity, onCityChange);
 	}
 
 	function beforeSubmit(arr, $form, options) {

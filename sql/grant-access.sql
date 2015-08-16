@@ -10,6 +10,7 @@ grant execute on procedure pStationCreate to 'moderator';
 grant execute on procedure pCountryCreate to 'moderator';
 grant execute on procedure pCityCreate to 'moderator';
 grant execute on procedure pCountryCities to 'moderator';
+grant execute on procedure pCityStations to 'moderator';
 grant execute on procedure pCommentApprove to 'moderator';
 grant execute on procedure pCommentDel to 'moderator';
 grant execute on procedure pCommentGet to 'moderator';
