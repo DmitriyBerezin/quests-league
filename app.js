@@ -11,7 +11,7 @@ var multer  = require('multer');
 // var MongoStore = require('connect-mongo')(session);
 // var mongoose = require ("mongoose");
 
-var routes = require('./routes/index');
+var index = require('./routes/index');
 var users = require('./routes/users');
 var auth = require('./routes/auth');
 var admin = require('./routes/admin');
@@ -46,7 +46,7 @@ app.use(function(req, res, next) {
 	next();
 });
 
-app.use('/', routes);
+app.use('/', index);
 app.use('/users', users);
 app.use('/auth', auth);
 app.use('/admin', admin);

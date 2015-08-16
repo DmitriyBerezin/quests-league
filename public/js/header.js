@@ -16,13 +16,11 @@ $(function() {
 		$.getJSON('/auth/verify-start').then(cb, eb);
 	}
 
-	App.geo.getCity(onCitySuccess, onCityError);
+
+	App.geo.init(onCitySuccess);
+	App.geo.getCoords(onCitySuccess);
 
 	function onCitySuccess(city) {
 		console.log(city)
-	}
-
-	function onCityError(error) {
-		console.log(error);
 	}
 });
