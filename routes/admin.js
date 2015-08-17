@@ -36,6 +36,24 @@ router.post('/quest', function(req, res, next) {
 	});
 });
 
+router.delete('/quest', function(req, res, next) {
+	var id = req.body.id;
+
+	if (!id) {
+		var err = new Error('Не передан id квеста');
+		err.status = 400;
+		return next(err);
+	}
+
+	admin.removeQuest(id, function(err) {
+		if (err) {
+			return next(err);
+		}
+
+		res.status(200).send({});
+	});
+});
+
 router.post('/quest/file', function(req, res, next) {
 	var id = req.body.id,
 		fileName = req.files.files.originalname,
@@ -94,8 +112,37 @@ router.post('/city', function(req, res, next) {
 	});
 });
 
+router.post('/station', function(req, res, next) {
+	var name = req.body.name,
+		cityID = req.body.cityID;
+
+	if (!name || !cityID) {
+		var err = new Error('Invalid arguments');
+		err.status = 400;
+		return next(err);
+	}
+
+	admin.createStation(name, cityID, function(err, data) {
+		if (err) {
+			return next(err);
+		}
+
+		res.status(200).send(data);
+	});
+});
+
 router.get('/cities', function(req, res, next) {
 	admin.getCities(req.query.countryID, function(err, data) {
+		if (err) {
+			return next(err);
+		}
+
+		res.status(200).send(data);
+	});
+});
+
+router.get('/stations', function(req, res, next) {
+	admin.getStations(req.query.cityID, function(err, data) {
 		if (err) {
 			return next(err);
 		}

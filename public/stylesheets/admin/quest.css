@@ -57,3 +57,8 @@
 .btn-remove {
 	margin: 0 30px;
 }
+
+.remove-quest {
+	color: #f00;
+	margin-left: 200px;
+}

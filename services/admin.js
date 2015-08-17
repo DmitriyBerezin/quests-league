@@ -56,6 +56,18 @@ function getQuest(id, done) {
 	});
 }
 
+function removeQuest(id, done) {
+	var query = util.format('call quests.pQuestDel(%d)', id);
+
+	db.execQueryAsAdm(query, function(err, rows, fields) {
+		if (err) {
+			return done(err);
+		}
+
+		return done(null);
+	});
+}
+
 function createCompany(name, url, done) {
 	var query = util.format('call quests.pCompanyCreate("%s", "%s")', name, url);
 
@@ -104,6 +116,18 @@ function createCity(name, countryID, done) {
 	});
 }
 
+function createStation(name, cityID, done) {
+	var query = util.format('call quests.pStationCreate("%s", %d)', name, cityID);
+
+	db.execQueryAsAdm(query, function(err, rows, fields) {
+		if (err) {
+			return done(err);
+		}
+
+		return done(null, rows[0][0]);
+	});
+}
+
 function editQuest(quest, done) {
 	console.log(quest);
 
@@ -141,9 +165,9 @@ function getQuestFiles(questID, done) {
 }
 
 function importStations(done) {
-	var data = require('../sql/moscow-metro'),
+	var data = require('../sql/spb-metro'),
 		stations = data.root.row,
-		query = 'call quests.pStationCreate("%s")';
+		query = 'call quests.pStationCreate("%s", 3)';
 
 	for (var i = 0, l = stations.length; i < l; ++i) {
 		db.execQueryAsAdm(util.format(query, stations[i]['_metroName']), function(err, rows, fields) {
@@ -160,6 +184,18 @@ function importStations(done) {
 
 function getCities(countryID, done) {
 	var query = util.format('call quests.pCountryCities(%s)', countryID || null);
+
+	db.execQueryAsAdm(query, function(err, rows, fields) {
+		if (err) {
+			return done(err);
+		}
+
+		return done(null, rows[0]);
+	});
+}
+
+function getStations(cityID, done) {
+	var query = util.format('call quests.pCityStations(%s)', cityID || null);
 
 	db.execQueryAsAdm(query, function(err, rows, fields) {
 		if (err) {
@@ -213,13 +249,16 @@ module.exports = {
 	getQuestList: getQuestList,
 	getQuest: getQuest,
 	editQuest: editQuest,
+	removeQuest: removeQuest,
 	addQuestFile: addQuestFile,
 	getQuestFiles: getQuestFiles,
 	createCompany: createCompany,
 	createTag: createTag,
 	createCountry: createCountry,
 	createCity: createCity,
+	createStation: createStation,
 	getCities: getCities,
+	getStations: getStations,
 	importStations: importStations,
 	getComment: getComment,
 	approveComment: approveComment,

@@ -2,9 +2,9 @@ CREATE DATABASE  IF NOT EXISTS `quests` /*!40100 DEFAULT CHARACTER SET utf8 */;
 USE `quests`;
 -- MySQL dump 10.13  Distrib 5.6.24, for Win64 (x86_64)
 --
--- Host: localhost    Database: quests
+-- Host: 127.0.0.1    Database: quests
 -- ------------------------------------------------------
--- Server version 5.6.24
+-- Server version 5.6.26
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -195,6 +195,7 @@ CREATE TABLE `tquest` (
   `sef_name` varchar(150) DEFAULT NULL,
   `top` int(11) DEFAULT NULL,
   `complexity_id` int(11) DEFAULT NULL,
+  `deleted_flag` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `sef_UNIQUE` (`sef_name`),
   KEY `fk_company_id_idx` (`company_id`),
@@ -455,6 +456,27 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `pCityStations` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE PROCEDURE `pCityStations`(
+  city_id int
+)
+BEGIN
+  select * from tstation c where c.city_id = city_id;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `pCommentApprove` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -648,6 +670,27 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `pQuestDel` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE PROCEDURE `pQuestDel`(
+  quest_id int
+)
+BEGIN
+  update tquest t set deleted_flag = 1 where t.id = quest_id;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `pQuestDuctionaries` */;
 ALTER DATABASE `quests` CHARACTER SET latin1 COLLATE latin1_swedish_ci ;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -788,8 +831,10 @@ CREATE PROCEDURE `pQuestGet`(
 )
 BEGIN
    declare country_id int;
+   declare city_id int;
    
    select q.country_id into country_id from tquest q where id = quest_id;
+   select q.city_id into city_id from tquest q where id = quest_id;
    
    select * from tquest where id = quest_id;
     
@@ -809,7 +854,8 @@ BEGIN
     select t.*, case when tx.quest_id is null then 0 else 1 end as selected  
     from tstation t 
     left join txqueststation tx on t.id = tx.station_id
-        and tx.quest_id = quest_id;
+        and tx.quest_id = quest_id
+  where t.city_id = city_id;
         
   select id, name from tcomplexity order by id;
 END ;;
@@ -912,7 +958,7 @@ CREATE PROCEDURE `pQuestList`()
 BEGIN
   select id, `name` from tcompany;
     
-    select id, `name`, company_id from tquest;
+    select id, `name`, company_id from tquest where (deleted_flag  is null or deleted_flag != 1);
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -929,7 +975,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pQuestSearch`(q varchar(100))
+CREATE PROCEDURE `pQuestSearch`(q varchar(100))
 BEGIN
   if q <> '' and q is not null then
   begin
@@ -948,10 +994,11 @@ BEGIN
     from (select tx.quest_id as quest_id, s.id as station_id, s.name as station_name from txqueststation tx inner join tstation s on tx.station_id = s.id) qs
     group by qs.quest_id
     ) stations on q.id = stations.quest_id
-    WHERE MATCH (q.name, q.descr, q.address) AGAINST (q IN BOOLEAN MODE)
+    WHERE (deleted_flag  is null or deleted_flag != 1) and
+    (MATCH (q.name, q.descr, q.address) AGAINST (q IN BOOLEAN MODE)
      or MATCH (c.name) AGAINST (q IN BOOLEAN MODE)
        or MATCH (tags.tags_name) AGAINST (q IN BOOLEAN MODE)
-       or MATCH (stations.stations_name) AGAINST (q IN BOOLEAN MODE);
+       or MATCH (stations.stations_name) AGAINST (q IN BOOLEAN MODE));
   end;
  else
   begin
@@ -970,7 +1017,7 @@ BEGIN
       from (select tx.quest_id as quest_id, s.id as station_id, s.name as station_name from txqueststation tx inner join tstation s on tx.station_id = s.id) qs
       group by qs.quest_id
       ) stations on q.id = stations.quest_id
-          where top is not null
+          where top is not null and (deleted_flag  is null or deleted_flag != 1)
           order by top;
     end;
  end if;
@@ -990,9 +1037,13 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE PROCEDURE `pStationCreate`(`name` varchar(45))
+CREATE PROCEDURE `pStationCreate`(
+  `name` varchar(45),
+    city_id int
+)
 BEGIN
-  insert into tstation(`name`) values(`name`);
+  insert into tstation(`name`, city_id) values(`name`, city_id);
+  select LAST_INSERT_ID() as id, `name` as `name`;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -1225,4 +1276,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-08-10 18:57:49
+-- Dump completed on 2015-08-17 13:52:41

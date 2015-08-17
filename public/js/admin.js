@@ -3,6 +3,7 @@ $(function() {
 		$warnFiles = $('.alert-files'),
 		$imgsContainer = $('.imgs-container'),
 		$errorFile = $('.alert-file-upload-text'),
+		$removeQuest = $('.remove-quest'),
 		$id = $('input[name="id"]');
 
 	$('input[type="file"]').fileupload({
@@ -21,12 +22,15 @@ $(function() {
 		}
 	});
 
+	$removeQuest.click(onRemoveQuestClick);
+
 	toggleFileInput();
 	formQuest();
 	formCompany();
 	formTag();
 	formCountry();
 	formCity();
+	formStation();
 
 
 	function toggleFileInput() {
@@ -146,6 +150,7 @@ $(function() {
 				$('<option>').val(city.id).html(city.name).appendTo($listCity);
 			});
 			$listCity.selectpicker('refresh');
+			$listCity.change();
 		}
 
 		function onError(err) {
@@ -158,13 +163,68 @@ $(function() {
 	function formCity() {
 		var $modalCity = $('#modalCity'),
 			$listCity = $('#listCity'),
+			$listStation = $('#listStation'),
 			$formCity = $('.form-city'),
 			$errCity = $('.alert-city-error');
 
-		modalForm($modalCity, $listCity, $formCity, $errCity);
+		function onCityChange(evt) {
+			var cityID = $(evt.target).val();
+
+			$.getJSON('/admin/stations', { cityID: cityID }).then(onSuccess, onError);
+			$('input:hidden[name="cityID"]').val(cityID);
+		}
+
+		function onSuccess(stations) {
+			$listStation.empty();
+			stations.forEach(function(station) {
+				$('<option>').val(station.id).html(station.name).appendTo($listStation);
+			});
+			$listStation.selectpicker('refresh');
+		}
+
+		function onError(err) {
+
+		}
+
+		modalForm($modalCity, $listCity, $formCity, $errCity, onCityChange);
+	}
+
+	function formStation() {
+		var $modalStation = $('#modalStation'),
+			$listStation = $('#listStation'),
+			$formStation = $('.form-station'),
+			$errStation = $('.alert-station-error');
+
+		modalForm($modalStation, $listStation, $formStation, $errStation);
 	}
 
 	function beforeSubmit(arr, $form, options) {
 		$form.find('button[type="submit"]').prop('disabled', true);
+	}
+
+	function onRemoveQuestClick(evt) {
+		function onQuestRemoveSuccess() {
+			window.location.href = '/admin/quest/list';
+		}
+
+		function onQuestRemoveError(res) {
+			var error = 'Квест не удален: ' + res.responseJSON.message;
+
+			$(tmplAlert({ msg: error, className: 'alert-danger' })).appendTo('.form-quest').show();
+		}
+
+		if (confirm('Вы чтоно хотите удалить квест?')) {
+			$.ajax({
+				url: '/admin/quest',
+				type: 'DELETE',
+				data: {
+					id: $id.val()
+				},
+				success: onQuestRemoveSuccess,
+				error: onQuestRemoveError
+			});
+		}
+
+		evt.preventDefault();
 	}
 });
