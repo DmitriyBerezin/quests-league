@@ -112,6 +112,25 @@ router.post('/city', function(req, res, next) {
 	});
 });
 
+router.post('/station', function(req, res, next) {
+	var name = req.body.name,
+		cityID = req.body.cityID;
+
+	if (!name || !cityID) {
+		var err = new Error('Invalid arguments');
+		err.status = 400;
+		return next(err);
+	}
+
+	admin.createStation(name, cityID, function(err, data) {
+		if (err) {
+			return next(err);
+		}
+
+		res.status(200).send(data);
+	});
+});
+
 router.get('/cities', function(req, res, next) {
 	admin.getCities(req.query.countryID, function(err, data) {
 		if (err) {

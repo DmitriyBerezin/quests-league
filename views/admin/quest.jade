@@ -110,6 +110,8 @@ block content
 				select(id='listStation', name='stationsID', multiple, data-width='auto', data-live-search='true', required).form-control.selectpicker
 					each item in dic.stations
 						option(value=item.id, selected= item.selected === 1)= item.name
+				div(role='alert').alert.alert-warning Не нашли нужную станцию метро?
+					a(href='#', data-toggle='modal', data-target='#modalStation') Добавьте станцию
 		div.form-group
 			label(for='txtAddress').col-sm-2.control-label Адрес
 			div.col-sm-7
@@ -255,7 +257,7 @@ block content
 					div.modal-header
 						button(type='button', data-dismiss='modal' aria-label='Close').close
 							span(aria-hidden='true') &times;
-						h4.modal-title Страна
+						h4.modal-title Город
 					div.modal-body
 						div.alert-city-error.alert.alert-danger
 						div.form-group
@@ -263,5 +265,25 @@ block content
 							div.col-sm-6
 								input(type='text', id='txtCity', name='name', placeholder='Город', required).form-control
 								input(type='hidden', name='countryID', value=country_id).form-control
+					div.modal-footer
+						button(type='submit').btn.btn-primary Создать
+
+
+	//- Station modal
+	div(id='modalStation', tabIndex='-1', role='dialog').modal.fade
+		div(role='document').modal-dialog
+			div.modal-content
+				form(method='post', action='/admin/station').form-horizontal.form-station
+					div.modal-header
+						button(type='button', data-dismiss='modal' aria-label='Close').close
+							span(aria-hidden='true') &times;
+						h4.modal-title Станция
+					div.modal-body
+						div.alert-station-error.alert.alert-danger
+						div.form-group
+							label(for='txtStation').col-sm-4.control-label Станция
+							div.col-sm-6
+								input(type='text', id='txtStation', name='name', placeholder='Станция', required).form-control
+								input(type='hidden', name='cityID', value=city_id).form-control
 					div.modal-footer
 						button(type='submit').btn.btn-primary Создать

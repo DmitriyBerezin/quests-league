@@ -30,6 +30,7 @@ $(function() {
 	formTag();
 	formCountry();
 	formCity();
+	formStation();
 
 
 	function toggleFileInput() {
@@ -186,6 +187,15 @@ $(function() {
 		}
 
 		modalForm($modalCity, $listCity, $formCity, $errCity, onCityChange);
+	}
+
+	function formStation() {
+		var $modalStation = $('#modalStation'),
+			$listStation = $('#listStation'),
+			$formStation = $('.form-station'),
+			$errStation = $('.alert-station-error');
+
+		modalForm($modalStation, $listStation, $formStation, $errStation);
 	}
 
 	function beforeSubmit(arr, $form, options) {

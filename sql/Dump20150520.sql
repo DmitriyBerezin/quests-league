@@ -1043,6 +1043,7 @@ CREATE PROCEDURE `pStationCreate`(
 )
 BEGIN
   insert into tstation(`name`, city_id) values(`name`, city_id);
+  select LAST_INSERT_ID() as id, `name` as `name`;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -1275,4 +1276,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-08-16 14:27:50
+-- Dump completed on 2015-08-17 13:52:41

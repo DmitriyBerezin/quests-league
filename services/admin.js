@@ -116,6 +116,18 @@ function createCity(name, countryID, done) {
 	});
 }
 
+function createStation(name, cityID, done) {
+	var query = util.format('call quests.pStationCreate("%s", %d)', name, cityID);
+
+	db.execQueryAsAdm(query, function(err, rows, fields) {
+		if (err) {
+			return done(err);
+		}
+
+		return done(null, rows[0][0]);
+	});
+}
+
 function editQuest(quest, done) {
 	console.log(quest);
 
@@ -244,6 +256,7 @@ module.exports = {
 	createTag: createTag,
 	createCountry: createCountry,
 	createCity: createCity,
+	createStation: createStation,
 	getCities: getCities,
 	getStations: getStations,
 	importStations: importStations,
