@@ -1,10 +1,10 @@
 CREATE DATABASE  IF NOT EXISTS `quests` /*!40100 DEFAULT CHARACTER SET utf8 */;
 USE `quests`;
--- MySQL dump 10.13  Distrib 5.6.24, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 5.6.19, for osx10.7 (i386)
 --
--- Host: 127.0.0.1    Database: quests
+-- Host: quests.cp0uujwgrxiz.eu-west-1.rds.amazonaws.com    Database: quests
 -- ------------------------------------------------------
--- Server version 5.6.26
+-- Server version 5.6.23-log
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -44,7 +44,7 @@ CREATE TABLE `tcity` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `time_zone` int(11) DEFAULT NULL,
   `name` varchar(45) NOT NULL,
-  `country_id` int(11) DEFAULT NULL,
+  `country_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_tcity_country_id_idx` (`country_id`),
   CONSTRAINT `fk_tcity_country_id` FOREIGN KEY (`country_id`) REFERENCES `tcountry` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
@@ -197,7 +197,6 @@ CREATE TABLE `tquest` (
   `complexity_id` int(11) DEFAULT NULL,
   `deleted_flag` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `sef_UNIQUE` (`sef_name`),
   KEY `fk_company_id_idx` (`company_id`),
   KEY `fk_city_id_idx` (`city_id`),
   KEY `fk_tquest_league_id_idx` (`league_id`),
@@ -336,9 +335,9 @@ CREATE TABLE `tuser` (
   `role` varchar(5) DEFAULT NULL COMMENT 'adm',
   `password_token` varchar(250) DEFAULT NULL,
   `profile` varchar(20000) DEFAULT NULL,
-  `oauth_token` varchar(250) DEFAULT NULL,
+  `oauth_provider` varchar(45) DEFAULT NULL,
+  `oauth_id` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `email_UNIQUE` (`email`),
   UNIQUE KEY `phone_UNIQUE` (`phone`),
   UNIQUE KEY `nickname_UNIQUE` (`nickname`),
   UNIQUE KEY `auth_type_UNIQUE` (`auth_type`,`verify_token`)
@@ -704,7 +703,7 @@ ALTER DATABASE `quests` CHARACTER SET latin1 COLLATE latin1_swedish_ci ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pQuestDuctionaries`()
+CREATE PROCEDURE `pQuestDuctionaries`()
 BEGIN
   select id, name from tcompany;
     select id, name from ttag;
@@ -1045,6 +1044,7 @@ CREATE PROCEDURE `pStationCreate`(
 )
 BEGIN
   insert into tstation(`name`, city_id) values(`name`, city_id);
+  
   select LAST_INSERT_ID() as id, `name` as `name`;
 END ;;
 DELIMITER ;
@@ -1131,7 +1131,7 @@ CREATE PROCEDURE `pUserGet`(email varchar(45))
 BEGIN
   update tuser t set last_visit = default where t.email = email and t.auth_type = 'local';
     
-    select * from tuser t where t.email = email and t.auth_type = 'local';
+  select * from tuser t where t.email = email and t.auth_type = 'local';
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -1149,8 +1149,8 @@ DELIMITER ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 CREATE PROCEDURE `pUserOAuth`(
-  auth_type varchar(5),
-  token varchar(250), 
+  provider varchar(45),
+  oauth_id varchar(45), 
   email varchar(45),
     `name` varchar(45),
     `profile` varchar(20000)
@@ -1158,20 +1158,22 @@ CREATE PROCEDURE `pUserOAuth`(
 BEGIN
   declare new_flag bit(1);
     
-  if EXISTS(SELECT * FROM tuser u  where u.auth_type = auth_type and u.oauth_token = token) then
+  if EXISTS(SELECT * FROM tuser u where u.oauth_provider = provider and u.oauth_id = oauth_id) then
     begin
-      update tuser u set u.last_visit = CURRENT_TIMESTAMP, u.profile = profile;
+      update tuser u set u.last_visit = CURRENT_TIMESTAMP, u.profile = profile
+    where u.oauth_provider = provider and u.oauth_id = oauth_id;
+      
       set new_flag = 0;
     end;
   else
     begin
-      insert into tuser(oauth_token, auth_type, email, `name`, verified_flag, `profile`) 
-        values(token, auth_type, email, `name`, 1, `profile`);
+      insert into tuser(oauth_id, oauth_provider, email, `name`, verified_flag, `profile`) 
+        values(oauth_id, provider, email, `name`, 1, `profile`);
       set new_flag = 1;
     end;
   end if;
     
-    select *, new_flag as `new_flag` from tuser u where u.auth_type = auth_type and u.oauth_token = token;
+    select *, new_flag as `new_flag` from tuser u where u.oauth_provider = provider and u.oauth_id = oauth_id;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -1277,4 +1279,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-08-17 13:52:41
+-- Dump completed on 2015-08-17 21:46:20

@@ -32,9 +32,10 @@ module.exports = {
 				callbackURL: '/auth/twitter/callback'
 			},
 
+			// http://vk.com/editapp?id=5036179&section=options
 			vkontakte: {
-				clientID: '426894947484457',
-				clientSecret: '4e334911f900ff8246dead4d312d4fae',
+				clientID: '5036179',
+				clientSecret: 'xJZ2va0Ug5nQJ1EGogGp',
 				callbackURL: '/auth/vkontakte/callback'
 			},
 

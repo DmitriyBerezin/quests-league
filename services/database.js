@@ -59,14 +59,9 @@ function intArrToInsertStatement(arr) {
 	}, '');
 }
 
-function escape(param) {
-	return mysql.escape(param);
-}
-
 module.exports = {
 	getConnection: getConnection,
 	execQuery: execQuery,
 	execQueryAsAdm: execQueryAsAdm,
-	intArrToInsertStatement: intArrToInsertStatement,
-	escape: escape
+	intArrToInsertStatement: intArrToInsertStatement
 };
