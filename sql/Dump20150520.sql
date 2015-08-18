@@ -1,10 +1,10 @@
 CREATE DATABASE  IF NOT EXISTS `quests` /*!40100 DEFAULT CHARACTER SET utf8 */;
 USE `quests`;
--- MySQL dump 10.13  Distrib 5.6.19, for osx10.7 (i386)
+-- MySQL dump 10.13  Distrib 5.6.24, for Win64 (x86_64)
 --
--- Host: quests.cp0uujwgrxiz.eu-west-1.rds.amazonaws.com    Database: quests
+-- Host: 127.0.0.1    Database: quests
 -- ------------------------------------------------------
--- Server version 5.6.23-log
+-- Server version 5.6.26
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -327,7 +327,6 @@ CREATE TABLE `tuser` (
   `name` varchar(45) NOT NULL,
   `nickname` varchar(45) DEFAULT NULL,
   `ratio` int(11) DEFAULT NULL,
-  `auth_type` varchar(5) NOT NULL COMMENT 'local,\nfb - facebook,\ntw - twitter,\nvk - vkontakte,\nmail - mail.ru,\ngoogl - google,\ninst - instagram',
   `password` varchar(250) DEFAULT NULL,
   `verify_token` varchar(250) DEFAULT NULL,
   `last_visit` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -338,9 +337,7 @@ CREATE TABLE `tuser` (
   `oauth_provider` varchar(45) DEFAULT NULL,
   `oauth_id` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `phone_UNIQUE` (`phone`),
-  UNIQUE KEY `nickname_UNIQUE` (`nickname`),
-  UNIQUE KEY `auth_type_UNIQUE` (`auth_type`,`verify_token`)
+  UNIQUE KEY `phone_UNIQUE` (`phone`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Таблица зарегистрированных пользователей портала (игроки, компании-операторы)';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1087,7 +1084,7 @@ CREATE PROCEDURE `pUserChangePassword`(
     new_password varchar(250)
 )
 BEGIN
-  update tuser t set t.password = new_password where id = user_id;
+  update tuser t set t.password = new_password where id = user_id and t.oauth_provider is null;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -1129,9 +1126,9 @@ ALTER DATABASE `quests` CHARACTER SET utf8 COLLATE utf8_general_ci ;
 DELIMITER ;;
 CREATE PROCEDURE `pUserGet`(email varchar(45))
 BEGIN
-  update tuser t set last_visit = default where t.email = email and t.auth_type = 'local';
+  update tuser t set last_visit = default where t.email = email and t.oauth_provider is null;
     
-  select * from tuser t where t.email = email and t.auth_type = 'local';
+    select * from tuser t where t.email = email and t.oauth_provider is null;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -1196,7 +1193,7 @@ CREATE PROCEDURE `pUserResetPassword`(
 )
 BEGIN
   update tuser t set t.password = password, t.password_token = null 
-    where t.password_token = token;
+    where t.password_token = token and t.oauth_provider is null;
     
     SELECT ROW_COUNT() as success;
 END ;;
@@ -1220,7 +1217,7 @@ CREATE PROCEDURE `pUserSetForgotPasswordToken`(
     token varchar(250)
 )
 BEGIN
-  update tuser t set t.password_token = token where t.email = email;
+  update tuser t set t.password_token = token where t.email = email and t.oauth_provider is null;
     
     SELECT ROW_COUNT() as success;
 END ;;
@@ -1241,7 +1238,7 @@ DELIMITER ;
 DELIMITER ;;
 CREATE PROCEDURE `pUserSetVerificationToken`(id int, token varchar(250))
 BEGIN
-  update tuser u set u.verify_token = token where u.id = id;
+  update tuser u set u.verify_token = token where u.id = id and u.oauth_provider is null;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -1279,4 +1276,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-08-17 21:46:20
+-- Dump completed on 2015-08-18 11:09:01

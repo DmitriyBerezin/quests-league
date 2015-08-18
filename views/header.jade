@@ -25,8 +25,9 @@ header
 									li
 										a(href='#').verify-link Подтвердить аккаунт
 											i(title='Ваш аккаунт не подтвержден').glyphicon.glyphicon-exclamation-sign.not-verified-sign
-								li
-									a(href='/auth/change-password') Изменить пароль
+								if !user.oauth_provider
+									li
+										a(href='/auth/change-password') Изменить пароль
 								li
 									a(href='/auth/logout') Выйти
 
