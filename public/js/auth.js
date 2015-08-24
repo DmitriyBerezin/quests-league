@@ -15,6 +15,17 @@ $(function() {
 			passwordConfirmation : {
 				minlength: 6,
 				equalTo: '#sigupPassword'
+			},
+			email: {
+				remote: {
+					url: '/auth/email/check',
+					type: 'post'
+				}
+			}
+		},
+		messages: {
+			email: {
+				remote: 'Указанный email уже используется.'
 			}
 		}
 	});

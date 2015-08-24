@@ -32,6 +32,7 @@ grant execute on procedure pCommentDel to 'web';
 grant execute on procedure pUserChangePassword to 'web';
 grant execute on procedure pUserResetPassword to 'web';
 grant execute on procedure pUserSetForgotPasswordToken to 'web';
+grant execute on procedure pUserEmailCheck to 'web';
 
 
 

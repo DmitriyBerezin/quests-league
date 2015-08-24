@@ -275,6 +275,19 @@ function resetPassword(token, newPassword, done) {
 	});
 }
 
+function checkEmail(email, done) {
+	var query = util.format('call quests.pUserEmailCheck("%s")', email);
+
+	db.execQuery(query, function(err, rows, fields) {
+		if (err) {
+			return done(err);
+		}
+
+		var isValid = +rows[0][0].isValid === 0;
+		return done(null, isValid);
+	});
+}
+
 function hashPassword(psw, done) {
 	bcrypt.genSalt(10, function(err, salt) {
 		if (err) {
@@ -304,4 +317,5 @@ module.exports = {
 	changePassword: changePassword,
 	forgotPasswordMail: forgotPasswordMail,
 	resetPassword: resetPassword,
+	checkEmail: checkEmail
 };

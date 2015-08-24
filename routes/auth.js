@@ -87,6 +87,24 @@ router.post('/login',
 );
 
 
+router.post('/email/check', function(req, res, next) {
+	var email = req.body.email;
+
+	if (!email) {
+		var err = new Error('Неверные параметры запроса.');
+		err.status = 400;
+		return next(err);
+	}
+
+	localAuth.checkEmail(email, function(err, isValid) {
+		if (err) {
+			return next(err);
+		}
+
+		res.status(200).send(isValid);
+	});
+});
+
 // Sign Up
 router.post('/signup',
 	function(req, res, next) {
