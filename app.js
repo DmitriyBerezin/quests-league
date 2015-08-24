@@ -17,6 +17,7 @@ var auth = require('./routes/auth');
 var admin = require('./routes/admin');
 var quest = require('./routes/quest');
 var comment = require('./routes/comment');
+var utils = require('./routes/utils');
 
 var mailer = require('./services/mailer');
 
@@ -46,12 +47,36 @@ app.use(function(req, res, next) {
 	next();
 });
 
+// Set cities list on each sync request
+app.use(function(req, res, next) {
+	if (req.xhr) {
+		return next();
+	}
+
+	if (req.originalUrl.indexOf('public') !== -1) {
+		return next();
+	}
+
+	var utilSvc = require('./services/utils-svc');
+	utilSvc.getCities(function(err, countries, cities) {
+		if (err) {
+			return next(err);
+		}
+
+		res.locals.countries = countries;
+		res.locals.cities = cities;
+		res.locals.cityID = req.cookies.city;
+		return next();
+	});
+});
+
 app.use('/', index);
 app.use('/users', users);
 app.use('/auth', auth);
 app.use('/admin', admin);
 app.use('/quest', quest);
 app.use('/comment', comment);
+app.use('/utils', utils);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

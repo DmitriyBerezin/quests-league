@@ -1,8 +1,10 @@
 $(function() {
 	var $verifyLink = $('.verify-link'),
-		$modalVerify = $('#modalVerify');
+		$modalVerify = $('#modalVerify'),
+		$listCity = $('select[name="cityID"]');
 
 	$verifyLink.click(onVerifyLinkClick);
+	$listCity.change(onListCityChange);
 
 	function onVerifyLinkClick(evt) {
 		function cb() {
@@ -16,11 +18,13 @@ $(function() {
 		$.getJSON('/auth/verify-start').then(cb, eb);
 	}
 
-
-	App.geo.init(onCitySuccess);
-	App.geo.getCoords(onCitySuccess);
-
 	function onCitySuccess(city) {
 		console.log(city)
+	}
+
+	function onListCityChange(evt) {
+		var cityID = $(evt.target).val();
+
+		App.geo.setCity(cityID);
 	}
 });

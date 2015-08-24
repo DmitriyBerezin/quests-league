@@ -4,14 +4,8 @@ App.geo = (function($, geo, module) {
 	var CITY_COOKIE = 'city';
 
 	var _cache = null,
-		_cities = [],
-		_city = null,
+		_cityID = null,
 		_geolocationEnabled = ('geolocation' in navigator);
-
-	function init(cities) {
-		_cities = cities;
-		_city = docCookies.getItem(CITY_COOKIE);
-	}
 
 	function getDataInfoByIP(onSuccess, onError) {
 		if (_cache) {
@@ -48,28 +42,40 @@ App.geo = (function($, geo, module) {
 		}
 	}
 
-	function findClosestCity(lat, lng) {
+	function findClosestCity(cities, lat, lng) {
 		var res,
 			d;
 
-		for (var i = 0; i < _cities.length; ++i) {
-			d = latlngDistance(lat, lng, _cities[i].lat, _cities[i].lng);
+		for (var i = 0; i < cities.length; ++i) {
+			d = latlngDistance(lat, lng, cities[i].lat, cities[i].lng);
 			if (!res || res < d) {
 				res = d;
 			}
 		}
 
-		return res;
+		return res.id;
 	}
 
-	function getClosestCity(onSuccess) {
-		if (_city) {
-			return onSuccess(_city);
+	function getClosestCity(cities, onSuccess) {
+		if (_cityID) {
+			return onSuccess(_cityID);
+		}
+
+		_cityID = docCookies.getItem(CITY_COOKIE);
+		if (_cityID) {
+			return onSuccess(_cityID);
 		}
 
 		getCoords(function(lat, lng) {
-			return onSuccess(findClosestCity(lat, lng));
+			setCity(findClosestCity(cities, lat, lng));
+			return onSuccess(_cityID);
 		});
+	}
+
+	function setCity(cityID) {
+		_cityID = cityID;
+
+		docCookies.setItem(CITY_COOKIE, _cityID);
 	}
 
 	function onError(error) {
@@ -107,6 +113,7 @@ App.geo = (function($, geo, module) {
 	}
 
 	module.getClosestCity = getClosestCity;
+	module.setCity = setCity;
 	module.getCoords = getCoords;
 
 	return module;

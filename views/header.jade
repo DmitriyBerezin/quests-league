@@ -13,26 +13,36 @@ header
 						span
 							b ВСЕ КВЕСТЫ В ОДНОМ МЕСТЕ
 			.col-sm-7
-				div.auth-block
-					if user
-						.dropdown
-							span(id='dropdownProfile', data-toggle='dropdown', aria-haspopup='true', aria-expanded='true').pseudo-link.dropdown-toggle= user.name
-								if !user.verified_flag
-									i(title='Ваш аккаунт не подтвержден').glyphicon.glyphicon-exclamation-sign.not-verified-sign
-								span.caret
-							ul(aria-labelledby='dropdownProfile').dropdown-menu.dropdown-menu-right
-								if !user.verified_flag
-									li
-										a(href='#').verify-link Подтвердить аккаунт
-											i(title='Ваш аккаунт не подтвержден').glyphicon.glyphicon-exclamation-sign.not-verified-sign
-								li
-									a(href='/auth/change-password') Изменить пароль
-								li
-									a(href='/auth/logout') Выйти
+				.row
+					div.geo-block.col-sm-4
+						select(name='cityID').form-control.selectpicker
+							each country in countries
+								optgroup(label=country.name)
+									each city in cities
+										if city.country_id === country.id
+											- var selected = city.city_id == cityID ? 'selected' : null
+											option(value=city.city_id, selected=selected)= city.city_name
 
-					else
-						a(href='/auth/login') Регистрация
-						a(href='/auth/login').auth-block-login Вход
+					div.auth-block.col-sm-8
+						if user
+							.dropdown
+								span(id='dropdownProfile', data-toggle='dropdown', aria-haspopup='true', aria-expanded='true').pseudo-link.dropdown-toggle= user.name
+									if !user.verified_flag
+										i(title='Ваш аккаунт не подтвержден').glyphicon.glyphicon-exclamation-sign.not-verified-sign
+									span.caret
+								ul(aria-labelledby='dropdownProfile').dropdown-menu.dropdown-menu-right
+									if !user.verified_flag
+										li
+											a(href='#').verify-link Подтвердить аккаунт
+												i(title='Ваш аккаунт не подтвержден').glyphicon.glyphicon-exclamation-sign.not-verified-sign
+									li
+										a(href='/auth/change-password') Изменить пароль
+									li
+										a(href='/auth/logout') Выйти
+						else
+							a(href='/auth/login') Регистрация
+							a(href='/auth/login').auth-block-login Вход
+
 
 				.header-socials.text-right.hidden-xs
 					img(src='/images/socials.png', alt='socials')
