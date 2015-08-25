@@ -43,13 +43,15 @@ App.geo = (function($, geo, module) {
 	}
 
 	function findClosestCity(cities, lat, lng) {
-		var res,
-			d;
+		var minDist,
+			dist,
+			res;
 
 		for (var i = 0; i < cities.length; ++i) {
-			d = latlngDistance(lat, lng, cities[i].lat, cities[i].lng);
-			if (!res || res < d) {
-				res = d;
+			dist = latlngDistance(lat, lng, cities[i].lat, cities[i].lng);
+			if (!minDist || dist < minDist) {
+				minDist = dist;
+				res = cities[i];
 			}
 		}
 
@@ -57,25 +59,29 @@ App.geo = (function($, geo, module) {
 	}
 
 	function getClosestCity(cities, onSuccess) {
-		if (_cityID) {
-			return onSuccess(_cityID);
-		}
-
-		_cityID = docCookies.getItem(CITY_COOKIE);
-		if (_cityID) {
-			return onSuccess(_cityID);
+		var cityID = getCurrentCity();
+		if (cityID) {
+			return cityID;
 		}
 
 		getCoords(function(lat, lng) {
-			setCity(findClosestCity(cities, lat, lng));
+			setCurrentCity(findClosestCity(cities, lat, lng));
 			return onSuccess(_cityID);
 		});
 	}
 
-	function setCity(cityID) {
+	function setCurrentCity(cityID) {
 		_cityID = cityID;
 
 		docCookies.setItem(CITY_COOKIE, _cityID);
+	}
+
+	function getCurrentCity() {
+		if (!_cityID) {
+			_cityID = docCookies.getItem(CITY_COOKIE);
+		}
+
+		return _cityID;
 	}
 
 	function onError(error) {
@@ -89,15 +95,15 @@ App.geo = (function($, geo, module) {
 		// перевод коордитат в радианы
 		lat1 *= Math.PI / 180;
 		lat2 *= Math.PI / 180;
-		long1 *= Math.PI / 180;
-		long2 *= Math.PI / 180;
+		lng1 *= Math.PI / 180;
+		lng2 *= Math.PI / 180;
 		     
 		// вычисление косинусов и синусов широт и разницы долгот
 		cl1 = Math.cos(lat1);
 		cl2 = Math.cos(lat2);
 		sl1 = Math.sin(lat1);
 		sl2 = Math.sin(lat2);
-		delta = long2 - long1;
+		delta = lng2 - lng1;
 		cdelta = Math.cos(delta);
 		sdelta = Math.sin(delta);
 		     
@@ -113,7 +119,8 @@ App.geo = (function($, geo, module) {
 	}
 
 	module.getClosestCity = getClosestCity;
-	module.setCity = setCity;
+	module.setCurrentCity = setCurrentCity;
+	module.getCurrentCity = getCurrentCity;
 	module.getCoords = getCoords;
 
 	return module;

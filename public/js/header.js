@@ -1,10 +1,33 @@
 $(function() {
 	var $verifyLink = $('.verify-link'),
 		$modalVerify = $('#modalVerify'),
-		$listCity = $('select[name="cityID"]');
+		$listCity = $('select[name="cityID"]'),
+		cities = [],
+		currCityID;
 
 	$verifyLink.click(onVerifyLinkClick);
 	$listCity.change(onListCityChange);
+
+	currCityID = App.geo.getCurrentCity();
+	if (currCityID) {
+		selectCity(currCityID);
+	}
+	else {
+		$listCity.find('option[value]').each(function(index, item) {
+			var $item = $(item);
+
+			cities.push({
+				id: item.value,
+				lat: $item.data('lat'),
+				lng: $item.data('lng')
+			});
+		});
+
+		App.geo.getClosestCity(cities, function(cityID) {
+			currCityID = cityID;
+			selectCity(currCityID);
+		});
+	}
 
 	function onVerifyLinkClick(evt) {
 		function cb() {
@@ -18,13 +41,13 @@ $(function() {
 		$.getJSON('/auth/verify-start').then(cb, eb);
 	}
 
-	function onCitySuccess(city) {
-		console.log(city)
-	}
-
 	function onListCityChange(evt) {
 		var cityID = $(evt.target).val();
 
-		App.geo.setCity(cityID);
+		App.geo.setCurrentCity(cityID);
+	}
+
+	function selectCity(cityID) {
+		$listCity.val(cityID).selectpicker('refresh');
 	}
 });

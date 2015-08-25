@@ -16,12 +16,14 @@ header
 				.row
 					div.geo-block.col-sm-4
 						select(name='cityID').form-control.selectpicker
+							if !cityID
+								option
 							each country in countries
 								optgroup(label=country.name)
 									each city in cities
 										if city.country_id === country.id
 											- var selected = city.city_id == cityID ? 'selected' : null
-											option(value=city.city_id, selected=selected)= city.city_name
+											option(value=city.city_id, data-lat=city.lat, data-lng=city.lng, selected=selected)= city.city_name
 
 					div.auth-block.col-sm-8
 						if user
