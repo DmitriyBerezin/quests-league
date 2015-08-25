@@ -63,13 +63,13 @@ function getQuestIdBySefName(sefName, done) {
 	});
 }
 
-function search(q, done) {
+function search(q, cityID, done) {
 	var dbQuery,
 		quests = [],
 		filesFunc = {};
 
 	q = prepareSearchQuery(q);
-	dbQuery = util.format('call quests.pQuestSearch("%s")', q);
+	dbQuery = util.format('call quests.pQuestSearch("%s", %s)', q, cityID || null);
 
 	db.execQuery(dbQuery, function(err, rows, fields) {
 		if (err) {

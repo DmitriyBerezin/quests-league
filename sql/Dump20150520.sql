@@ -45,6 +45,8 @@ CREATE TABLE `tcity` (
   `time_zone` int(11) DEFAULT NULL,
   `name` varchar(45) NOT NULL,
   `country_id` int(11) DEFAULT NULL,
+  `lat` decimal(10,8) DEFAULT NULL,
+  `lng` decimal(10,8) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_tcity_country_id_idx` (`country_id`),
   CONSTRAINT `fk_tcity_country_id` FOREIGN KEY (`country_id`) REFERENCES `tcountry` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
@@ -456,7 +458,7 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `pCityStations` */;
+/*!50003 DROP PROCEDURE IF EXISTS `pCityList` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
@@ -465,6 +467,30 @@ DELIMITER ;
 /*!50003 SET collation_connection  = utf8_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE PROCEDURE `pCityList`()
+BEGIN
+  select * from tcountry;
+    
+    select co.id as country_id, co.name as country_name,
+    ci.id as city_id, ci.name as city_name, ci.lat, ci.lng
+    from tcountry co inner join tcity ci on co.id = ci.country_id
+    order by co.id;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `pCityStations` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 CREATE PROCEDURE `pCityStations`(
   city_id int
@@ -975,7 +1001,10 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE PROCEDURE `pQuestSearch`(q varchar(100))
+CREATE PROCEDURE `pQuestSearch`(
+  q varchar(100),
+  city_id int
+)
 BEGIN
   if q <> '' and q is not null then
   begin
@@ -994,7 +1023,7 @@ BEGIN
     from (select tx.quest_id as quest_id, s.id as station_id, s.name as station_name from txqueststation tx inner join tstation s on tx.station_id = s.id) qs
     group by qs.quest_id
     ) stations on q.id = stations.quest_id
-    WHERE (deleted_flag  is null or deleted_flag != 1) and
+    WHERE (deleted_flag  is null or deleted_flag != 1) and (city_id is null or q.city_id = city_id) and
     (MATCH (q.name, q.descr, q.address) AGAINST (q IN BOOLEAN MODE)
      or MATCH (c.name) AGAINST (q IN BOOLEAN MODE)
        or MATCH (tags.tags_name) AGAINST (q IN BOOLEAN MODE)
@@ -1017,7 +1046,8 @@ BEGIN
       from (select tx.quest_id as quest_id, s.id as station_id, s.name as station_name from txqueststation tx inner join tstation s on tx.station_id = s.id) qs
       group by qs.quest_id
       ) stations on q.id = stations.quest_id
-          where top is not null and (deleted_flag  is null or deleted_flag != 1)
+          where top is not null and (deleted_flag  is null or deleted_flag != 1) and
+          (city_id is null or q.city_id = city_id)
           order by top;
     end;
  end if;

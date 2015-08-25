@@ -42,9 +42,13 @@ $(function() {
 	}
 
 	function onListCityChange(evt) {
-		var cityID = $(evt.target).val();
+		var $target = $(evt.target)
+			cityID = $target.val(),
+			cityName = $target.find('option:selected').text();
 
 		App.geo.setCurrentCity(cityID);
+
+		window.location.reload();
 	}
 
 	function selectCity(cityID) {
