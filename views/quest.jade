@@ -344,7 +344,8 @@ block content
 			.col-md-12.company-quests
 				if quests.length > 0
 					h4 Другие квесты компании "#{company_name}"
-					include ./quest-list.jade
+					.row
+						include ./quest-list.jade
 	.container-fluid
 		.row
 			.col-md-12.no-padding

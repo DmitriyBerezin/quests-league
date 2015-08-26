@@ -8,6 +8,7 @@ block style
 block script
 	script(src='https://api-maps.yandex.ru/2.1/?lang=ru_RU')
 	script(src='/lib/jquery.form.min.js')
+	script(src='/lib/jquery.infinite-scroll.js')
 	script(src='/js/map.js')
 	script(src='/js/geo.js')
 	script(src='/js/index.js')
@@ -37,7 +38,7 @@ block content
 								a(href='#') Списком
 							li(role='presentation').map
 								a(href='#') На карте
-						.founded-quests-list
+						.founded-quests-list.row
 							include ./quest-list.jade
 						.founded-quests-map(id='quests-map')
 				//- .col-md-3

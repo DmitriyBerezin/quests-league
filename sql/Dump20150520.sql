@@ -1003,9 +1003,13 @@ DELIMITER ;
 DELIMITER ;;
 CREATE PROCEDURE `pQuestSearch`(
   q varchar(100),
-  city_id int
+    `page` int,
+    city_id int
 )
 BEGIN
+  declare start_index int;
+  set start_index = `page` * 10;
+  
   if q <> '' and q is not null then
   begin
     select q.id, q.name, c.name as company_name, q.url, q.descr, q.address, 
@@ -1027,11 +1031,12 @@ BEGIN
     (MATCH (q.name, q.descr, q.address) AGAINST (q IN BOOLEAN MODE)
      or MATCH (c.name) AGAINST (q IN BOOLEAN MODE)
        or MATCH (tags.tags_name) AGAINST (q IN BOOLEAN MODE)
-       or MATCH (stations.stations_name) AGAINST (q IN BOOLEAN MODE));
+       or MATCH (stations.stations_name) AGAINST (q IN BOOLEAN MODE))
+  LIMIT start_index, 10;
   end;
  else
   begin
-        select q.id, q.name, c.name as company_name, q.url, q.descr, q.address, 
+    select q.id, q.name, c.name as company_name, q.url, q.descr, q.address, 
       q.players_from, q.players_to, q.price_from, q.price_to, q.lat, q.lng,
       stations.stations_name as stations
       from tquest q
@@ -1046,9 +1051,10 @@ BEGIN
       from (select tx.quest_id as quest_id, s.id as station_id, s.name as station_name from txqueststation tx inner join tstation s on tx.station_id = s.id) qs
       group by qs.quest_id
       ) stations on q.id = stations.quest_id
-          where top is not null and (deleted_flag  is null or deleted_flag != 1) and
+          where (deleted_flag  is null or deleted_flag != 1) and
           (city_id is null or q.city_id = city_id)
-          order by top;
+          order by -top desc
+    LIMIT start_index, 10;
     end;
  end if;
 END ;;

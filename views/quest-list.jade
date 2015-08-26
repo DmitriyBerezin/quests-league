@@ -1,9 +1,8 @@
 include ./widgets/quest-widget.jade
 
 if quests && quests.length > 0
-	.row
-		each quest in quests
-			.col-md-4.col-sm-6.col-sx-12
-				+questWidget(quest)
-else
+	each quest in quests
+		.col-md-4.col-sm-6.col-sx-12
+			+questWidget(quest)
+else if emptyMsg
 	h4 По Вашему запросу ничего не найдено
