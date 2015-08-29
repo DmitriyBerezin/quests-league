@@ -46,9 +46,13 @@ $(function() {
 		}
 		pushState = true;
 
-		$listView.html(tmplQuestsList({ quests: quests }));
+		$listView.html(tmplQuestsList({ quests: quests, emptyMsg: true }));
 		$inputSearch.focus();
 		$preloader.hide();
+
+		$listView.infiniteScroll(loadMore, {
+			bottomOffset: 50
+		});
 
 		App.map.render(quests);
 	}
@@ -104,6 +108,23 @@ $(function() {
 	function onPopState(evt) {
 		pushState = false;
 		applyQueryParams();
+	}
+
+	function loadMore(page, onStart, onComplete) {
+		var params = {
+			query: $inputSearch.val(),
+			page: page
+		};
+
+		onStart('<b>Загрузка</b>', 'div');
+
+		$.getJSON('/quest/search', params).then(function(data) {
+			var html = tmplQuestsList({ quests: data }),
+				noMore = data.length === 0;
+
+			onComplete(html, noMore);
+		});
+
 	}
 
 	// TODO: move to utils module

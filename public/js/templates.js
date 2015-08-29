@@ -41,7 +41,7 @@ function tmplQuestsList(locals) {
 var buf = [];
 var jade_mixins = {};
 var jade_interp;
-;var locals_for_with = (locals || {});(function (quests, undefined) {
+;var locals_for_with = (locals || {});(function (emptyMsg, quests, undefined) {
 jade_mixins["questWidget"] = function(quest){
 var block = (this && this.block), attributes = (this && this.attributes) || {};
 buf.push("<a" + (jade.attr("href", '/quest/' + (quest.id) + '', true, false)) + "><div class=\"event-list-item\"><img" + (jade.attr("src", quest.img.url, true, false)) + " alt=\"\"/><div class=\"row\"><div class=\"col-md-12\"><h3 class=\"no-margin-top\">" + (jade.escape(null == (jade_interp = quest.name) ? "" : jade_interp)) + "</h3></div></div><div class=\"row\"><div class=\"col-md-12\">");
@@ -66,7 +66,6 @@ buf.push("</ul><button class=\"btn btn-success\">забронировать</but
 };
 if ( quests && quests.length > 0)
 {
-buf.push("<div class=\"row\">");
 // iterate quests
 ;(function(){
   var $$obj = quests;
@@ -93,10 +92,9 @@ buf.push("</div>");
   }
 }).call(this);
 
-buf.push("</div>");
 }
-else
+else if ( emptyMsg)
 {
 buf.push("<h4>По Вашему запросу ничего не найдено</h4>");
-}}.call(this,"quests" in locals_for_with?locals_for_with.quests:typeof quests!=="undefined"?quests:undefined,"undefined" in locals_for_with?locals_for_with.undefined:typeof undefined!=="undefined"?undefined:undefined));;return buf.join("");
+}}.call(this,"emptyMsg" in locals_for_with?locals_for_with.emptyMsg:typeof emptyMsg!=="undefined"?emptyMsg:undefined,"quests" in locals_for_with?locals_for_with.quests:typeof quests!=="undefined"?quests:undefined,"undefined" in locals_for_with?locals_for_with.undefined:typeof undefined!=="undefined"?undefined:undefined));;return buf.join("");
 }
