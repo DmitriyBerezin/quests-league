@@ -284,7 +284,7 @@ CREATE TABLE `tschedule` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `quest_id` int(11) NOT NULL,
   `session_start` timestamp NOT NULL,
-  `status` enum('free','reserved','lq_reserved','unavailable','expired','hot') DEFAULT NULL COMMENT '''free'' - свободный\n''reserved'' - зарезервирован через внешний сайт\n''lq_reserved'' - зарезервирован через наш сайт\n''unavailable'' - недоступен\n''expired'' - устарел\n''hot'' - горячее предложение',
+  `status` enum('free','reserved','lq_reserved','unavailable','experied','hot') DEFAULT NULL COMMENT '''free'' - свободный\n''reserved'' - зарезервирован через внешний сайт\n''lq_reserved'' - зарезервирован через наш сайт\n''unavailable'' - недоступен\n''experied'' - устарел\n''hot'' - горячее предложение',
   `price` decimal(8,2) NOT NULL,
   `updated` timestamp NULL DEFAULT NULL,
   `outer_session_id` int(11) DEFAULT NULL,
@@ -1231,7 +1231,7 @@ BEGIN
   end;
  else
   begin
-    select q.id, q.name, c.name as company_name, q.url, q.descr, q.address, 
+        select q.id, q.name, c.name as company_name, q.url, q.descr, q.address, 
       q.players_from, q.players_to, q.price_from, q.price_to, q.lat, q.lng,
       stations.stations_name as stations
       from tquest q
@@ -1574,4 +1574,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-09-09 15:09:40
+-- Dump completed on 2015-08-31 21:15:20
