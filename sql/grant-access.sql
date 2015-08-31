@@ -36,6 +36,14 @@ grant execute on procedure pUserEmailCheck to 'web';
 
 
 
+CREATE USER 'spider' IDENTIFIED BY 'spider';
+
+grant all privileges on quests.tschedule to 'spider'; 
+grant all privileges on quests.tschedulelog to 'spider';
+grant select on quests.vquest to 'spider';
+
+
+
 update tquest q set q.top = 1 where id = 8;
 
 

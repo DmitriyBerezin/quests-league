@@ -44,7 +44,7 @@ CREATE TABLE `tcity` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `time_zone` int(11) DEFAULT NULL,
   `name` varchar(45) NOT NULL,
-  `country_id` int(11) DEFAULT NULL,
+  `country_id` int(11) NOT NULL,
   `lat` decimal(10,8) DEFAULT NULL,
   `lng` decimal(10,8) DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -242,13 +242,27 @@ DROP TABLE IF EXISTS `tschedule`;
 CREATE TABLE `tschedule` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `quest_id` int(11) NOT NULL,
-  `start_at` datetime NOT NULL,
-  `status_flag` bit(1) NOT NULL COMMENT '0-Свободен, 1-Занят, 2-Горячее предложение',
-  `price` int(11) NOT NULL,
+  `session_start` timestamp NOT NULL,
+  `status` enum('free','reserved','lq_reserved','unavailable','experied','hot') DEFAULT NULL COMMENT '''free'' - свободный\n''reserved'' - зарезервирован через внешний сайт\n''lq_reserved'' - зарезервирован через наш сайт\n''unavailable'' - недоступен\n''experied'' - устарел\n''hot'' - горячее предложение',
+  `price` decimal(8,2) NOT NULL,
+  `updated` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_tschedule_quest_id_idx` (`quest_id`),
   CONSTRAINT `fk_tschedule_quest_id` FOREIGN KEY (`quest_id`) REFERENCES `tquest` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Таблица расписаний квестов';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `tschedulelog`
+--
+
+DROP TABLE IF EXISTS `tschedulelog`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tschedulelog` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Таблица истории изменений расписания',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -430,6 +444,22 @@ CREATE TABLE `txuserachievement` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Temporary view structure for view `vquest`
+--
+
+DROP TABLE IF EXISTS `vquest`;
+/*!50001 DROP VIEW IF EXISTS `vquest`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE VIEW `vquest` AS SELECT 
+ 1 AS `quest_id`,
+ 1 AS `quest_name`,
+ 1 AS `company_id`,
+ 1 AS `company_name`,
+ 1 AS `company_site`*/;
+SET character_set_client = @saved_cs_client;
+
+--
 -- Dumping events for database 'quests'
 --
 
@@ -467,6 +497,7 @@ DELIMITER ;
 /*!50003 SET character_set_results = utf8 */ ;
 /*!50003 SET collation_connection  = utf8_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 CREATE PROCEDURE `pCityList`()
 BEGIN
@@ -1003,8 +1034,8 @@ DELIMITER ;
 DELIMITER ;;
 CREATE PROCEDURE `pQuestSearch`(
   q varchar(100),
-    `page` int,
-    city_id int
+  `page` int,
+  city_id int
 )
 BEGIN
   declare start_index int;
@@ -1036,7 +1067,7 @@ BEGIN
   end;
  else
   begin
-    select q.id, q.name, c.name as company_name, q.url, q.descr, q.address, 
+        select q.id, q.name, c.name as company_name, q.url, q.descr, q.address, 
       q.players_from, q.players_to, q.price_from, q.price_to, q.lat, q.lng,
       stations.stations_name as stations
       from tquest q
@@ -1162,7 +1193,7 @@ DELIMITER ;
 /*!50003 SET character_set_results = utf8 */ ;
 /*!50003 SET collation_connection  = utf8_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+/*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 CREATE PROCEDURE `pUserEmailCheck`(
   email varchar(45)
@@ -1327,6 +1358,24 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+
+--
+-- Final view structure for view `vquest`
+--
+
+/*!50001 DROP VIEW IF EXISTS `vquest`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8 */;
+/*!50001 SET character_set_results     = utf8 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`root`@`%` SQL SECURITY DEFINER */
+/*!50001 VIEW `vquest` AS select `q`.`id` AS `quest_id`,`q`.`name` AS `quest_name`,`c`.`id` AS `company_id`,`c`.`name` AS `company_name`,`c`.`site` AS `company_site` from (`tquest` `q` join `tcompany` `c` on((`q`.`company_id` = `c`.`id`))) */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -1337,4 +1386,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-08-23 11:12:12
+-- Dump completed on 2015-08-31 21:15:20
