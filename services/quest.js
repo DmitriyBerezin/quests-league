@@ -1,6 +1,7 @@
 var util = require('util'),
 	async = require('async'),
 	natural = require('natural'),
+	moment = require('moment'),
 	db = require('./database'),
 	s3 = require('./aws-s3'),
 	admin = require('./admin');
@@ -22,6 +23,8 @@ function getQuest(id, userID, done) {
 		res.stations = rows[3];
 		res.userComment = rows[4].length > 0 ? rows[4][0] : null;
 		res.otherComments = rows[5];
+		res.schedule = groupQuestSessions(rows[6]);
+		console.log(res.schedule);
 		res.imgs = [];
 		res.ceo = {
 			title: res.ceo_title,
@@ -48,6 +51,61 @@ function getQuest(id, userID, done) {
 			return done(null, res);
 		});
 	});
+}
+
+function groupQuestSessions(sessions) {
+	var schedule = [],
+		prices = [],
+		date,
+		scheduleItems,
+		scheduleDay;
+
+	moment.locale('ru-RU');
+	sessions.forEach(function(session) {
+		date = moment(session.session_start);
+
+		scheduleItems = schedule.filter(function(item) {
+			return item.date.diff(date, 'days') === 0;
+		});
+
+		if (scheduleItems.length === 0) {
+			scheduleDay = {
+				date: date,
+				label: {
+					dayNum: date.format('DD'),
+					dayInWeek: date.format('dddd'),
+					monthName: date.format('MMMM')
+				},
+				sessions: [],
+				prices: []
+			};
+			schedule.push(scheduleDay);
+		}
+		else {
+			scheduleDay = scheduleItems[0];
+		}
+
+		scheduleDay.sessions.push({
+			id: session.id,
+			time: date.format('HH:mm'),
+			price: session.price,
+			status: session.status
+		});
+
+		prices = scheduleDay.prices;
+		if (prices.length > 0 &&
+			prices[prices.length - 1].price === session.price) {
+			prices[prices.length - 1].count++;
+		}
+		else {
+			prices.push({
+				price: session.price,
+				count: 1
+			});
+		}
+	});
+
+	return schedule;
 }
 
 function getQuestIdBySefName(sefName, done) {

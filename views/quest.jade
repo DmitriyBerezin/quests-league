@@ -227,114 +227,36 @@ block content
 		//- 								input.form-control(type='email', placeholder='введите e-mail')
 		//- 							.col-sm-4
 		//- 								button.btn.btn-success.btn-block Подписаться
-		//- // PROMO FORM
-		//- .row.schedule-row
-		//- 	.col-md-12
-		//- 		.schedule-border.top
-		//- 		h3.text-center Расписание
-		//- 		.schedule-item.clearfix
-		//- 			.date.active
-		//- 				span.number 28
-		//- 				br
-		//- 				span
-		//- 					small августа
-		//- 				br
-		//- 				span
-		//- 					small воскресенье
-		//- 			.schedule-time-wrapper
-		//- 				button
-		//- 					i.fa.fa-chevron-left
-		//- 				span.time 23:15
-		//- 				span.time.active 23:15
-		//- 				span.time 23:15
-		//- 				span.time 23:15
-		//- 				span.time 23:15
-		//- 				span.time.hidden-xs 23:15
-		//- 				span.time.hidden-xs 23:15
-		//- 				span.time.hidden-xs 23:15
-		//- 				span.time.hidden-xs 23:15
-		//- 				span.time.hidden-xs 23:15
-		//- 				span.time.hidden-xs 23:15
-		//- 				span.time.hidden-xs 23:15
-		//- 				span.time.hidden-xs 23:15
-		//- 				button
-		//- 					i.fa.fa-chevron-right
-		//- 				.schedule-price-range-container.hidden-xs
-		//- 					.schedule-price-range.x1
-		//- 						span 1500 р.
-		//- 					.schedule-price-range.x3
-		//- 						span 1500 р.
-		//- 					.schedule-price-range.x5
-		//- 						span 1500 р.
-		//- 					.schedule-price-range.x1
-		//- 						span 1500 р.
-		//- 		.schedule-item.clearfix
-		//- 			.date.active
-		//- 				span.number 28
-		//- 				br
-		//- 				span
-		//- 					small августа
-		//- 				br
-		//- 				span
-		//- 					small воскресенье
-		//- 			.schedule-time-wrapper
-		//- 				button
-		//- 					i.fa.fa-chevron-left
-		//- 				span.time 23:15
-		//- 				span.time.active 23:15
-		//- 				span.time 23:15
-		//- 				span.time 23:15
-		//- 				span.time 23:15
-		//- 				span.time.hidden-xs 23:15
-		//- 				span.time.hidden-xs 23:15
-		//- 				span.time.hidden-xs 23:15
-		//- 				span.time.hidden-xs 23:15
-		//- 				span.time.hidden-xs 23:15
-		//- 				span.time.hidden-xs 23:15
-		//- 				span.time.hidden-xs 23:15
-		//- 				span.time.hidden-xs 23:15
-		//- 				button
-		//- 					i.fa.fa-chevron-right
-		//- 				.schedule-price-range-container.hidden-xs
-		//- 					.schedule-price-range.x10
-		//- 						span 1500 р.
-		//- 		.schedule-item.clearfix
-		//- 			.date.active
-		//- 				span.number 28
-		//- 				br
-		//- 				span
-		//- 					small августа
-		//- 				br
-		//- 				span
-		//- 					small воскресенье
-		//- 			.schedule-time-wrapper
-		//- 				button
-		//- 					i.fa.fa-chevron-left
-		//- 				span.time 23:15
-		//- 				span.time.active 23:15
-		//- 				span.time 23:15
-		//- 				span.time 23:15
-		//- 				span.time 23:15
-		//- 				span.time.hidden-xs 23:15
-		//- 				span.time.hidden-xs 23:15
-		//- 				span.time.hidden-xs 23:15
-		//- 				span.time.hidden-xs 23:15
-		//- 				span.time.hidden-xs 23:15
-		//- 				span.time.hidden-xs 23:15
-		//- 				span.time.hidden-xs 23:15
-		//- 				span.time.hidden-xs 23:15
-		//- 				button
-		//- 					i.fa.fa-chevron-right
-		//- 				.schedule-price-range-container.hidden-xs
-		//- 					.schedule-price-range.x5
-		//- 						span 1500 р.
-		//- 					.schedule-price-range.x5
-		//- 						span 1500 р.
-		//- 					.schedule-price-range.x2
-		//- 						span 1500 р.
-		//- 					.schedule-price-range.x1
-		//- 						span 1500 р.
-		//- 		.schedule-border.bottom
+		//- Schedule
+		.row.schedule-row
+			.col-md-12
+				.schedule-border.top
+				h3.text-center Расписание
+				each day in schedule
+					.schedule-item.clearfix
+						.date.active
+							span.number= day.label.dayNum
+							br
+							span
+								small= day.label.monthName
+							br
+							span
+								small= day.label.dayInWeek
+						.schedule-time-wrapper
+							button
+								i.fa.fa-chevron-left
+							each session, index in day.sessions
+								span(data-id=session.id).time= session.time
+							- for (var i = day.sessions.length; i < 13; ++i)
+								span.time нет
+							button
+								i.fa.fa-chevron-right
+
+							.schedule-price-range-container.hidden-xs
+								each price, index in day.prices
+									.schedule-price-range(class="x#{price.count}")
+										span= price.price
+					.schedule-border.bottom
 		//- // SCHEDULE
 		// TEMP
 		.row
