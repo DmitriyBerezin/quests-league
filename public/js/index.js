@@ -122,6 +122,8 @@ $(function() {
 			var html = tmplQuestsList({ quests: data }),
 				noMore = data.length === 0;
 
+			quests = quests.concat(data);
+			App.map.render(quests);
 			onComplete(html, noMore);
 		});
 

@@ -1,9 +1,17 @@
 (function ($) {
 
 	$.fn.infiniteScroll = function (getPage, options) {
+		var applied = [];
 
-		if (typeof(getPage) != 'function')
+		if (typeof(getPage) != 'function') {
 			throw('Переменная функции получения страницы не определена или не содержит ссылку на функцию.');
+		}
+
+		if (applied.indexOf(applied) > -1) {
+			return;
+		}
+
+		applied.push(applied);
 
 		return this.each(function () {
 			var listElem = $(this),

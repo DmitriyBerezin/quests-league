@@ -27,6 +27,7 @@ App.map = (function($, module) {
 			}
 			map.setCenter(center);
 
+			map.geoObjects.removeAll();
 			for (var i = 0; i < quests.length; ++i) {
 				placemark = new ymaps.Placemark([quests[i].lat, quests[i].lng], {
 					balloonContentBody: '<a href="/quest/' + quests[i].id + '">' + quests[i].name + '</a>',
