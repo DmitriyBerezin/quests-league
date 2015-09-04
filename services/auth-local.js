@@ -67,6 +67,19 @@ function createUser(name, email, password, phone, done) {
 	});
 }
 
+function updateUser(userID, phone, done) {
+	var query = util.format('call quests.pUserUpdate(%d, "%s")',
+			userID, phone);
+
+	db.execQuery(query, function(err, rows, fields) {
+		if (err) {
+			return done(err);
+		}
+
+		return done(null, userID);
+	});
+}
+
 function createUserForOrder(name, email, phone, done) {
 	// generate random password
 	crypto.randomBytes(48, function(err, buf) {
@@ -311,6 +324,7 @@ function checkPassword(psw, hash, done) {
 
 module.exports = {
 	createUser: createUser,
+	updateUser: updateUser,
 	sendWelcomeMail: sendWelcomeMail,
 	verifyEnd: verifyEnd,
 	changePassword: changePassword,

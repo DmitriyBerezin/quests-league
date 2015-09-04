@@ -1,10 +1,10 @@
 CREATE DATABASE  IF NOT EXISTS `quests` /*!40100 DEFAULT CHARACTER SET utf8 */;
 USE `quests`;
--- MySQL dump 10.13  Distrib 5.6.19, for osx10.7 (i386)
+-- MySQL dump 10.13  Distrib 5.6.24, for Win64 (x86_64)
 --
--- Host: quests.cp0uujwgrxiz.eu-west-1.rds.amazonaws.com    Database: quests
+-- Host: localhost    Database: quests
 -- ------------------------------------------------------
--- Server version 5.6.23-log
+-- Server version 5.6.26
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -167,6 +167,45 @@ CREATE TABLE `tleague_tr` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `torder`
+--
+
+DROP TABLE IF EXISTS `torder`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `torder` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `session_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `comment` varchar(1000) DEFAULT NULL,
+  `confirm_code` varchar(4) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_torder_user_id_idx` (`user_id`),
+  KEY `fk_torder_session_id_idx` (`session_id`),
+  CONSTRAINT `fk_torder_session_id` FOREIGN KEY (`session_id`) REFERENCES `tschedule` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_torder_user_id` FOREIGN KEY (`user_id`) REFERENCES `tuser` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Таблица бронирования';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `torderprogress`
+--
+
+DROP TABLE IF EXISTS `torderprogress`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `torderprogress` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `order_id` int(11) NOT NULL,
+  `state` enum('outer_booked','outer_visited','outer_paid','outer_refused','booked','called','visited','refused') NOT NULL,
+  `date` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `torderprogress_order_id_idx` (`order_id`),
+  CONSTRAINT `torderprogress_order_id` FOREIGN KEY (`order_id`) REFERENCES `torder` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `tquest`
 --
 
@@ -242,27 +281,14 @@ DROP TABLE IF EXISTS `tschedule`;
 CREATE TABLE `tschedule` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `quest_id` int(11) NOT NULL,
-  `session_start` timestamp NOT NULL,
-  `status` enum('free','reserved','lq_reserved','unavailable','experied','hot') DEFAULT NULL COMMENT '''free'' - свободный\n''reserved'' - зарезервирован через внешний сайт\n''lq_reserved'' - зарезервирован через наш сайт\n''unavailable'' - недоступен\n''experied'' - устарел\n''hot'' - горячее предложение',
+  `session_start` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `status` enum('free','reserved','lq_reserved','unavailable','expired','hot','partial') DEFAULT NULL COMMENT '''free'' - свободный\n''reserved'' - зарезервирован через внешний сайт\n''lq_reserved'' - зарезервирован через наш сайт\n''unavailable'' - недоступен\n''expired'' - устарел\n''hot'' - горячее предложение\n''partial'' - частичное бронирование',
   `price` decimal(8,2) NOT NULL,
   `updated` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_tschedule_quest_id_idx` (`quest_id`),
   CONSTRAINT `fk_tschedule_quest_id` FOREIGN KEY (`quest_id`) REFERENCES `tquest` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Таблица расписаний квестов';
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `tschedulelog`
---
-
-DROP TABLE IF EXISTS `tschedulelog`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `tschedulelog` (
-  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Таблица истории изменений расписания',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -277,7 +303,6 @@ CREATE TABLE `tstation` (
   `name` varchar(45) NOT NULL,
   `city_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `UNIQUE_name_city_id` (`name`,`city_id`),
   KEY `fk_city_id_idx` (`city_id`),
   CONSTRAINT `fk_city_id` FOREIGN KEY (`city_id`) REFERENCES `tcity` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Таблица станций метро';
@@ -354,10 +379,8 @@ CREATE TABLE `tuser` (
   `oauth_provider` varchar(45) DEFAULT NULL,
   `oauth_id` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `phone_UNIQUE` (`phone`),
-  UNIQUE KEY `email_oauth_provider_UNIQUE` (`email`,`oauth_provider`),
-  UNIQUE KEY `oauth_id_oauth_provider_UNIQUE` (`oauth_id`,`oauth_provider`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Таблица зарегистрированных пользователей портала (игроки, компании-операторы)';
+  UNIQUE KEY `nickname_UNIQUE` (`nickname`)
+) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8 COMMENT='Таблица зарегистрированных пользователей портала (игроки, компании-операторы)';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -444,22 +467,6 @@ CREATE TABLE `txuserachievement` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Temporary view structure for view `vquest`
---
-
-DROP TABLE IF EXISTS `vquest`;
-/*!50001 DROP VIEW IF EXISTS `vquest`*/;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-/*!50001 CREATE VIEW `vquest` AS SELECT 
- 1 AS `quest_id`,
- 1 AS `quest_name`,
- 1 AS `company_id`,
- 1 AS `company_name`,
- 1 AS `company_site`*/;
-SET character_set_client = @saved_cs_client;
-
---
 -- Dumping events for database 'quests'
 --
 
@@ -497,7 +504,7 @@ DELIMITER ;
 /*!50003 SET character_set_results = utf8 */ ;
 /*!50003 SET collation_connection  = utf8_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 CREATE PROCEDURE `pCityList`()
 BEGIN
@@ -727,6 +734,33 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `pOrderCreate` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE PROCEDURE `pOrderCreate`(
+  user_id int,
+    session_id int,
+    confirm_code varchar(4),
+    comment varchar(1000)
+)
+BEGIN
+  insert into torder(user_id, session_id, `comment`, confirm_code) 
+    value(user_id, session_id, `comment`, confirm_code);
+    
+    select LAST_INSERT_ID() as order_id;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `pQuestDel` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -929,7 +963,7 @@ DELIMITER ;
 /*!50003 SET character_set_results = utf8 */ ;
 /*!50003 SET collation_connection  = utf8_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 CREATE PROCEDURE `pQuestGet1`(
   quest_id int,
@@ -966,6 +1000,8 @@ BEGIN
     select tx.id, tx.user_id, tx.comment, DATE_FORMAT(tx.date, '%d.%m.%x') as date, u.name as user_name 
     from txquestuser tx inner join tuser u on tx.user_id = u.id
     where tx.quest_id = quest_id and (deleted_flag is null or deleted_flag != 1) and tx.user_id != user_id and tx.approved_flag = 1;
+    
+    select s.* from tschedule s where s.quest_id = quest_id;
     
     /*select t.*, case when tx.quest_id is null then 0 else 1 end as selected  
     from ttag t 
@@ -1030,12 +1066,12 @@ DELIMITER ;
 /*!50003 SET character_set_results = utf8 */ ;
 /*!50003 SET collation_connection  = utf8_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 CREATE PROCEDURE `pQuestSearch`(
   q varchar(100),
-  `page` int,
-  city_id int
+    `page` int,
+    city_id int
 )
 BEGIN
   declare start_index int;
@@ -1067,7 +1103,7 @@ BEGIN
   end;
  else
   begin
-        select q.id, q.name, c.name as company_name, q.url, q.descr, q.address, 
+    select q.id, q.name, c.name as company_name, q.url, q.descr, q.address, 
       q.players_from, q.players_to, q.price_from, q.price_to, q.lat, q.lng,
       stations.stations_name as stations
       from tquest q
@@ -1146,7 +1182,7 @@ DELIMITER ;
 /*!50003 SET character_set_results = utf8 */ ;
 /*!50003 SET collation_connection  = utf8_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 CREATE PROCEDURE `pUserChangePassword`(
   user_id int,
@@ -1168,15 +1204,17 @@ DELIMITER ;
 /*!50003 SET character_set_results = utf8 */ ;
 /*!50003 SET collation_connection  = utf8_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 CREATE PROCEDURE `pUserCreate`(
-  `name` varchar(45),
-    email varchar(45),
-    psw varchar(250)
+  `name` varchar(45), 
+    email varchar(45), 
+    psw varchar(250),
+    phone varchar(25)
 )
 BEGIN
   insert into tuser (oauth_provider, `name`, email, password) values('local', `name`, email, psw);
+    value('local', `name`, email, psw, phone);
     
     select * from tuser u where u.email = email and u.oauth_provider = 'local';
 END ;;
@@ -1193,7 +1231,7 @@ DELIMITER ;
 /*!50003 SET character_set_results = utf8 */ ;
 /*!50003 SET collation_connection  = utf8_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 CREATE PROCEDURE `pUserEmailCheck`(
   email varchar(45)
@@ -1214,7 +1252,7 @@ DELIMITER ;
 /*!50003 SET character_set_results = utf8 */ ;
 /*!50003 SET collation_connection  = utf8_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 CREATE PROCEDURE `pUserGet`(email varchar(45))
 BEGIN
@@ -1277,7 +1315,7 @@ DELIMITER ;
 /*!50003 SET character_set_results = utf8 */ ;
 /*!50003 SET collation_connection  = utf8_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 CREATE PROCEDURE `pUserResetPassword`(
   token varchar(250),
@@ -1302,7 +1340,7 @@ DELIMITER ;
 /*!50003 SET character_set_results = utf8 */ ;
 /*!50003 SET collation_connection  = utf8_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 CREATE PROCEDURE `pUserSetForgotPasswordToken`(
   email varchar(45),
@@ -1326,11 +1364,33 @@ DELIMITER ;
 /*!50003 SET character_set_results = utf8 */ ;
 /*!50003 SET collation_connection  = utf8_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 CREATE PROCEDURE `pUserSetVerificationToken`(id int, token varchar(250))
 BEGIN
   update tuser u set u.verify_token = token where u.id = id and u.oauth_provider = 'local';
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `pUserUpdate` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pUserUpdate`(
+  user_id int,
+    phone varchar(25)
+)
+BEGIN
+  update tuser u set u.phone = phone where u.id = user_id;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -1358,24 +1418,6 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
-
---
--- Final view structure for view `vquest`
---
-
-/*!50001 DROP VIEW IF EXISTS `vquest`*/;
-/*!50001 SET @saved_cs_client          = @@character_set_client */;
-/*!50001 SET @saved_cs_results         = @@character_set_results */;
-/*!50001 SET @saved_col_connection     = @@collation_connection */;
-/*!50001 SET character_set_client      = utf8 */;
-/*!50001 SET character_set_results     = utf8 */;
-/*!50001 SET collation_connection      = utf8_general_ci */;
-/*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`root`@`%` SQL SECURITY DEFINER */
-/*!50001 VIEW `vquest` AS select `q`.`id` AS `quest_id`,`q`.`name` AS `quest_name`,`c`.`id` AS `company_id`,`c`.`name` AS `company_name`,`c`.`site` AS `company_site` from (`tquest` `q` join `tcompany` `c` on((`q`.`company_id` = `c`.`id`))) */;
-/*!50001 SET character_set_client      = @saved_cs_client */;
-/*!50001 SET character_set_results     = @saved_cs_results */;
-/*!50001 SET collation_connection      = @saved_col_connection */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -1386,4 +1428,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-08-31 21:15:20
+-- Dump completed on 2015-09-04 16:17:56
