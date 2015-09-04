@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var passport = require('passport');
+var async = require('async');
 
 require('../services/auth-oauth');
 var localAuth = require('../services/auth-local');
@@ -106,31 +107,56 @@ router.post('/email/check', function(req, res, next) {
 });
 
 // Sign Up
-router.post('/signup',
-	function(req, res, next) {
-		if (!req.body.name ||
-			!req.body.email ||
-			!req.body.password ||
-			req.body.password.length < 6 ||
-			req.body.password !== req.body.passwordConfirmation) {
+router.post('/signup', function(req, res, next) {
+	var name = req.body.name,
+		email = req.body.email,
+		password = req.body.password,
+		phone = null;
+
+		if (!name ||
+			!email ||
+			!password ||
+			password.length < 6 ||
+			password !== req.body.passwordConfirmation) {
 			var err = new Error('Неверные параметры запроса.');
 			err.status = 400;
 			return next(err);
 		}
 
-		return next();
-	},
-	localAuth.signUp,
-	localAuth.sendVerificationMail,
-	function(req, res, next) {
-		res.redirect('/auth/verify-need');
+		localAuth.createUser(name, email, password, phone, function(err, user) {
+			if (err) {
+				return next(err);
+			}
+
+			async.parallel([
+				function(callback) {
+					req.login(user, callback);
+				},
+				function(callback) {
+					localAuth.sendWelcomeMail(user, true, req.protocol, req.hostname, callback);
+				}
+			],
+			function(err) {
+				if (err) {
+					return next(err);
+				}
+
+				res.redirect('/auth/verify-need');
+			});
+		});
 	}
 );
 router.get('/verify-need', function(req, res) {
-	res.render('auth/verification-need')
+	res.render('auth/verification-need');
 });
-router.get('/verify-start', localAuth.verifyStart, function(req, res) {
-	res.status(200).send({});
+router.get('/verify-start', function(req, res, next) {
+	localAuth.sendWelcomeMail(req.user, true, req.protocol, req.hostname, function(err) {
+		if (err) {
+			return next(err);
+		}
+
+		res.status(200).send({});
+	});
 });
 router.get('/verify-end', localAuth.verifyEnd);
 

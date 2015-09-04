@@ -47,92 +47,92 @@ passport.use(new LocalStrategy({
 	}
 ));
 
-function signUp(req, res, next) {
-	function callback(err, hash) {
+function createUser(name, email, password, phone, done) {
+	hashPassword(password, function callback(err, hash) {
 		if (err) {
-			return next(err);
+			return done(err);
 		}
 
-		var query = util.format('call quests.pUserCreate("%s", "%s", "%s")',
-				req.body.name, req.body.email, hash),
+		var query = util.format('call quests.pUserCreate("%s", "%s", "%s", "%s")',
+				name, email, hash, phone),
 			mailOptions;
 
 		db.execQuery(query, function(err, rows, fields) {
 			if (err) {
-				return next(err);
+				return done(err);
 			}
 
-			req.login(rows[0][0], function(err) {
-				if (err) {
-					return next(err);
-				}
-
-				return next();
-			});
-			console.log(req.user);
+			return done(null, rows[0][0]);
 		});
-	}
-
-	hashPassword(req.body.password, callback);
+	});
 }
 
-function sendVerificationMail(req, res, next) {
-	if (!req.isAuthenticated()) {
-		return next();
-	}
-
+function createUserForOrder(name, email, phone, done) {
+	// generate random password
 	crypto.randomBytes(48, function(err, buf) {
 		if (err) {
-			return next(err);
+			return done(err);
+		}
+
+		var password = buf.toString('hex');
+		createUser(name, email, password, phone, function(err, user) {
+			if (err) {
+				return done(err);
+			}
+		});
+	});
+}
+
+function sendWelcomeMail(user, manualCreated, protocol, hostname, done) {
+	crypto.randomBytes(48, function(err, buf) {
+		if (err) {
+			return done(err);
 		}
 
 		var token = buf.toString('hex'),
-			id = req.user.id,
-			email = req.user.email,
-			name = req.user.name,
 			query = util.format('call quests.pUserSetVerificationToken(%d, "%s")',
-				id, token);
+				user.id, token);
 
 		db.execQuery(query, function(err, rows, fields) {
 			if (err) {
-				return next(err);
+				return done(err);
 			}
 
 			var mailOptions,
-				tmplFile = path.join(__dirname, '../views/mail/verify-account.jade'),
+				tmplFile = path.join(__dirname, '../views/mail/welcome.jade'),
 				data = {
-					userName: name,
-					protocol: req.protocol,
-					hostname: req.hostname,
+					userName: user.name,
+					protocol: protocol,
+					hostname: hostname,
 					token: token,
-					id: id
-				};
+					id: user.id,
+					manualCreated: manualCreated
+				},
+				subject = manualCreated ?
+							'Подтверждение аккаунта на попртале Лига Квестов' :
+							'Добро пожаловать в портал Лига Квестов';
 
 			utils.tmpl2Str(tmplFile, data, function(err, html) {
 				if (err) {
-					return next(err);
+					return done(err);
 				}
 
 				mailOptions = {
-					to: email,
-					subject: 'Подтверждение аккаунта на попртале Лига Квестов',
+					to: user.email,
+					subject: subject,
 					html: html
 				};
 
 				mailer.sendMail(mailOptions, function(err, info) {
 					if (err) {
-						return next(err);
+						return done(err);
 					}
 
-					return next();
+					return done();
 				});
 			})
 		});
 	});
-}
-
-function verifyStart(req, res, next) {
-	return sendVerificationMail(req, res, next);
 }
 
 function verifyEnd(req, res, next) {
@@ -310,9 +310,8 @@ function checkPassword(psw, hash, done) {
 
 
 module.exports = {
-	signUp: signUp,
-	sendVerificationMail: sendVerificationMail,
-	verifyStart: verifyStart,
+	createUser: createUser,
+	sendWelcomeMail: sendWelcomeMail,
 	verifyEnd: verifyEnd,
 	changePassword: changePassword,
 	forgotPasswordMail: forgotPasswordMail,
