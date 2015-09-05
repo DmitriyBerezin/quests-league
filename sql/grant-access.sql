@@ -33,6 +33,8 @@ grant execute on procedure pUserChangePassword to 'web';
 grant execute on procedure pUserResetPassword to 'web';
 grant execute on procedure pUserSetForgotPasswordToken to 'web';
 grant execute on procedure pUserEmailCheck to 'web';
+grant execute on procedure pUserUpdate to 'web';
+	
 
 
 
