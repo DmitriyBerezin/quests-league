@@ -9,6 +9,8 @@ $(function() {
 		$userComment = $('.user-comment'),
 		$otherComments = $('.other-comments'),
 		$noComments = $('.panel-no-comments'),
+		$modalOrder = $('#modalOrder'),
+		$formOrder = $('.form-order'),
 		questID = $('input:hidden[name="id"]').val();
 
 
@@ -18,10 +20,24 @@ $(function() {
 		error: onFormCommentError
 	});
 
+	$formOrder.validate({
+		errorElement: 'div',
+		errorClass: 'error',
+		// errorPlacement: function (error, element) {
+		// 	if (element.hasClass('selectpicker')) {
+		// 		element.next('.bootstrap-select').after(error);
+		// 	}
+		// 	else {
+		// 		element.after(error);
+		// 	}
+		// }
+	});
+
 	$btnAddComment.click(onBtnAddCommentClick);
 	$btnCancelComment.click(onBtnCancelCommentClick);
 	$('.tab-content').delegate('.user-comment-edit', 'click', onUserCommentEditClick);
 	$('.tab-content').delegate('.user-comment-remove', 'click', onUserCommentRemoveClick);
+	$('.schedule').delegate('.session', 'click', onSessionClick);
 
 	$loginLink.attr('href', $loginLink.attr('href') + window.location.pathname);
 
@@ -94,5 +110,9 @@ $(function() {
 			};
 
 		$.ajax(options);
+	}
+
+	function onSessionClick(evt) {
+		$modalOrder.modal('show');
 	}
 });

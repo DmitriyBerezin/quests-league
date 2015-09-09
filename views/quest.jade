@@ -228,7 +228,7 @@ block content
 		//- 							.col-sm-4
 		//- 								button.btn.btn-success.btn-block Подписаться
 		//- Schedule
-		.row.schedule-row
+		.row.schedule-row.schedule
 			.col-md-12
 				.schedule-border.top
 				h3.text-center Расписание
@@ -246,7 +246,7 @@ block content
 							button
 								i.fa.fa-chevron-left
 							each session, index in day.sessions
-								span(data-id=session.id).time= session.time
+								span(data-id=session.id).time.session= session.time
 							- for (var i = day.sessions.length; i < 13; ++i)
 								span.time нет
 							button
@@ -272,6 +272,37 @@ block content
 		.row
 			.col-md-12.no-padding
 				.divider.footer-divider
+
+	//- Station modal
+	div(id='modalOrder', tabIndex='-1', role='dialog').modal.fade
+		div(role='document').modal-dialog
+			div.modal-content
+				form(method='post', action='/order').form-horizontal.form-order
+					div.modal-header
+						button(type='button', data-dismiss='modal' aria-label='Close').close
+							span(aria-hidden='true') &times;
+						h4.modal-title Оформление брони
+					div.modal-body
+						div.form-group
+							label(for='txtName').col-sm-4.control-label Имя
+							div.col-sm-6
+								input(type='text', id='txtName', name='name', value="#{ user ? user.name: '' }", placeholder='Имя', required).form-control
+						div.form-group
+							label(for='txtEmail').col-sm-4.control-label Email
+							div.col-sm-6
+								input(type='email', id='txtEmail', name='email', value="#{ user ? user.email: '' }", placeholder='Email', required).form-control
+						div.form-group
+							label(for='txtPhone').col-sm-4.control-label Телефон
+							div.col-sm-6
+								input(type='text', id='txtPhone', name='phone', value="#{ user ? user.phone: '' }", placeholder='Телефон', required).form-control
+						div.form-group
+							label(for='txtPlayersCount').col-sm-4.control-label Кол-во участников
+							div.col-sm-6
+								input(type='text', id='txtPlayersCount', name='playersCount', placeholder='Кол-во участников', required).form-control
+						input(type='hidden', name='sessionID')
+					div.modal-footer
+						button(type='submit').btn.btn-primary Забронироваь
+
 
 	include ./footer.jade
 
