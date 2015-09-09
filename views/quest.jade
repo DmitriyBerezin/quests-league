@@ -274,10 +274,10 @@ block content
 				.divider.footer-divider
 
 	//- Station modal
-	div(id='modalOrder', tabIndex='-1', role='dialog').modal.fade
+	div(id='modalOrderCreate', tabIndex='-1', role='dialog').modal.fade
 		div(role='document').modal-dialog
 			div.modal-content
-				form(method='post', action='/order').form-horizontal.form-order
+				form(method='post', action='/order').form-horizontal.form-order-create
 					div.modal-header
 						button(type='button', data-dismiss='modal' aria-label='Close').close
 							span(aria-hidden='true') &times;
@@ -298,8 +298,32 @@ block content
 						div.form-group
 							label(for='txtPlayersCount').col-sm-4.control-label Кол-во участников
 							div.col-sm-6
-								input(type='text', id='txtPlayersCount', name='playersCount', placeholder='Кол-во участников', required).form-control
+								input(type='text', id='txtPlayersCount', name='playersCount', placeholder='Кол-во участников', required, size='2').form-control
+						div.form-group
+							label(for='txtPlayersCount').col-sm-4.control-label Комментарий
+							div.col-sm-6
+								textarea(name='comment').form-control
 						input(type='hidden', name='sessionID')
+					div.modal-footer
+						button(type='submit').btn.btn-primary Забронироваь
+
+	div(id='modalOrderConfirm', tabIndex='-1', role='dialog').modal.fade
+		div(role='document').modal-dialog
+			div.modal-content
+				form(method='post', action='/order/confirm').form-horizontal.form-order-confirm
+					div.modal-header
+						button(type='button', data-dismiss='modal' aria-label='Close').close
+							span(aria-hidden='true') &times;
+						h4.modal-title Подтверждение брони
+					div.modal-body
+						div.alert.alert-info
+							| На указанный Вами телефон выслан код подтверждения брони.
+							| Его необходимо ввести для завершения процесса бронирования.
+						div.form-group
+							label(for='txtCode').col-sm-4.control-label Код
+							div.col-sm-6
+								input(type='text', id='txtCode', name='code', placeholder='Код', required).form-control
+						input(type='hidden', name='orderID')
 					div.modal-footer
 						button(type='submit').btn.btn-primary Забронироваь
 

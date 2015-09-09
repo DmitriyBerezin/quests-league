@@ -92,6 +92,8 @@ function createUserForOrder(name, email, phone, done) {
 			if (err) {
 				return done(err);
 			}
+
+			return done(null, user.id);
 		});
 	});
 }
@@ -324,6 +326,7 @@ function checkPassword(psw, hash, done) {
 
 module.exports = {
 	createUser: createUser,
+	createUserForOrder: createUserForOrder,
 	updateUser: updateUser,
 	sendWelcomeMail: sendWelcomeMail,
 	verifyEnd: verifyEnd,

@@ -5,14 +5,14 @@ var util = require('util'),
 	orderRequest = require('../order-request/order-request'),
 	authService = require('../services/auth-local'),
 
-	STATUS_CONFIRMED = 'confirmed', // Данные заказы подтверждены
-	STATUS_REGISTERED = 'registered', // Зарегистрирован во внешней системе
-	STATUS_VISITED = 'visited', // Считается посещенным, елси дата сеанса < текущей даты
-	STATUS_REFUSED = 'refused', // Считается отмененным, если сеанс свободен в расписание
-	STATUS_SKIPPED = 'skipped'; // Не посещался без отмены брони. Проверяется прозвоном.
+	STATUS_CONFIRMED = 'cnf', // Данные заказы подтверждены
+	STATUS_REGISTERED = 'reg', // Зарегистрирован во внешней системе
+	STATUS_VISITED = 'vis', // Считается посещенным, елси дата сеанса < текущей даты
+	STATUS_REFUSED = 'ref', // Считается отмененным, если сеанс свободен в расписании
+	STATUS_SKIPPED = 'skp'; // Не посещался без отмены брони. Проверяется прозвоном.
 
 
-function createOrder(user, sessionID, playersCnt, comment, done) {
+function createOrder(user, sessionID, playersCount, comment, done) {
 	async.waterfall([
 		// Register new or update existed user
 		function(done) {
@@ -26,14 +26,18 @@ function createOrder(user, sessionID, playersCnt, comment, done) {
 		// Send sms with order's verification code
 		function(userID, done) {
 			var confirmCode = 1111;
-			done(null, user.id, confirmCode);
+			done(null, userID, confirmCode);
 		},
 		// Create a not verified order
 		function(userID, confirmCode, done) {
 			var query = util.format('call quests.pOrderCreate(%d, %d, %s, "%s", %s)',
-					userID, sessionID, playersCnt || null, confirmCode, comment || null);
+					userID, sessionID, playersCount || null, confirmCode, comment || null);
 
 			db.execQuery(query, function(err, rows, fields) {
+				if (err) {
+					return done(err);
+				}
+
 				var orderID = +rows[0][0].order_id;
 				return done(null, orderID);
 			});
@@ -51,7 +55,6 @@ function confirmOrder(orderID, confirmCode, done) {
 	var query = util.format('call quests.pOrderConfirm(%d, "%s")',
 			orderID, confirmCode);
 
-	console.log(query)
 	db.execQuery(query, function(err, rows, fields) {
 		if (err) {
 			return done(err);
@@ -64,7 +67,6 @@ function confirmOrder(orderID, confirmCode, done) {
 			return done(err);
 		}
 
-		console.log(order)
 		return done(null, order);
 	});
 }
@@ -73,7 +75,6 @@ function setOrderStatus(orderID, status, done) {
 	var query = util.format('call quests.pOrderSetStatus(%d, "%s")',
 			orderID, status);
 
-	console.log(query)
 	db.execQuery(query, function(err, rows, fields) {
 		if (err) {
 			return done(err);
@@ -89,11 +90,9 @@ function registerOrder(orderID, confirmCode, done) {
 			return confirmOrder(orderID, confirmCode, done);
 		},
 		function(order, done) {
-			console.log('1')
 			return orderRequest.send(order, order.quest_id, done);
 		},
 		function(done) {
-			console.log('2')
 			return setOrderStatus(orderID, STATUS_REGISTERED, done);
 		}
 	], done);

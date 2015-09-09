@@ -9,8 +9,11 @@ $(function() {
 		$userComment = $('.user-comment'),
 		$otherComments = $('.other-comments'),
 		$noComments = $('.panel-no-comments'),
-		$modalOrder = $('#modalOrder'),
-		$formOrder = $('.form-order'),
+		$modalOrderCreate = $('#modalOrderCreate'),
+		$formOrderCreate = $('.form-order-create'),
+		$modalOrderConfirm = $('#modalOrderConfirm'),
+		$formOrderConfirm = $('.form-order-confirm'),
+		$phoneOrder = $('input[name="phone"]'),
 		questID = $('input:hidden[name="id"]').val();
 
 
@@ -20,17 +23,30 @@ $(function() {
 		error: onFormCommentError
 	});
 
-	$formOrder.validate({
+	$phoneOrder.mask('+7(999)999-99-99'); // TODO: phone mask in db
+	$modalOrderCreate.on('show.bs.modal', function(evt) {
+		// $formOrderCreate.clearForm();
+		$formOrderCreate.find('div.error').hide();
+	});
+	$formOrderCreate.validate({
 		errorElement: 'div',
-		errorClass: 'error',
-		// errorPlacement: function (error, element) {
-		// 	if (element.hasClass('selectpicker')) {
-		// 		element.next('.bootstrap-select').after(error);
-		// 	}
-		// 	else {
-		// 		element.after(error);
-		// 	}
-		// }
+		errorClass: 'error'
+	});
+	$formOrderCreate.ajaxForm({
+		success: onFormOrderCreateSuccess,
+		error: onFormOrderCreateError
+	});
+	$modalOrderConfirm.on('show.bs.modal', function(evt) {
+		$formOrderConfirm.clearForm();
+		$formOrderConfirm.find('div.error').hide();
+	});
+	$formOrderConfirm.validate({
+		errorElement: 'div',
+		errorClass: 'error'
+	});
+	$formOrderConfirm.ajaxForm({
+		success: onFormOrderConfirmSuccess,
+		error: onFormOrderConfirmError
 	});
 
 	$btnAddComment.click(onBtnAddCommentClick);
@@ -40,6 +56,31 @@ $(function() {
 	$('.schedule').delegate('.session', 'click', onSessionClick);
 
 	$loginLink.attr('href', $loginLink.attr('href') + window.location.pathname);
+
+
+	function onFormOrderCreateSuccess(data) {
+		$modalOrderCreate.modal('hide');
+		$formOrderConfirm.find('input[name="orderID"]').val(data.orderID);
+		$modalOrderConfirm.modal('show');
+	}
+
+	function onFormOrderCreateError(res) {
+		var error = 'Произошла ошибка при бронировании сеанса: ' + res.responseJSON.message;
+
+		$formOrderCreate.append(tmplAlert({ msg: error, className: 'alert-danger' }));
+	}
+
+	function onFormOrderConfirmSuccess(data) {
+		$modalOrderConfirm.modal('hide');
+		alert('Поздравляем, сеанс забронирован! Наверняка с Вами скоро свяжутся представители квест-рума.');
+	}
+
+	function onFormOrderConfirmError(res) {
+		var error = 'Произошла ошибка при бронировании сеанса: ' + res.responseJSON.message;
+
+		$formOrderConfirm.append(tmplAlert({ msg: error, className: 'alert-danger' }));
+	}
+
 
 	function onFormCommentSuccess(comment) {
 		$writeCommentBlock.hide();
@@ -113,6 +154,8 @@ $(function() {
 	}
 
 	function onSessionClick(evt) {
-		$modalOrder.modal('show');
+		var sessionID = $(evt.target).data('id');
+		$formOrderCreate.find('input[name="sessionID"]').val(sessionID);
+		$modalOrderCreate.modal('show');
 	}
 });

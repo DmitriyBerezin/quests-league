@@ -6,26 +6,16 @@ var express = require('express'),
 
 
 // Create a new order
-router.get('/', function(req, res, next) {
+router.post('/', function(req, res, next) {
 	var user = {
-			id: req.body.userID,
-			name: req.body.userName,
-			email: req.body.userEmail,
-			phone: req.body.userPhone
+			id: req.user ? req.user.id : null,
+			name: req.body.name,
+			email: req.body.email,
+			phone: req.body.phone
 		},
 		sessionID = req.body.sessionID,
-		playersCnt = req.body.playersCnt,
+		playersCount = req.body.playersCount,
 		comment = req.body.comment;
-
-	 user = {
-		id: 1,
-		name: 'test',
-		email: 'test@test',
-		phone: '111111111'
-	};
-	sessionID = 1;
-	playersCnt = 2;
-	comment = null;
 
 	if (!user.name ||
 		!user.email ||
@@ -35,7 +25,7 @@ router.get('/', function(req, res, next) {
 		err.status = 401;
 	}
 
-	orderService.createOrder(user, sessionID, playersCnt, comment, function(err, orderID) {
+	orderService.createOrder(user, sessionID, playersCount, comment, function(err, orderID) {
 		if (err){
 			return next(err);
 		}
@@ -45,17 +35,14 @@ router.get('/', function(req, res, next) {
 });
 
 // Register order
-router.get('/confirm', function(req, res, next) {
+router.post('/confirm', function(req, res, next) {
 	var confirmCode = req.body.code,
 		orderID = req.body.orderID;
-
-	orderID = 3;
-	confirmCode = 1111;
 
 	if (!confirmCode ||
 		!orderID) {
 		var err = new Error('Bad request');
-		err.status = 401;
+		err.status = 400;
 	}
 
 	orderService.registerOrder(orderID, confirmCode, function(err) {

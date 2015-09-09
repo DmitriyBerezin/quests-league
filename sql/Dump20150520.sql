@@ -1,10 +1,10 @@
 CREATE DATABASE  IF NOT EXISTS `quests` /*!40100 DEFAULT CHARACTER SET utf8 */;
 USE `quests`;
--- MySQL dump 10.13  Distrib 5.6.19, for osx10.7 (i386)
+-- MySQL dump 10.13  Distrib 5.6.24, for Win64 (x86_64)
 --
--- Host: quests.cp0uujwgrxiz.eu-west-1.rds.amazonaws.com    Database: quests
+-- Host: localhost    Database: quests
 -- ------------------------------------------------------
--- Server version 5.6.23-log
+-- Server version 5.6.26
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -130,7 +130,7 @@ CREATE TABLE `tcountry` (
   `name` varchar(45) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name_UNIQUE` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -199,7 +199,7 @@ CREATE TABLE `torderprogress` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `order_id` int(11) NOT NULL,
   `state` varchar(3) DEFAULT NULL COMMENT 'reg - registered,\ncnf - confirmed,\nvis - visited,\nref - refused,\nskp - skipped',
-  `changed` timestamp NOT NULL,
+  `changed` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `torderprogress_order_id_idx` (`order_id`),
   CONSTRAINT `torderprogress_order_id` FOREIGN KEY (`order_id`) REFERENCES `torder` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
@@ -398,7 +398,7 @@ CREATE TABLE `tuser` (
   UNIQUE KEY `phone_UNIQUE` (`phone`),
   UNIQUE KEY `email_oauth_provider_UNIQUE` (`email`,`oauth_provider`),
   UNIQUE KEY `oauth_id_oauth_provider_UNIQUE` (`oauth_id`,`oauth_provider`)
-) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8 COMMENT='Таблица зарегистрированных пользователей портала (игроки, компании-операторы)';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Таблица зарегистрированных пользователей портала (игроки, компании-операторы)';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -810,12 +810,18 @@ DELIMITER ;;
 CREATE PROCEDURE `pOrderCreate`(
   user_id int,
     session_id int,
-    palyers_cnt int,
+    players_cnt int,
     confirm_code varchar(4),
     comment varchar(1000)
 )
 BEGIN
-  insert into torder(user_id, session_id,players_cnt, `comment`, confirm_code) 
+  if exists (select * from torder o inner join torderprogress op on o.id = op.order_id where o.session_id = session_id) then
+    begin
+      SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'The selected session has been already booked';
+    end;
+    end if;
+    
+    insert into torder(user_id, session_id, players_cnt, `comment`, confirm_code) 
     value(user_id, session_id, players_cnt, `comment`, confirm_code);
     
     select LAST_INSERT_ID() as order_id;
@@ -1087,6 +1093,8 @@ BEGIN
     from txquestuser tx inner join tuser u on tx.user_id = u.id
     where tx.quest_id = quest_id and (deleted_flag is null or deleted_flag != 1) and tx.user_id != user_id and tx.approved_flag = 1;
     
+    select s.* from tschedule s where s.quest_id = quest_id;
+    
     /*select t.*, case when tx.quest_id is null then 0 else 1 end as selected  
     from ttag t 
     left join txquesttag tx on t.id = tx.tag_id
@@ -1187,7 +1195,7 @@ BEGIN
   end;
  else
   begin
-        select q.id, q.name, c.name as company_name, q.url, q.descr, q.address, 
+    select q.id, q.name, c.name as company_name, q.url, q.descr, q.address, 
       q.players_from, q.players_to, q.price_from, q.price_to, q.lat, q.lng,
       stations.stations_name as stations
       from tquest q
@@ -1530,4 +1538,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-09-05  7:08:57
+-- Dump completed on 2015-09-09 15:09:40

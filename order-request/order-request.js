@@ -13,8 +13,8 @@ function send(order, questID, done) {
 
 	console.log(orderReq.getRequestUrl());
 	console.log(orderReq.getRequestParams())
-	request.post({ 
-		url: orderReq.getRequestUrl(), 
+	request.post({
+		url: orderReq.getRequestUrl(),
 		form: orderReq.getRequestParams()
 	}, function(err, resp, body) {
 		if (err) {
@@ -30,7 +30,7 @@ function send(order, questID, done) {
 		if (typeof orderReq.isSuccess === 'function') {
 			return orderReq.isSuccess(resp, body, done);
 		}
-		
+
 		return done(null);
 	});
 }
