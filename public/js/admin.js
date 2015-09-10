@@ -2,7 +2,7 @@ $(function() {
 	var $fileInput = $('.fileinput-button'),
 		$warnFiles = $('.alert-files'),
 		$imgsContainer = $('.imgs-container'),
-		$errorFile = $('.alert-file-upload-text'),
+		$errorFile = $('.alert-file-upload-err'),
 		$removeQuest = $('.remove-quest'),
 		$id = $('input[name="id"]');
 
@@ -16,9 +16,7 @@ $(function() {
 
 		},
 		fail: function(evt, data) {
-			$errorFile
-				.text(data.errorThrown)
-				.parent().show();
+			$errorFile.append(tmplAlert({ msg: data.errorThrown, className: 'alert-danger' }));
 		}
 	});
 
@@ -76,13 +74,14 @@ $(function() {
 			window.location = '/admin/quest/' + data.questID;
 		}
 
-		function onFormQuestError(error) {
-			$errQuest.html(error.responseJSON.message).show();
+		function onFormQuestError(res) {
+			var error = res.responseJSON.message;
+			$formQuest.append(tmplAlert({ msg: error, className: 'alert-danger' }));
 			$formQuest.find('button[type="submit"]').attr('disabled', false);
 		}
 	}
 
-	function modalForm($modal, $list, $form, $err, onChange) {
+	function modalForm($modal, $list, $form, onChange) {
 		$form.validate();
 		$form.ajaxForm({
 			dataType: 'json',
@@ -117,27 +116,24 @@ $(function() {
 	function formCompany() {
 		var $modalCompany = $('#modalCompany'),
 			$listCompany = $('#listCompany'),
-			$formCompany = $('.form-company'),
-			$errCompany = $('.alert-company-error');
+			$formCompany = $('.form-company');
 
-		modalForm($modalCompany, $listCompany, $formCompany, $errCompany);
+		modalForm($modalCompany, $listCompany, $formCompany);
 	}
 
 	function formTag() {
 		var $modalTag = $('#modalTag'),
 			$listTag = $('#listTag'),
-			$formTag = $('.form-tag'),
-			$errTag = $('.alert-tag-error');
+			$formTag = $('.form-tag');
 
-		modalForm($modalTag, $listTag, $formTag, $errTag);
+		modalForm($modalTag, $listTag, $formTag);
 	}
 
 	function formCountry() {
 		var $modalCountry = $('#modalCountry'),
 			$listCountry = $('#listCountry'),
 			$listCity = $('#listCity'),
-			$formCountry = $('.form-country'),
-			$errCountry = $('.alert-country-error');
+			$formCountry = $('.form-country');
 
 		function onCountryChange(evt) {
 			var countryID = $(evt.target).val();
@@ -159,15 +155,14 @@ $(function() {
 
 		}
 
-		modalForm($modalCountry, $listCountry, $formCountry, $errCountry, onCountryChange);
+		modalForm($modalCountry, $listCountry, $formCountry, onCountryChange);
 	}
 
 	function formCity() {
 		var $modalCity = $('#modalCity'),
 			$listCity = $('#listCity'),
 			$listStation = $('#listStation'),
-			$formCity = $('.form-city'),
-			$errCity = $('.alert-city-error');
+			$formCity = $('.form-city');
 
 		function onCityChange(evt) {
 			var cityID = $(evt.target).val();
@@ -188,16 +183,15 @@ $(function() {
 
 		}
 
-		modalForm($modalCity, $listCity, $formCity, $errCity, onCityChange);
+		modalForm($modalCity, $listCity, $formCity, onCityChange);
 	}
 
 	function formStation() {
 		var $modalStation = $('#modalStation'),
 			$listStation = $('#listStation'),
-			$formStation = $('.form-station'),
-			$errStation = $('.alert-station-error');
+			$formStation = $('.form-station');
 
-		modalForm($modalStation, $listStation, $formStation, $errStation);
+		modalForm($modalStation, $listStation, $formStation);
 	}
 
 	function beforeSubmit(arr, $form, options) {

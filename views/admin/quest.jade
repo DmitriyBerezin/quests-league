@@ -153,7 +153,6 @@ block content
 			if id
 				a(href='#').remove-quest Удалить квест
 
-		div.alert-quest-error.alert.alert-danger
 		div.alert-quest-success.alert.alert-success Ура! Информация изменена
 
 
@@ -171,11 +170,7 @@ block content
 					span.btn.btn-success.fileinput-button
 						span Добавить картинки
 						input(type='file', name='files', multiple)
-				div.col-sm-8
-					div.alert-file-upload.alert.alert-danger
-						button(type='button', data-dismiss='alert', aria-label='Close').close
-							span(aria-hidden='true') &times;
-						span.alert-file-upload-text
+				div.col-sm-8.alert-file-upload-err
 			else
 				div.alert-files.alert.alert-warning Сначала создайте квест. Потом появится возможность загрузить картинки.
 		div.form-group
@@ -199,7 +194,6 @@ block content
 							span(aria-hidden='true') &times;
 						h4.modal-title Тэги
 					div.modal-body
-						div.alert-tag-error.alert.alert-danger
 						div.form-group
 							label(for='txtTag').col-sm-4.control-label Тэг
 							div.col-sm-6
@@ -217,7 +211,6 @@ block content
 							span(aria-hidden='true') &times;
 						h4.modal-title Страна
 					div.modal-body
-						div.alert-country-error.alert.alert-danger
 						div.form-group
 							label(for='txtCountry').col-sm-4.control-label Страна
 							div.col-sm-6
@@ -235,7 +228,6 @@ block content
 							span(aria-hidden='true') &times;
 						h4.modal-title Город
 					div.modal-body
-						div.alert-city-error.alert.alert-danger
 						div.form-group
 							label(for='txtCity').col-sm-4.control-label Город
 							div.col-sm-6
@@ -255,7 +247,6 @@ block content
 							span(aria-hidden='true') &times;
 						h4.modal-title Станция
 					div.modal-body
-						div.alert-station-error.alert.alert-danger
 						div.form-group
 							label(for='txtStation').col-sm-4.control-label Станция
 							div.col-sm-6
