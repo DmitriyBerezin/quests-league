@@ -82,6 +82,7 @@ CREATE TABLE `tcompany` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL,
   `site` varchar(45) DEFAULT NULL,
+  `deleted_flag` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   FULLTEXT KEY `ft_name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Таблица компании-оператора квестов (описательная часть)';
@@ -709,6 +710,27 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `pCompanyDel` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE PROCEDURE `pCompanyDel`(
+  company_id int
+)
+BEGIN
+    update tcompany c set c.deleted_flag = 1 where c.id = company_id;
+END
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `pCompanyEdit` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -1154,9 +1176,9 @@ DELIMITER ;
 DELIMITER ;;
 CREATE PROCEDURE `pQuestList`()
 BEGIN
-  select id, `name` from tcompany;
+    select * from tcompany where (deleted_flag is null or deleted_flag != 1);
     
-    select id, `name`, company_id from tquest where (deleted_flag  is null or deleted_flag != 1);
+    select id, `name`, company_id from tquest where (deleted_flag is null or deleted_flag != 1);
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -1199,7 +1221,8 @@ BEGIN
     from (select tx.quest_id as quest_id, s.id as station_id, s.name as station_name from txqueststation tx inner join tstation s on tx.station_id = s.id) qs
     group by qs.quest_id
     ) stations on q.id = stations.quest_id
-    WHERE (deleted_flag  is null or deleted_flag != 1) and (city_id is null or q.city_id = city_id) and
+    WHERE (q.deleted_flag  is null or q.deleted_flag != 1) and (c.deleted_flag  is null or c.deleted_flag != 1) 
+  and (city_id is null or q.city_id = city_id) and
     (MATCH (q.name, q.descr, q.address) AGAINST (q IN BOOLEAN MODE)
      or MATCH (c.name) AGAINST (q IN BOOLEAN MODE)
        or MATCH (tags.tags_name) AGAINST (q IN BOOLEAN MODE)
@@ -1223,7 +1246,7 @@ BEGIN
       from (select tx.quest_id as quest_id, s.id as station_id, s.name as station_name from txqueststation tx inner join tstation s on tx.station_id = s.id) qs
       group by qs.quest_id
       ) stations on q.id = stations.quest_id
-          where (deleted_flag  is null or deleted_flag != 1) and
+          where (q.deleted_flag  is null or q.deleted_flag != 1) and (c.deleted_flag  is null or c.deleted_flag != 1) and
           (city_id is null or q.city_id = city_id)
           order by -top desc
     LIMIT start_index, 10;

@@ -92,6 +92,24 @@ router.post('/company', function(req, res, next) {
 	});
 });
 
+router.delete('/company', function(req, res, next) {
+	var id = req.body.id;
+
+	if (!id) {
+		var err = new Error('`id` parameter is required');
+		err.status(400);
+		return next(err);
+	}
+
+	admin.removeCompany(id, function(err) {
+		if (err) {
+			return next(err);
+		}
+
+		res.status(200).send({});
+	});
+});
+
 router.post('/tag', function(req, res, next) {
 	admin.createTag(req.body.name, function(err, data) {
 		if (err) {

@@ -229,23 +229,44 @@ $(function() {
 
 	function onCompanyEditClick(evt) {
 		function onCompanyEditSuccess(data) {
-			$target.prev('.company-name').html(data.name);
-			$target.data('name', data.name);
-			$target.data('site', data.site);
+			$companyBlock.find('.company-name').html(data.name);
+			$companyBlock.data('name', data.name);
+			$companyBlock.data('site', data.site);
 			$modalCompany.modal('hide');
 		}
 
 		function onCompanyEditError(res) {
 			var error = 'Произошла ошибка: ' + res.responseJSON.message;
 			$formCompany.find('.modal-body').prepend(tmplAlert({ msg: error, className: 'alert-danger' }));
-			$formCompany.find('button[type="submit"]').attr('disabled', false);
+			$formCompany.find('button').attr('disabled', false);
 		}
 
-		var $target = $(evt.target),
+		function onCompanyRemoveSuccess() {
+			$modalCompany.modal('hide');
+			$('.company-block[data-id="' + company.id + '"]').remove();
+		}
+
+		function onBtnCompanyRemoveClick(evt) {
+			var companyID = $formCompany.find('input[name="id"]').val();
+
+			if (confirm('Вы точно хотите удалить компанию?')) {
+				$.ajax({
+					type: 'DELETE',
+					url: '/admin/company',
+					data: {
+						id: companyID
+					},
+					complete: onCompanyRemoveSuccess,
+					error: onCompanyEditError
+				});
+			}
+		}
+
+		var $companyBlock = $(evt.target).closest('.company-block'),
 			company = {
-				id: $target.data('id'),
-				name: $target.data('name'),
-				site: $target.data('site')
+				id: $companyBlock.data('id'),
+				name: $companyBlock.data('name'),
+				site: $companyBlock.data('site')
 			},
 
 			$modalCompany,
@@ -262,5 +283,6 @@ $(function() {
 			error: onCompanyEditError,
 			beforeSubmit: beforeSubmit
 		});
+		$('.btn-company-remove').click(onBtnCompanyRemoveClick);
 	}
 });

@@ -18,10 +18,10 @@ block content
 	a(href='/admin/quest').btn.btn-success Новый квест
 
 	each company in companies
-		div.company-block
+		div(data-id=company.id, data-name=company.name, data-site=company.site).company-block
 			h4
 				span.company-name= company.name
-				span(data-id=company.id, data-name=company.name, data-site=company.site).company-edit.pseudo-link Редактировать
+				span.company-edit.pseudo-link Редактировать
 			ul.list-group
 				each quest in quests
 					if quest.company_id === company.id

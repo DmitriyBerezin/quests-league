@@ -81,6 +81,31 @@ function editCompany(id, name, url, done) {
 	});
 }
 
+function editCompany(id, name, url, done) {
+	var query = util.format('call quests.pCompanyEdit(%s, "%s", "%s")',
+		id || null, name, url);
+
+	db.execQueryAsAdm(query, function(err, rows, fields) {
+		if (err) {
+			return done(err);
+		}
+
+		return done(null, rows[0][0]);
+	});
+}
+
+function removeCompany(id, done) {
+	var query = util.format('call quests.pCompanyDel(%d)', id);
+
+	db.execQueryAsAdm(query, function(err, rows, fields) {
+		if (err) {
+			return done(err);
+		}
+
+		return done(null);
+	});
+}
+
 function createTag(name, done) {
 	var query = util.format('call quests.pTagCreate("%s")', name);
 
@@ -254,6 +279,7 @@ module.exports = {
 	addQuestFile: addQuestFile,
 	getQuestFiles: getQuestFiles,
 	editCompany: editCompany,
+	removeCompany: removeCompany,
 	createTag: createTag,
 	createCountry: createCountry,
 	createCity: createCity,
