@@ -5,6 +5,13 @@ block style
 	link(rel='stylesheet', href='/stylesheets/admin/quest.css')
 
 
+block script
+	script(src='/lib/jQuery-File-Upload/js/jquery.ui.widget.js')
+	script(src='/lib/jQuery-File-Upload/js/jquery.fileupload.js')
+	script(src='/lib/jquery.form.min.js')
+	script(src='/js/admin.js')
+
+
 block content
 	h1.page-header Список квестов
 
@@ -12,7 +19,9 @@ block content
 
 	each company in companies
 		div.company-block
-			h4 Компания #{company.name}
+			h4
+				span.company-name= company.name
+				span(data-id=company.id, data-name=company.name, data-site=company.site).company-edit.pseudo-link Редактировать
 			ul.list-group
 				each quest in quests
 					if quest.company_id === company.id

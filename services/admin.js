@@ -68,8 +68,9 @@ function removeQuest(id, done) {
 	});
 }
 
-function createCompany(name, url, done) {
-	var query = util.format('call quests.pCompanyCreate("%s", "%s")', name, url);
+function editCompany(id, name, url, done) {
+	var query = util.format('call quests.pCompanyEdit(%s, "%s", "%s")',
+		id || null, name, url);
 
 	db.execQueryAsAdm(query, function(err, rows, fields) {
 		if (err) {
@@ -252,7 +253,7 @@ module.exports = {
 	removeQuest: removeQuest,
 	addQuestFile: addQuestFile,
 	getQuestFiles: getQuestFiles,
-	createCompany: createCompany,
+	editCompany: editCompany,
 	createTag: createTag,
 	createCountry: createCountry,
 	createCity: createCity,

@@ -73,7 +73,17 @@ router.post('/quest/file', function(req, res, next) {
 });
 
 router.post('/company', function(req, res, next) {
-	admin.createCompany(req.body.name, req.body.site, function(err, data) {
+	var id = req.body.id,
+		name = req.body.name,
+		site = req.body.site;
+
+	if (!name) {
+		var err = new Error('`name` parameter is required');
+		err.status(400);
+		return next(err);
+	}
+
+	admin.editCompany(id, name, site, function(err, data) {
 		if (err) {
 			return next(err);
 		}

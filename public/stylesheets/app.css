@@ -830,9 +830,3 @@ div.select-stacked div.select + .select {
   margin: 0 5px;
   color: orange;
 }
-
-.pseudo-link {
-  border-bottom: 1px dashed;
-  padding-bottom: .1em;
-  cursor: pointer;
-}

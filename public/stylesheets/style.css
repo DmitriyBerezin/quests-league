@@ -10,3 +10,11 @@
 .button-group {
 	text-align: center;
 }
+
+
+.pseudo-link {
+	border-bottom: 1px dashed;
+	padding-bottom: .1em;
+	cursor: pointer;
+}
+

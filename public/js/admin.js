@@ -62,7 +62,9 @@ $(function() {
 			}
 		});
 		// http://stackoverflow.com/questions/21018970/bootstrap-select-plugin-not-work-with-jquery-validation
-		$formQuest.data('validator').settings.ignore = '';
+		if ($formQuest.length > 0) {
+			$formQuest.data('validator').settings.ignore = '';
+		}
 		$formQuest.ajaxForm({
 			dataType: 'json',
 			success: onFormQuestSuccess,
@@ -97,14 +99,14 @@ $(function() {
 			$form.find('button[type="submit"]').attr('disabled', false);
 		}
 
-		function onError(error) {
-			$err.html(error.responseJSON.message).show();
+		function onError(res) {
+			var error = res.responseJSON.message;
+			$form.find('.modal-body').prepend(tmplAlert({ msg: error, className: 'alert-danger' }));
 			$form.find('button[type="submit"]').attr('disabled', false);
 		}
 
 		$modal.on('show.bs.modal', function(evt) {
 			$form.clearForm();
-			$err.hide();
 		});
 
 		if (typeof onChange === 'function') {
@@ -226,5 +228,45 @@ $(function() {
 		}
 
 		evt.preventDefault();
+	}
+
+
+	$(document).delegate('.company-edit', 'click', onCompanyEditClick);
+
+	function onCompanyEditClick(evt) {
+		function onCompanyEditSuccess(data) {
+			$target.prev('.company-name').html(data.name);
+			$target.data('name', data.name);
+			$target.data('site', data.site);
+			$modalCompany.modal('hide');
+		}
+
+		function onCompanyEditError(res) {
+			var error = 'Произошла ошибка: ' + res.responseJSON.message;
+			$formCompany.find('.modal-body').prepend(tmplAlert({ msg: error, className: 'alert-danger' }));
+			$formCompany.find('button[type="submit"]').attr('disabled', false);
+		}
+
+		var $target = $(evt.target),
+			company = {
+				id: $target.data('id'),
+				name: $target.data('name'),
+				site: $target.data('site')
+			},
+
+			$modalCompany,
+			$formCompany;
+
+		$('#modalCompany').remove();
+		$modalCompany = $(tmplCompanyModal({ company: company })).appendTo('body');
+		$modalCompany.modal('show');
+		$formCompany = $modalCompany.find('.form-company');
+		$formCompany.validate();
+		$formCompany.ajaxForm({
+			dataType: 'json',
+			success: onCompanyEditSuccess,
+			error: onCompanyEditError,
+			beforeSubmit: beforeSubmit
+		});
 	}
 });

@@ -21,6 +21,18 @@ buf.push("<article class=\"media comment\"><div class=\"media-body\"><h4 class=\
 
 jade_mixins["commentWidget"](comment);}.call(this,"comment" in locals_for_with?locals_for_with.comment:typeof comment!=="undefined"?comment:undefined));;return buf.join("");
 }
+function tmplCompanyModal(locals) {
+var buf = [];
+var jade_mixins = {};
+var jade_interp;
+;var locals_for_with = (locals || {});(function (company) {
+buf.push("<div id=\"modalCompany\" tabIndex=\"-1\" role=\"dialog\" class=\"modal fade\"><div role=\"document\" class=\"modal-dialog\"><div class=\"modal-content\"><form method=\"post\" action=\"/admin/company\" class=\"form-horizontal form-company\"><div class=\"modal-header\"><button type=\"button\" data-dismiss=\"modal\" aria-label=\"Close\" class=\"close\"><span aria-hidden=\"true\">&times;</span></button><h4 class=\"modal-title\">" + (jade.escape((jade_interp = company ? company.name : 'Новая компания') == null ? '' : jade_interp)) + "</h4></div><div class=\"modal-body\"><div class=\"form-group\"><label for=\"txtCompName\" class=\"col-sm-4 control-label\">Наименование</label><div class=\"col-sm-6\"><input type=\"text\" id=\"txtCompName\" name=\"name\" placeholder=\"Наименование\"" + (jade.attr("value", "" + (company ? company.name : '') + "", true, false)) + " required=\"required\" class=\"form-control\"/></div></div><div class=\"form-group\"><label for=\"txtCompSite\" class=\"col-sm-4 control-label\">Сайт</label><div class=\"col-sm-6\"><input type=\"text\" id=\"txtCompSite\" name=\"site\" placeholder=\"Сайт\"" + (jade.attr("value", "" + (company ? company.site : '') + "", true, false)) + " required=\"required\" class=\"form-control\"/></div></div><input type=\"hidden\" name=\"id\"" + (jade.attr("value", "" + (company ? company.id : '') + "", true, false)) + "/></div><div class=\"modal-footer\"><button type=\"submit\" class=\"btn btn-primary btn-company-create\">" + (jade.escape((jade_interp = company ? 'Изменить' : 'Создать') == null ? '' : jade_interp)) + "</button>");
+if ( company)
+{
+buf.push("<button type=\"submit\" class=\"btn btn-danger pull-left btn-company-remove\">Удалить</button>");
+}
+buf.push("</div></form></div></div></div>");}.call(this,"company" in locals_for_with?locals_for_with.company:typeof company!=="undefined"?company:undefined));;return buf.join("");
+}
 function tmplEditableComment(locals) {
 var buf = [];
 var jade_mixins = {};
