@@ -35,7 +35,7 @@ block content
 		div.form-group
 			label(for='listCompany').col-sm-2.control-label Компания
 			div.col-sm-7
-				select(id='listCompany', name='companyID', data-width='auto', required).form-control.selectpicker
+				select(id='listCompany', name='companyID', data-width='auto', required, data-live-search='true').form-control.selectpicker
 					option
 					each item in dic.compaines
 						option(value=item.id, selected= item.id === company_id)= item.name
@@ -94,7 +94,7 @@ block content
 		div.form-group
 			label(for='listCity').col-sm-2.control-label Город
 			div.col-sm-7
-				select(id='listCity', name='cityID', required, data-width='auto').form-control.selectpicker
+				select(id='listCity', name='cityID', required, data-width='auto', data-live-search='true').form-control.selectpicker
 					each item in dic.cities
 						option(value=item.id, selected= item.id === city_id)= item.name
 				div(role='alert').alert.alert-warning Не нашли нужный город?
