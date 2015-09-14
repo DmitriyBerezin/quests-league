@@ -1,7 +1,7 @@
 mixin questWidget(quest)
 	a(href='/quest/#{quest.id}')
 		.event-list-item
-			img(src=quest.img.url, alt='')
+			img(src="#{quest.img ? quest.img.url : ''}", alt='Quest image')
 			.row
 				.col-md-12
 					h3.no-margin-top= quest.name
