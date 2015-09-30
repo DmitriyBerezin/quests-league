@@ -41,8 +41,12 @@ grant execute on procedure pUserUpdate to 'web';
 CREATE USER 'spider' IDENTIFIED BY 'spider';
 
 grant all privileges on quests.tschedule to 'spider'; 
+grant all privileges on quests.tschedule to 'spider'; 
 grant all privileges on quests.tschedulelog to 'spider';
-grant select on quests.vquest to 'spider';
+grant all privileges on quests.txcompanycity_spider to 'spider'; 
+grant select on quests.vquestspider to 'spider';
+grant select on quests.tquest to 'spider';
+grant update(spider_code) on quests.tquest to 'spider';
 
 
 

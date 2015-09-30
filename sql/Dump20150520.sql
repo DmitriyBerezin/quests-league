@@ -1,10 +1,10 @@
 CREATE DATABASE  IF NOT EXISTS `quests` /*!40100 DEFAULT CHARACTER SET utf8 */;
 USE `quests`;
--- MySQL dump 10.13  Distrib 5.6.24, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 5.6.19, for osx10.7 (i386)
 --
--- Host: localhost    Database: quests
+-- Host: quests.cp0uujwgrxiz.eu-west-1.rds.amazonaws.com    Database: quests
 -- ------------------------------------------------------
--- Server version 5.6.26
+-- Server version 5.6.23-log
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -81,7 +81,7 @@ DROP TABLE IF EXISTS `tcompany`;
 CREATE TABLE `tcompany` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL,
-  `site` varchar(45) DEFAULT NULL,
+  `site` varchar(250) DEFAULT NULL,
   `deleted_flag` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   FULLTEXT KEY `ft_name` (`name`)
@@ -200,7 +200,7 @@ CREATE TABLE `torderprogress` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `order_id` int(11) NOT NULL,
   `state` varchar(3) DEFAULT NULL COMMENT 'reg - registered,\ncnf - confirmed,\nvis - visited,\nref - refused,\nskp - skipped',
-  `changed` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `changed` timestamp NOT NULL,
   PRIMARY KEY (`id`),
   KEY `torderprogress_order_id_idx` (`order_id`),
   CONSTRAINT `torderprogress_order_id` FOREIGN KEY (`order_id`) REFERENCES `torder` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
@@ -225,9 +225,9 @@ CREATE TABLE `tquest` (
   `lat` decimal(10,8) DEFAULT NULL,
   `lng` decimal(10,8) DEFAULT NULL,
   `address` varchar(1000) NOT NULL,
-  `name` varchar(45) NOT NULL,
+  `name` varchar(100) NOT NULL,
   `descr` varchar(5000) NOT NULL,
-  `url` varchar(45) DEFAULT NULL,
+  `url` varchar(250) DEFAULT NULL,
   `price_from` int(11) DEFAULT NULL,
   `price_to` int(11) DEFAULT NULL,
   `video_url` varchar(45) DEFAULT NULL,
@@ -239,6 +239,7 @@ CREATE TABLE `tquest` (
   `top` int(11) DEFAULT NULL,
   `complexity_id` int(11) DEFAULT NULL,
   `deleted_flag` int(11) DEFAULT NULL,
+  `spider_code` varchar(45) DEFAULT NULL COMMENT 'Код квеста на сайте компании для получени расписания',
   PRIMARY KEY (`id`),
   KEY `fk_company_id_idx` (`company_id`),
   KEY `fk_city_id_idx` (`city_id`),
@@ -284,9 +285,8 @@ CREATE TABLE `tschedule` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `quest_id` int(11) NOT NULL,
   `session_start` timestamp NOT NULL,
-  `status` enum('free','reserved','lq_reserved','unavailable','experied','hot') DEFAULT NULL COMMENT '''free'' - свободный\n''reserved'' - зарезервирован через внешний сайт\n''lq_reserved'' - зарезервирован через наш сайт\n''unavailable'' - недоступен\n''experied'' - устарел\n''hot'' - горячее предложение',
+  `status` enum('free','reserved','unavailable','expired','hot','partial') DEFAULT NULL COMMENT '''free'' - свободный\n''reserved'' - зарезервирован через внешний сайт\n''unavailable'' - недоступен\n''expired'' - устарел\n''hot'' - горячее предложение\n‘partial’ - частичное бронирование',
   `price` decimal(8,2) NOT NULL,
-  `updated` timestamp NULL DEFAULT NULL,
   `outer_session_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_tschedule_quest_id_idx` (`quest_id`),
@@ -403,6 +403,26 @@ CREATE TABLE `tuser` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `txcompanycity_spider`
+--
+
+DROP TABLE IF EXISTS `txcompanycity_spider`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `txcompanycity_spider` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `company_id` int(11) NOT NULL,
+  `city_id` int(11) NOT NULL,
+  `city_code` varchar(45) NOT NULL COMMENT 'Код города из url на сайте компании для получения расписания и мониторинга новых квестов',
+  PRIMARY KEY (`id`),
+  KEY `txcompanycity_spider_company_id_idx` (`company_id`),
+  KEY `txcompanycity_spider_city_id_idx` (`city_id`),
+  CONSTRAINT `txcompanycity_spider_city_id` FOREIGN KEY (`city_id`) REFERENCES `tcity` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `txcompanycity_spider_company_id` FOREIGN KEY (`company_id`) REFERENCES `tcompany` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `txqueststation`
 --
 
@@ -499,6 +519,25 @@ SET character_set_client = utf8;
  1 AS `company_id`,
  1 AS `company_name`,
  1 AS `company_site`*/;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary view structure for view `vquestspider`
+--
+
+DROP TABLE IF EXISTS `vquestspider`;
+/*!50001 DROP VIEW IF EXISTS `vquestspider`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE VIEW `vquestspider` AS SELECT 
+ 1 AS `quest_id`,
+ 1 AS `quest_name`,
+ 1 AS `quest_spider_code`,
+ 1 AS `city_name`,
+ 1 AS `company_id`,
+ 1 AS `company_name`,
+ 1 AS `company_site`,
+ 1 AS `city_spider_code`*/;
 SET character_set_client = @saved_cs_client;
 
 --
@@ -724,8 +763,8 @@ CREATE PROCEDURE `pCompanyDel`(
   company_id int
 )
 BEGIN
-    update tcompany c set c.deleted_flag = 1 where c.id = company_id;
-END
+  update tcompany c set c.deleted_flag = 1 where c.id = company_id;
+END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
@@ -744,7 +783,7 @@ DELIMITER ;;
 CREATE PROCEDURE `pCompanyEdit`(
   id int,
     `name` varchar(100),
-    site varchar(45)
+    site varchar(250)
 )
 BEGIN
   if id is not null then
@@ -758,7 +797,7 @@ BEGIN
     select LAST_INSERT_ID() as id, `name` as name, site;
   end;
     end if;
-END
+END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
@@ -851,9 +890,9 @@ CREATE PROCEDURE `pOrderCreate`(
 )
 BEGIN
   if exists (select * from torder o inner join torderprogress op on o.id = op.order_id where o.session_id = session_id) then
-    begin
-      SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'The selected session has been already booked';
-    end;
+  begin
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'The selected session has been already booked';
+  end;
     end if;
     
     insert into torder(user_id, session_id, players_cnt, `comment`, confirm_code) 
@@ -946,9 +985,9 @@ ALTER DATABASE `quests` CHARACTER SET utf8 COLLATE utf8_general_ci ;
 DELIMITER ;;
 CREATE PROCEDURE `pQuestEdit`(
   id int,
-    name varchar(45),
+    name varchar(100),
     descr varchar(5000),
-    url varchar(45),
+    url varchar(250),
     company_id int,
     players_from int,
     players_to int,
@@ -1056,7 +1095,7 @@ BEGIN
    
    select * from tquest where id = quest_id;
     
-    select id, name from tcompany;
+    select id, name from tcompany where deleted_flag is null or deleted_flag != 1;
     
     select t.*, case when tx.quest_id is null then 0 else 1 end as selected  
     from ttag t 
@@ -1341,7 +1380,7 @@ DELIMITER ;;
     phone varchar(25)
 )
 BEGIN
-  insert into tuser (oauth_provider, `name`, email, password) values('local', `name`, email, psw);
+  insert into tuser (oauth_provider, `name`, email, password, phone) 
     value('local', `name`, email, psw, phone);
     
     select * from tuser u where u.email = email and u.oauth_provider = 'local';
@@ -1564,6 +1603,24 @@ DELIMITER ;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `vquestspider`
+--
+
+/*!50001 DROP VIEW IF EXISTS `vquestspider`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8 */;
+/*!50001 SET character_set_results     = utf8 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`root`@`%` SQL SECURITY DEFINER */
+/*!50001 VIEW `vquestspider` AS select `q`.`id` AS `quest_id`,`q`.`name` AS `quest_name`,`q`.`spider_code` AS `quest_spider_code`,`ci`.`name` AS `city_name`,`c`.`id` AS `company_id`,`c`.`name` AS `company_name`,`c`.`site` AS `company_site`,`tx`.`city_code` AS `city_spider_code` from (((`tquest` `q` join `tcompany` `c` on((`q`.`company_id` = `c`.`id`))) join `tcity` `ci` on((`q`.`city_id` = `ci`.`id`))) left join `txcompanycity_spider` `tx` on(((`q`.`city_id` = `tx`.`city_id`) and (`c`.`id` = `tx`.`company_id`)))) */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -1574,4 +1631,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-08-31 21:15:20
+-- Dump completed on 2015-09-30 20:23:00
