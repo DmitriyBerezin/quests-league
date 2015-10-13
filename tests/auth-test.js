@@ -1,7 +1,7 @@
 var assert = require('assert'),
 	service = require('../services/auth-local'),
 
-	user = {
+	testUser = {
 		name: 'test_user',
 		email: 'test_email',
 		password: 'test_psw',
@@ -9,7 +9,8 @@ var assert = require('assert'),
 	};
 
 function signUpTest(done) {
-	service.createUser(user.name, user.email, user.password, user.phone, done);
+	service.createUser(testUser.name, testUser.email, testUser.password,
+		testUser.phone, done);
 }
 
 describe('Local auth routine full circle tests', function() {
@@ -18,8 +19,13 @@ describe('Local auth routine full circle tests', function() {
 	});
 
 	it('[SignUp] Should create a new local user', function(done) {
-		signUpTest(function(err) {
+		signUpTest(function(err, user) {
 			assert.equal(err, null);
+			assert.notEqual(user, null);
+			assert.equal(user.email, testUser.email);
+			assert.equal(user.name, testUser.name);
+			assert.equal(user.phone, testUser.phone);
+			assert.notEqual(user.verified_flag, 1);
 			done();
 		});
 	});
@@ -32,12 +38,12 @@ describe('Local auth routine full circle tests', function() {
 	});
 
 	it('[SignIn] Should get a local user', function(done) {
-		service.getUser(user.email, user.password, function(err, u) {
+		service.getUser(testUser.email, testUser.password, function(err, user) {
 			assert.equal(err, null);
-			assert.notEqual(u, null);
-			assert.equal(user.email, u.email);
-			assert.equal(user.name, u.name);
-			assert.equal(user.phone, u.phone);
+			assert.notEqual(user, null);
+			assert.equal(user.email, testUser.email);
+			assert.equal(user.name, testUser.name);
+			assert.equal(user.phone, testUser.phone);
 			done();
 		});
 	});
