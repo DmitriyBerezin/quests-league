@@ -2,7 +2,7 @@ var passport = require('passport'),
 	LocalStrategy = require('passport-local').Strategy,
 	util = require('util'),
 	crypto = require('crypto'),
-	bcrypt = require('bcrypt'),
+	bcrypt = require('bcryptjs'),
 	path = require('path'),
 	async = require('async'),
 
