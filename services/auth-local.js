@@ -15,37 +15,36 @@ passport.use(new LocalStrategy({
 		usernameField: 'email',
 		passwordField: 'password'
 	},
+	getUser
+));
 
-	function(email, password, done) {
-		function callback(err, res) {
+function getUser(email, password, done) {
+	var query = util.format('call quests.pUserGet("%s")', email),
+		user;
+
+	db.execQuery(query, function(err, rows, fields) {
+		if (err) {
+			return done(err);
+		}
+
+		if (!rows[0].length) {
+			return done(err, false, { message: 'Учетной записи с такими параметрами не существует' });
+		}
+
+		user = rows[0][0];
+		checkPassword(password, user.password, function(err, isValid) {
 			if (err) {
 				return done(err);
 			}
 
-			if (res) {
-				return done(null, row);
+			if (isValid) {
+				return done(null, user);
 			}
 
 			return done(null, false, { message: 'Учетной записи с такими параметрами не существует' });
-		}
-
-		var query = util.format('call quests.pUserGet("%s")', email),
-			row;
-
-		db.execQuery(query, function(err, rows, fields) {
-			if (err) {
-				return done(err);
-			}
-
-			if (!rows[0].length) {
-				return done(err, false, { message: 'Учетной записи с такими параметрами не существует' });
-			}
-
-			row = rows[0][0];
-			checkPassword(password, row.password, callback)
 		});
-	}
-));
+	});
+}
 
 function createUser(name, email, password, phone, done) {
 	hashPassword(password, function callback(err, hash) {
@@ -328,6 +327,7 @@ module.exports = {
 	createUser: createUser,
 	createUserForOrder: createUserForOrder,
 	updateUser: updateUser,
+	getUser: getUser,
 	sendWelcomeMail: sendWelcomeMail,
 	verifyEnd: verifyEnd,
 	changePassword: changePassword,
