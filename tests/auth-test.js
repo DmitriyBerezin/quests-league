@@ -26,68 +26,83 @@ function changePasswordTest(oldPassword, done) {
 }
 
 describe('Local auth routine full circle tests', function() {
-	it('[SignUp] Should create a new not verified local user', function(done) {
-		signUpTest(function(err, user) {
-			assert.equal(err, null);
-			assert.notEqual(user, null);
-			assert.equal(user.email, testUser.email);
-			assert.equal(user.name, testUser.name);
-			assert.equal(user.phone, testUser.phone);
-			assert.notEqual(user.verified_flag, 1);
+	describe('[SignUp] Create new local user routine', function() {
+		it('Should create a new not verified local user', function(done) {
+			signUpTest(function(err, user) {
+				assert.equal(err, null);
+				assert.notEqual(user, null);
+				assert.equal(user.email, testUser.email);
+				assert.equal(user.name, testUser.name);
+				assert.equal(user.phone, testUser.phone);
+				assert.notEqual(user.verified_flag, 1);
 
-			testUser.id = user.id;
-			passwordHash = user.password;
+				testUser.id = user.id;
+				passwordHash = user.password;
 
-			done();
+				done();
+			});
+		});
+
+		it('Should\'t create a local user with the same email', function(done) {
+			signUpTest(function(err) {
+				assert.equal(err.errno, 1062);
+
+				done();
+			});
 		});
 	});
 
-	it('[SignUp] Should\'t create a local user with the same email', function(done) {
-		signUpTest(function(err) {
-			assert.equal(err.errno, 1062);
+	describe('[SignIn] Get a local user', function() {
+		it('Should get a local user', function(done) {
+			service.getUser(testUser.email, testUser.password, function(err, user) {
+				assert.equal(err, null);
+				assert.notEqual(user, null);
+				assert.equal(user.id, testUser.id);
+				assert.equal(user.email, testUser.email);
+				assert.equal(user.name, testUser.name);
+				assert.equal(user.phone, testUser.phone);
 
-			done();
+				done();
+			});
 		});
 	});
 
-	it('[SignIn] Should get a local user', function(done) {
-		service.getUser(testUser.email, testUser.password, function(err, user) {
-			assert.equal(err, null);
-			assert.notEqual(user, null);
-			assert.equal(user.id, testUser.id);
-			assert.equal(user.email, testUser.email);
-			assert.equal(user.name, testUser.name);
-			assert.equal(user.phone, testUser.phone);
+	describe('[Verify] Verify user routine', function() {
+		it('Should send email to user with verification link', function(done) {
+			var protocol = 'http',
+				hostname = 'test';
+			service.verifyStart(testUser, protocol, hostname, function(err, token, info) {
+				assert.equal(err, null);
+				assert.notEqual(token, null);
+				assert.notEqual(info, null);
 
-			done();
+				verifyToken = token;
+
+				done();
+			});
 		});
-	});
 
-	it('[Verify] Should send email to user with verification link', function(done) {
-		var protocol = 'http',
-			hostname = 'test';
-		service.verifyStart(testUser, protocol, hostname, function(err, token, info) {
-			assert.equal(err, null);
-			assert.notEqual(token, null);
-			assert.notEqual(info, null);
+		it('Should not verify user by wrong token', function(done) {
+			service.verifyEnd(testUser.id, 'wrong_token', function(err, user) {
+				assert.notEqual(err, null);
+				assert.equal(err.status, 400);
 
-			verifyToken = token;
-
-			done();
+				done();
+			});
 		});
-	});
 
-	it('[Verify] Should mark user as verified', function(done) {
-		service.verifyEnd(testUser.id, verifyToken, function(err, user) {
-			assert.equal(err, null);
-			assert.notEqual(user, null);
-			assert.equal(user.id, testUser.id);
-			assert.equal(user.email, testUser.email);
-			assert.equal(user.name, testUser.name);
-			assert.equal(user.phone, testUser.phone);
-			assert.equal(user.verified_flag, 1);
+		it('Should mark user as verified', function(done) {
+			service.verifyEnd(testUser.id, verifyToken, function(err, user) {
+				assert.equal(err, null);
+				assert.notEqual(user, null);
+				assert.equal(user.id, testUser.id);
+				assert.equal(user.email, testUser.email);
+				assert.equal(user.name, testUser.name);
+				assert.equal(user.phone, testUser.phone);
+				assert.equal(user.verified_flag, 1);
 
-			done();
+				done();
+			});
 		});
 	});
 
