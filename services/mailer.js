@@ -1,8 +1,19 @@
 var nodemailer = require('nodemailer'),
 	smtpTransport = require('nodemailer-smtp-transport'),
-	config = require('../config/config.js');
+	stubTransport = require('nodemailer-stub-transport'),
 
+	config = require('../config/config.js'),
+
+	transporter;
+
+
+if (process.env.NODE_ENV === 'test') {
+	transporter = nodemailer.createTransport(stubTransport());
+}
+else {
 	transporter = nodemailer.createTransport(smtpTransport(config.mail.smtp));
+}
+
 
 function sendMail(options, cb) {
 	options.from = options.from || 'ivan.questoff@yandex.ru';

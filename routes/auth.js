@@ -133,7 +133,7 @@ router.post('/signup', function(req, res, next) {
 					req.login(user, callback);
 				},
 				function(callback) {
-					localAuth.sendWelcomeMail(user, true, req.protocol, req.hostname, callback);
+					localAuth.verifyStart(user, req.protocol, req.hostname, callback);
 				}
 			],
 			function(err) {
@@ -149,8 +149,8 @@ router.post('/signup', function(req, res, next) {
 router.get('/verify-need', function(req, res) {
 	res.render('auth/verification-need');
 });
-router.get('/verify-start', function(req, res, next) {
-	localAuth.sendWelcomeMail(req.user, true, req.protocol, req.hostname, function(err) {
+router.get('/verify-start', utils.requireAuthentication, function(req, res, next) {
+	localAuth.verifyStart(req.user, req.protocol, req.hostname, function(err) {
 		if (err) {
 			return next(err);
 		}
@@ -159,6 +159,30 @@ router.get('/verify-start', function(req, res, next) {
 	});
 });
 router.get('/verify-end', localAuth.verifyEnd);
+router.get('/verify-end', function(req, res, next) {
+	var id = req.query.id,
+		token = req.query.token;
+
+	if (!id || !token) {
+		var err = new Error('Неверные параметры запроса.');
+		err.status = 400;
+		return next(err);
+	}
+
+	localAuth.verifyEnd(id, token, function(err, user) {
+		if (err) {
+			return next(err);
+		}
+
+		req.login(user, function(err) {
+			if (err) {
+				return next(err);
+			}
+
+			res.render('auth/verification-complete');
+		});
+	});
+});
 
 router.get('/change-password', utils.requireAuthentication, function(req, res) {
 	res.render('auth/change-password');

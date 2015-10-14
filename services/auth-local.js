@@ -142,40 +142,35 @@ function sendWelcomeMail(user, manualCreated, protocol, hostname, done) {
 						return done(err);
 					}
 
-					return done();
+					return done(null, token, info);
 				});
 			})
 		});
 	});
 }
 
-function verifyEnd(req, res, next) {
-	var id = req.query.id,
-		token = req.query.token,
-		query = util.format('call quests.pUserVerify(%d, "%s")', id, token);
+function verifyStart(user, protocol, hostname, done) {
+	sendWelcomeMail(user, true, protocol, hostname, done);
+}
+
+function verifyEnd(id, token, done) {
+	var query = util.format('call quests.pUserVerify(%d, "%s")', id, token);
 
 	db.execQuery(query, function(err, rows, fields) {
 		if (err) {
-			return next(err);
+			return done(err);
 		}
 
-		if (rows[0].length === 1) {
-			req.login(rows[0][0], function(err) {
-				if (err) {
-					return next(err);
-				}
-
-				res.render('auth/verification-complete');
-			});
-		}
-		else {
+		if (rows[0].length === 0) {
 			var msg = 'Аккаунт не подтвержден, так как переданы не правильные данные. ' +
-					'Пожалуйста, попробуйте еще раз или обратитесь в поддержку.',
-				err = new Error(msg);
+					'Пожалуйста, попробуйте еще раз или обратитесь в поддержку.';
+			err = new Error(msg);
 			err.status = 400;
-			console.log(err);
-			next(err);
+			return done(err);
 		}
+
+		var user = rows[0][0];
+		return done(null, user);
 	});
 }
 
@@ -329,6 +324,7 @@ module.exports = {
 	updateUser: updateUser,
 	getUser: getUser,
 	sendWelcomeMail: sendWelcomeMail,
+	verifyStart: verifyStart,
 	verifyEnd: verifyEnd,
 	changePassword: changePassword,
 	forgotPasswordMail: forgotPasswordMail,

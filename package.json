@@ -53,6 +53,7 @@
     "through2": "^2.0.0"
   },
   "devDependencies": {
-    "mocha": "^2.3.3"
+    "mocha": "^2.3.3",
+    "nodemailer-stub-transport": "^1.0.0"
   }
 }
