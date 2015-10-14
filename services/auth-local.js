@@ -317,12 +317,25 @@ function checkPassword(psw, hash, done) {
 	bcrypt.compare(psw, hash, done);
 }
 
+function removeUser(id, done) {
+	var query = util.format('call quests.pUserDelete(%d)', id);
+
+	db.execQuery(query, function(err, rows, fields) {
+		if (err) {
+			return done(err);
+		}
+
+		return done(null);
+	});
+}
+
 
 module.exports = {
 	createUser: createUser,
 	createUserForOrder: createUserForOrder,
 	updateUser: updateUser,
 	getUser: getUser,
+	removeUser: removeUser,
 	sendWelcomeMail: sendWelcomeMail,
 	verifyStart: verifyStart,
 	verifyEnd: verifyEnd,
