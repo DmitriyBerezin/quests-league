@@ -251,7 +251,7 @@ function forgotPasswordMail(email, protocol, hostname, done) {
 						return done(err);
 					}
 
-					return done();
+					return done(null, token, info);
 				});
 			})
 		});

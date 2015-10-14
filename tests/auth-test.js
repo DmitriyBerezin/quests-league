@@ -12,7 +12,8 @@ var assert = require('assert'),
 		newPassword: 'new_psw'
 	},
 	passwordHash,
-	testToken;
+	verifyToken,
+	resetToken;
 
 function signUpTest(done) {
 	service.createUser(testUser.name, testUser.email, testUser.password,
@@ -70,14 +71,14 @@ describe('Local auth routine full circle tests', function() {
 			assert.notEqual(token, null);
 			assert.notEqual(info, null);
 
-			testToken = token;
+			verifyToken = token;
 
 			done();
 		});
 	});
 
 	it('[Verify] Should mark user as verified', function(done) {
-		service.verifyEnd(testUser.id, testToken, function(err, user) {
+		service.verifyEnd(testUser.id, verifyToken, function(err, user) {
 			assert.equal(err, null);
 			assert.notEqual(user, null);
 			assert.equal(user.id, testUser.id);
@@ -110,6 +111,55 @@ describe('Local auth routine full circle tests', function() {
 
 		it('Should authenticate user using new password', function(done) {
 			service.getUser(testUser.email, testUser.newPassword, function(err, user) {
+				assert.equal(err, null);
+				assert.notEqual(user, null);
+				assert.equal(user.id, testUser.id);
+				assert.equal(user.email, testUser.email);
+				assert.equal(user.name, testUser.name);
+				assert.equal(user.phone, testUser.phone);
+
+				done();
+			});
+		});
+	});
+
+	describe('[Password] Reset password routine', function() {
+		it('Should send mail with token', function(done) {
+			var protocol = 'http',
+				hostname = 'test';
+
+			service.forgotPasswordMail(testUser.email, protocol, hostname,
+				function(err, token, info) {
+					assert.equal(err, null);
+					assert.notEqual(token, null);
+					assert.notEqual(info, null);
+
+					resetToken = token;
+
+					done();
+				}
+			);
+		});
+
+		it('Should not reset password by wrong token', function(done) {
+			service.resetPassword('wrong_token', testUser.password, function(err) {
+				assert.notEqual(err, null);
+				assert.equal(err.status, 500);
+
+				done();
+			});
+		});
+
+		it('Should reset password', function(done) {
+			service.resetPassword(resetToken, testUser.password, function(err) {
+				assert.equal(err, null);
+
+				done();
+			});
+		});
+
+		it('Should authenticate user using reseted password', function(done) {
+			service.getUser(testUser.email, testUser.password, function(err, user) {
 				assert.equal(err, null);
 				assert.notEqual(user, null);
 				assert.equal(user.id, testUser.id);
