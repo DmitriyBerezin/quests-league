@@ -8,6 +8,7 @@ var flash = require('connect-flash');
 var passport = require('passport');
 var session = require('express-session');
 var multer  = require('multer');
+var i18n = require('i18n-abide');
 // var MongoStore = require('connect-mongo')(session);
 // var mongoose = require ("mongoose");
 
@@ -42,6 +43,14 @@ app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.use(i18n.abide({
+	supported_languages: ['en', 'ru'],
+	default_lang: 'ru',
+	locale_on_url: true
+	// debug_lang: 'it-CH',
+	// translation_directory: 'i18n'
+}));
 
 app.use(function(req, res, next) {
 	res.locals.user = req.user;
