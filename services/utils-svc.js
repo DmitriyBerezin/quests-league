@@ -5,8 +5,8 @@ var util = require('util'),
 	_cities;
 
 
-function getCities(done) {
-	var query = 'call quests.pCityList();';
+function getCities(lang, done) {
+	var query = util.format('call quests.pCityList("%s");', lang);
 
 	if (_countries && _cities) {
 		return done(null, _countries, _cities);

@@ -22,6 +22,7 @@ var order = require('./routes/order');
 var utils = require('./routes/utils');
 
 var mailer = require('./services/mailer');
+var config = require('./config/config');
 
 var app = express();
 
@@ -44,13 +45,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(i18n.abide({
-	supported_languages: ['en', 'ru'],
-	default_lang: 'ru',
-	locale_on_url: true
-	// debug_lang: 'it-CH',
-	// translation_directory: 'i18n'
-}));
+app.use(i18n.abide(config.i18n));
 
 app.use(function(req, res, next) {
 	res.locals.user = req.user;
@@ -68,7 +63,7 @@ app.use(function(req, res, next) {
 	}
 
 	var utilSvc = require('./services/utils-svc');
-	utilSvc.getCities(function(err, countries, cities) {
+	utilSvc.getCities(req.lang, function(err, countries, cities) {
 		if (err) {
 			return next(err);
 		}

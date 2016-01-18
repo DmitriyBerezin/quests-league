@@ -2,8 +2,8 @@ var util = require('util'),
 	db = require('./database'),
 	s3 = require('./aws-s3');
 
-function getQuestList(done) {
-	var query = 'call quests.pQuestList()',
+function getQuestList(lang, done) {
+	var query = util.format('call quests.pQuestList("%s")', lang),
 		data;
 
 	db.execQueryAsAdm(query, function(err, rows, fields) {
@@ -19,8 +19,8 @@ function getQuestList(done) {
 	});
 }
 
-function getQuest(id, done) {
-	var query = util.format('call quests.pQuestGet(%s)', id || null),
+function getQuest(lang, id, done) {
+	var query = util.format('call quests.pQuestGet("%s", %s)', lang, id || null),
 		data;
 
 	db.execQueryAsAdm(query, function(err, rows, fields) {
@@ -68,22 +68,9 @@ function removeQuest(id, done) {
 	});
 }
 
-function editCompany(id, name, url, done) {
-	var query = util.format('call quests.pCompanyEdit(%s, "%s", "%s")',
-		id || null, name, url);
-
-	db.execQueryAsAdm(query, function(err, rows, fields) {
-		if (err) {
-			return done(err);
-		}
-
-		return done(null, rows[0][0]);
-	});
-}
-
-function editCompany(id, name, url, done) {
-	var query = util.format('call quests.pCompanyEdit(%s, "%s", "%s")',
-		id || null, name, url);
+function editCompany(lang, id, name, url, done) {
+	var query = util.format('call quests.pCompanyEdit("%s", %s, "%s", "%s")',
+		lang, id || null, name, url);
 
 	db.execQueryAsAdm(query, function(err, rows, fields) {
 		if (err) {
@@ -106,8 +93,8 @@ function removeCompany(id, done) {
 	});
 }
 
-function createTag(name, done) {
-	var query = util.format('call quests.pTagCreate("%s")', name);
+function createTag(lang, name, done) {
+	var query = util.format('call quests.pTagCreate("%s", "%s")', lang, name);
 
 	db.execQueryAsAdm(query, function(err, rows, fields) {
 		if (err) {
@@ -118,8 +105,8 @@ function createTag(name, done) {
 	});
 }
 
-function createCountry(name, done) {
-	var query = util.format('call quests.pCountryCreate("%s")', name);
+function createCountry(lang, name, done) {
+	var query = util.format('call quests.pCountryCreate("%s", "%s")', lang, name);
 
 	db.execQueryAsAdm(query, function(err, rows, fields) {
 		if (err) {
@@ -130,8 +117,9 @@ function createCountry(name, done) {
 	});
 }
 
-function createCity(name, countryID, done) {
-	var query = util.format('call quests.pCityCreate("%s", %d)', name, countryID);
+function createCity(lang, name, countryID, done) {
+	var query = util.format('call quests.pCityCreate("%s", "%s", %d)',
+			lang, name, countryID);
 
 	db.execQueryAsAdm(query, function(err, rows, fields) {
 		if (err) {
@@ -142,8 +130,9 @@ function createCity(name, countryID, done) {
 	});
 }
 
-function createStation(name, cityID, done) {
-	var query = util.format('call quests.pStationCreate("%s", %d)', name, cityID);
+function createStation(lang, name, cityID, done) {
+	var query = util.format('call quests.pStationCreate("%s", "%s", %d)',
+		lang, name, cityID);
 
 	db.execQueryAsAdm(query, function(err, rows, fields) {
 		if (err) {
@@ -154,13 +143,13 @@ function createStation(name, cityID, done) {
 	});
 }
 
-function editQuest(quest, done) {
+function editQuest(lang, quest, done) {
 	console.log(quest);
 
 	var tagsQuery = db.intArrToInsertStatement(quest.tagsID),
 		stationsQuery = db.intArrToInsertStatement(quest.stationsID),
-		s = 'call quests.pQuestEdit(%s, "%s", "%s", "%s", %d, %s, %s, "%s", %s, %d, %d, "%s", "%s", %d, %d, %s, %s, "%s", "%s", "%s", "%s", "%s", %s)',
-		query = util.format(s, quest.id || null, quest.name, quest.descr, quest.url,
+		s = 'call quests.pQuestEdit("%s", %s, "%s", "%s", "%s", %d, %s, %s, "%s", %s, %d, %d, "%s", "%s", %d, %d, %s, %s, "%s", "%s", "%s", "%s", "%s", %s)',
+		query = util.format(s, lang, quest.id || null, quest.name, quest.descr, quest.url,
 			quest.companyID, quest.playerFrom || null, quest.playerTo || null,
 			tagsQuery, quest.leagueID || null, quest.countryID, quest.cityID,
 			stationsQuery, quest.address, quest.lat, quest.lng,
@@ -208,8 +197,9 @@ function importStations(done) {
 	}
 }
 
-function getCities(countryID, done) {
-	var query = util.format('call quests.pCountryCities(%s)', countryID || null);
+function getCities(lang, countryID, done) {
+	var query = util.format('call quests.pCountryCities("%s", %s)',
+			lang, countryID || null);
 
 	db.execQueryAsAdm(query, function(err, rows, fields) {
 		if (err) {
@@ -220,8 +210,9 @@ function getCities(countryID, done) {
 	});
 }
 
-function getStations(cityID, done) {
-	var query = util.format('call quests.pCityStations(%s)', cityID || null);
+function getStations(lang, cityID, done) {
+	var query = util.format('call quests.pCityStations("%s", %s)',
+			lang, cityID || null);
 
 	db.execQueryAsAdm(query, function(err, rows, fields) {
 		if (err) {

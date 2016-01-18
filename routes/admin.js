@@ -7,7 +7,7 @@ var admin = require('../services/admin'),
 router.all('*', utils.requreAdminRole);
 
 router.get('/quest/list', function(req, res, next) {
-	admin.getQuestList(function(err, data) {
+	admin.getQuestList(req.lang, function(err, data) {
 		if (err) {
 			return next(err);
 		}
@@ -17,7 +17,7 @@ router.get('/quest/list', function(req, res, next) {
 });
 
 router.get('/quest/:id?', function(req, res, next) {
-	admin.getQuest(req.params.id, function(err, data) {
+	admin.getQuest(req.lang, req.params.id, function(err, data) {
 		if (err) {
 			return next(err);
 		}
@@ -27,7 +27,7 @@ router.get('/quest/:id?', function(req, res, next) {
 });
 
 router.post('/quest', function(req, res, next) {
-	admin.editQuest(req.body, function(err, quest) {
+	admin.editQuest(req.lang, req.body, function(err, quest) {
 		if (err) {
 			return next(err);
 		}
@@ -83,7 +83,7 @@ router.post('/company', function(req, res, next) {
 		return next(err);
 	}
 
-	admin.editCompany(id, name, site, function(err, data) {
+	admin.editCompany(req.lang, id, name, site, function(err, data) {
 		if (err) {
 			return next(err);
 		}
@@ -111,7 +111,7 @@ router.delete('/company', function(req, res, next) {
 });
 
 router.post('/tag', function(req, res, next) {
-	admin.createTag(req.body.name, function(err, data) {
+	admin.createTag(req.lang, req.body.name, function(err, data) {
 		if (err) {
 			return next(err);
 		}
@@ -121,7 +121,7 @@ router.post('/tag', function(req, res, next) {
 });
 
 router.post('/country', function(req, res, next) {
-	admin.createCountry(req.body.name, function(err, data) {
+	admin.createCountry(req.lang, req.body.name, function(err, data) {
 		if (err) {
 			return next(err);
 		}
@@ -131,7 +131,7 @@ router.post('/country', function(req, res, next) {
 });
 
 router.post('/city', function(req, res, next) {
-	admin.createCity(req.body.name, req.body.countryID, function(err, data) {
+	admin.createCity(req.lang, req.body.name, req.body.countryID, function(err, data) {
 		if (err) {
 			return next(err);
 		}
@@ -150,7 +150,7 @@ router.post('/station', function(req, res, next) {
 		return next(err);
 	}
 
-	admin.createStation(name, cityID, function(err, data) {
+	admin.createStation(req.lang, name, cityID, function(err, data) {
 		if (err) {
 			return next(err);
 		}
@@ -160,7 +160,7 @@ router.post('/station', function(req, res, next) {
 });
 
 router.get('/cities', function(req, res, next) {
-	admin.getCities(req.query.countryID, function(err, data) {
+	admin.getCities(req.lang, req.query.countryID, function(err, data) {
 		if (err) {
 			return next(err);
 		}
@@ -170,7 +170,7 @@ router.get('/cities', function(req, res, next) {
 });
 
 router.get('/stations', function(req, res, next) {
-	admin.getStations(req.query.cityID, function(err, data) {
+	admin.getStations(req.lang, req.query.cityID, function(err, data) {
 		if (err) {
 			return next(err);
 		}
