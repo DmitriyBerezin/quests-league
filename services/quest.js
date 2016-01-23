@@ -6,8 +6,8 @@ var util = require('util'),
 	s3 = require('./aws-s3'),
 	admin = require('./admin');
 
-function getQuest(id, userID, done) {
-	var query = util.format('call quests.pQuestGet1(%s, %s)', id || null, userID || null),
+function getQuest(lang, id, userID, done) {
+	var query = util.format('call quests.pQuestGet1("%s", %s, %s)', lang, id || null, userID || null),
 		res;
 
 	db.execQuery(query, function(err, rows, fields) {
@@ -121,14 +121,14 @@ function getQuestIdBySefName(sefName, done) {
 	});
 }
 
-function search(q, page, cityID, done) {
+function search(lang, q, page, cityID, done) {
 	var dbQuery,
 		quests = [],
 		filesFunc = {};
 
 	q = prepareSearchQuery(q);
-	dbQuery = util.format('call quests.pQuestSearch("%s", %d, %s)',
-		q, page - 1, cityID || null);
+	dbQuery = util.format('call quests.pQuestSearch("%s", "%s", %d, %s)',
+		lang, q, page - 1, cityID || null);
 
 	db.execQuery(dbQuery, function(err, rows, fields) {
 		if (err) {

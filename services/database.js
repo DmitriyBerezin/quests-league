@@ -10,6 +10,7 @@ function getConnection(callback) {
 }
 
 function execQuery(query, callback) {
+	console.log(query);
 	pool.getConnection(function(err, connection) {
 		if (err) {
 			return callback(err);
@@ -26,6 +27,7 @@ function execQuery(query, callback) {
 function execQueryAsAdm(query, callback) {
 	var connection = mysql.createConnection(config.database.admin);
 
+	console.log(query);
 	connection.connect(function(err) {
 		if (err) {
 			return callback(err);
