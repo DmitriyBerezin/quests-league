@@ -4,7 +4,8 @@ $(function() {
 		$imgsContainer = $('.imgs-container'),
 		$errorFile = $('.alert-file-upload-err'),
 		$removeQuest = $('.remove-quest'),
-		$id = $('input[name="id"]');
+		$id = $('input[name="id"]'),
+		$langPicker = $('.lang-picker');
 
 	$('input[type="file"]').fileupload({
 		done: function(evt, data) {
@@ -21,6 +22,7 @@ $(function() {
 	});
 
 	$removeQuest.click(onRemoveQuestClick);
+	$langPicker.change(onLangPickerChange);
 
 	toggleFileInput();
 	formQuest();
@@ -284,5 +286,20 @@ $(function() {
 			beforeSubmit: beforeSubmit
 		});
 		$('.btn-company-remove').click(onBtnCompanyRemoveClick);
+	}
+
+	function onLangPickerChange(evt) {
+		var path = location.pathname,
+			langRegex = /^\/[a-z]{2}\//i,
+			lang = $langPicker.val();
+
+		if (path.search(langRegex) > -1) {
+			path = path.replace(langRegex, '/' + lang + '/');
+		}
+		else {
+			path = '/' + lang + path;
+		}
+
+		location.replace(location.origin + path);
 	}
 });

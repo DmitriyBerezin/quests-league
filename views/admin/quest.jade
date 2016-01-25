@@ -1,4 +1,5 @@
 extends ../layout
+include ../widgets/select-lang-widget.jade
 
 block style
 	link(rel='stylesheet', href='/lib/jQuery-File-Upload/css/jquery.fileupload.css')
@@ -15,6 +16,8 @@ block script
 
 block content
 	h1.page-header Форма редактирования
+		.lang-container.pull-right
+			+langWidget(lang)
 
 	form(method='post', action='/admin/quest').form-horizontal.form-quest
 		input(type='hidden', name='id', value=id)

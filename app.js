@@ -62,6 +62,10 @@ app.use(function(req, res, next) {
 		return next();
 	}
 
+	res.locals.lang = {};
+	res.locals.lang.list = config.i18n.supported_languages;
+	res.locals.lang.currLang = req.lang;
+
 	var utilSvc = require('./services/utils-svc');
 	utilSvc.getCities(req.lang, function(err, countries, cities) {
 		if (err) {
