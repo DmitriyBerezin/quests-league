@@ -14,20 +14,20 @@ block script
 
 
 block content
-	h1.page-header Список квестов
+	h1.page-header=gettext('Список квестов')
 		.lang-container.pull-right
 			+langWidget(lang)
 
-	a(href='/admin/quest').btn.btn-success Новый квест
+	a(href='/admin/quest').btn.btn-success=gettext('Новый квест')
 
 	each company in companies
 		div(data-id=company.id, data-name=company.name, data-site=company.site).company-block
 			h4
 				span.company-name= company.name
-				span.company-edit.pseudo-link Редактировать
+				span.company-edit.pseudo-link=gettext('Редактировать')
 			ul.list-group
 				each quest in quests
 					if quest.company_id === company.id
 						li.list-group-item
 							a(href="/quest/#{quest.id}")= quest.name
-							a(href="/admin/quest/#{quest.id}").pull-right Редактировать
+							a(href="/admin/quest/#{quest.id}").pull-right=gettext('Редактировать')
