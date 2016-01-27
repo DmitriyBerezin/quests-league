@@ -6,7 +6,7 @@ module.exports = {
 			host: 'localhost',
 			port: 3306,
 			user: 'root',
-			password: process.env.RDS_WEB_PSW || 'root',
+			password: process.env.RDS_WEB_PSW || 'dima123',
 			connectionLimit: 10
 		},
 		admin: {
@@ -14,7 +14,7 @@ module.exports = {
 			host: 'localhost',
 			port: 3306,
 			user: 'root',
-			password: process.env.RDS_ADM_PSW || 'root'
+			password: process.env.RDS_ADM_PSW || 'dima123'
 		}
 	},
 
@@ -97,8 +97,8 @@ module.exports = {
 			'ru'
 		],
 		default_lang: 'en',
-		locale_on_url: true
+		locale_on_url: true,
 		// debug_lang: 'it-CH',
-		// translation_directory: 'i18n'
+		translation_directory: 'i18n'
 	}
 };

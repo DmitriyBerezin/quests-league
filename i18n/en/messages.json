@@ -1,0 +1,203 @@
+{
+   "messages": {
+      "": {
+         "Project-Id-Version": " PACKAGE VERSION\nLanguage-Team: none\nReport-Msgid-Bugs-To: \nPO-Revision-Date: 2016-01-27 17:36+0000\nLanguage: en\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPOT-Creation-Date: 2016-01-27 17:36+0000\nLast-Translator: Automatically generated\nPlural-Forms: nplurals=2; plural=(n != 1);\n"
+      },
+      "Список квестов": [
+         null,
+         "Quests List"
+      ],
+      "Новый квест": [
+         null,
+         "New quest"
+      ],
+      "Редактировать": [
+         null,
+         "Edit"
+      ],
+      "Форма редактирования": [
+         null,
+         "Edit form"
+      ],
+      "Основная информация": [
+         null,
+         "Common data"
+      ],
+      "Наименование": [
+         null,
+         "Name"
+      ],
+      "Описание": [
+         null,
+         "Description"
+      ],
+      "Компания": [
+         null,
+         "Company"
+      ],
+      "Не нашли нужную компанию?": [
+         null,
+         "Haven't found company?"
+      ],
+      "Добавьте ее": [
+         null,
+         "Create it"
+      ],
+      "Дополнительные характеристики": [
+         null,
+         "Addiditional data"
+      ],
+      "Игроков": [
+         null,
+         "Players"
+      ],
+      "от": [
+         null,
+         "from"
+      ],
+      "до": [
+         null,
+         "to"
+      ],
+      "Стоимость посещения": [
+         null,
+         "Money"
+      ],
+      "Тэги": [
+         null,
+         "Tags"
+      ],
+      "Не нашли нужный тэг?": [
+         null,
+         "Haven't found tag?"
+      ],
+      "Добавьте тэг": [
+         null,
+         "Create tag"
+      ],
+      "Лига": [
+         null,
+         "Liga"
+      ],
+      "Сложность": [
+         null,
+         "Complexity"
+      ],
+      "Адресная информация": [
+         null,
+         "Address data"
+      ],
+      "Страна": [
+         null,
+         "Country"
+      ],
+      "Не нашли нужную страну?": [
+         null,
+         "Haven't found country?"
+      ],
+      "Добавьте страну": [
+         null,
+         "Create country"
+      ],
+      "Город": [
+         null,
+         "City"
+      ],
+      "Не нашли нужный город?": [
+         null,
+         "Haven't found city?"
+      ],
+      "Добавьте город": [
+         null,
+         "Create city"
+      ],
+      "Метро": [
+         null,
+         "Stations"
+      ],
+      "Не нашли нужную станцию метро?": [
+         null,
+         "Haven't found station?"
+      ],
+      "Добавьте станцию": [
+         null,
+         "Create station"
+      ],
+      "Адрес": [
+         null,
+         "Address"
+      ],
+      "Gps Координаты": [
+         null,
+         "Gps coords"
+      ],
+      "долгота": [
+         null,
+         "longitude"
+      ],
+      "широта": [
+         null,
+         "latitude"
+      ],
+      "Перейдите нa": [
+         null,
+         "Goto"
+      ],
+      "карту": [
+         null,
+         "map"
+      ],
+      "введите адрес, нажмите правой кнопкой и выбирете \"Что здесь?\"": [
+         null,
+         "input address, right click and select \"Что здесь?\""
+      ],
+      "Ссылка на видео": [
+         null,
+         "Video url"
+      ],
+      "CEO данные": [
+         null,
+         "CEO"
+      ],
+      "ЧПУ": [
+         null,
+         "ЧПУ"
+      ],
+      "Сохранить изменения": [
+         null,
+         "Save"
+      ],
+      "Удалить квест": [
+         null,
+         "Remove quest"
+      ],
+      "Ура! Информация изменена": [
+         null,
+         "Done"
+      ],
+      "Картинки": [
+         null,
+         "Images"
+      ],
+      "Добавить картинки": [
+         null,
+         "Add images"
+      ],
+      "Сначала создайте квест. Потом появится возможность загрузить картинки.": [
+         null,
+         "Create quest firstly. Then you may add images."
+      ],
+      "Тэг": [
+         null,
+         "Tag"
+      ],
+      "Создать": [
+         null,
+         "Create"
+      ],
+      "Станция": [
+         null,
+         "Station"
+      ]
+   }
+}
