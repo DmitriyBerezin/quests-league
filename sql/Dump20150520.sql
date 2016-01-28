@@ -1,10 +1,10 @@
 CREATE DATABASE  IF NOT EXISTS `quests` /*!40100 DEFAULT CHARACTER SET utf8 */;
 USE `quests`;
--- MySQL dump 10.13  Distrib 5.6.24, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 5.6.19, for osx10.7 (i386)
 --
--- Host: localhost    Database: quests
+-- Host: quests.cp0uujwgrxiz.eu-west-1.rds.amazonaws.com    Database: quests
 -- ------------------------------------------------------
--- Server version 5.6.26
+-- Server version 5.6.23-log
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -81,7 +81,7 @@ DROP TABLE IF EXISTS `tcompany`;
 CREATE TABLE `tcompany` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL,
-  `site` varchar(45) DEFAULT NULL,
+  `site` varchar(250) DEFAULT NULL,
   `deleted_flag` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   FULLTEXT KEY `ft_name` (`name`)
@@ -225,9 +225,9 @@ CREATE TABLE `tquest` (
   `lat` decimal(10,8) DEFAULT NULL,
   `lng` decimal(10,8) DEFAULT NULL,
   `address` varchar(1000) NOT NULL,
-  `name` varchar(45) NOT NULL,
+  `name` varchar(100) NOT NULL,
   `descr` varchar(5000) NOT NULL,
-  `url` varchar(45) DEFAULT NULL,
+  `url` varchar(1000) DEFAULT NULL,
   `price_from` int(11) DEFAULT NULL,
   `price_to` int(11) DEFAULT NULL,
   `video_url` varchar(45) DEFAULT NULL,
@@ -252,6 +252,31 @@ CREATE TABLE `tquest` (
   CONSTRAINT `fk_tquest_country_id` FOREIGN KEY (`country_id`) REFERENCES `tcountry` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_tquest_league_id` FOREIGN KEY (`league_id`) REFERENCES `tleague` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Таблица квестов';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `tquest_spider`
+--
+
+DROP TABLE IF EXISTS `tquest_spider`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tquest_spider` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `quest_id` int(11) DEFAULT NULL,
+  `city_id` int(11) DEFAULT NULL,
+  `company_id` int(11) DEFAULT NULL,
+  `quest_code` varchar(100) DEFAULT NULL,
+  `opened_flag` smallint(1) DEFAULT NULL,
+  `status` varchar(5) DEFAULT NULL COMMENT 'check,\nnew - новый квест, найденный пауком;\nupd - изменения в квесте, найденные пауком,\ndel - квест удален или не найден пауком',
+  PRIMARY KEY (`id`),
+  KEY `fk_tquest_spider_quest_id_idx` (`quest_id`),
+  KEY `fk_tquest_spider_city_id_idx` (`city_id`),
+  KEY `fk_tquest_spider_company_id_idx` (`company_id`),
+  CONSTRAINT `fk_tquest_spider_city_id` FOREIGN KEY (`city_id`) REFERENCES `tcity` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_tquest_spider_company_id` FOREIGN KEY (`company_id`) REFERENCES `tcompany` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_tquest_spider_quest_id` FOREIGN KEY (`quest_id`) REFERENCES `tquest` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -284,9 +309,8 @@ CREATE TABLE `tschedule` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `quest_id` int(11) NOT NULL,
   `session_start` timestamp NOT NULL,
-  `status` enum('free','reserved','lq_reserved','unavailable','expired','hot') DEFAULT NULL COMMENT '''free'' - свободный\n''reserved'' - зарезервирован через внешний сайт\n''lq_reserved'' - зарезервирован через наш сайт\n''unavailable'' - недоступен\n''expired'' - устарел\n''hot'' - горячее предложение',
+  `status` enum('free','reserved','unavailable','expired','hot','partial') DEFAULT NULL COMMENT '''free'' - свободный\n''reserved'' - зарезервирован через внешний сайт\n''unavailable'' - недоступен\n''expired'' - устарел\n''hot'' - горячее предложение\n‘partial’ - частичное бронирование',
   `price` decimal(8,2) NOT NULL,
-  `updated` timestamp NULL DEFAULT NULL,
   `outer_session_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_tschedule_quest_id_idx` (`quest_id`),
@@ -400,6 +424,26 @@ CREATE TABLE `tuser` (
   UNIQUE KEY `email_oauth_provider_UNIQUE` (`email`,`oauth_provider`),
   UNIQUE KEY `oauth_id_oauth_provider_UNIQUE` (`oauth_id`,`oauth_provider`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Таблица зарегистрированных пользователей портала (игроки, компании-операторы)';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `txcompanycity_spider`
+--
+
+DROP TABLE IF EXISTS `txcompanycity_spider`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `txcompanycity_spider` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `company_id` int(11) NOT NULL,
+  `city_id` int(11) NOT NULL,
+  `city_code` varchar(45) NOT NULL COMMENT 'Код города из url на сайте компании для получения расписания и мониторинга новых квестов',
+  PRIMARY KEY (`id`),
+  KEY `txcompanycity_spider_company_id_idx` (`company_id`),
+  KEY `txcompanycity_spider_city_id_idx` (`city_id`),
+  CONSTRAINT `txcompanycity_spider_city_id` FOREIGN KEY (`city_id`) REFERENCES `tcity` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `txcompanycity_spider_company_id` FOREIGN KEY (`company_id`) REFERENCES `tcompany` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -710,6 +754,26 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `pCompanyCreate` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE PROCEDURE `pCompanyCreate`(`name` varchar(100), url varchar(45))
+BEGIN
+  insert into tcompany(`name`, site) values(`name`, url);
+  select LAST_INSERT_ID() as id, `name` as `name`;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `pCompanyDel` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -724,8 +788,8 @@ CREATE PROCEDURE `pCompanyDel`(
   company_id int
 )
 BEGIN
-    update tcompany c set c.deleted_flag = 1 where c.id = company_id;
-END
+  update tcompany c set c.deleted_flag = 1 where c.id = company_id;
+END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
@@ -744,7 +808,7 @@ DELIMITER ;;
 CREATE PROCEDURE `pCompanyEdit`(
   id int,
     `name` varchar(100),
-    site varchar(45)
+    site varchar(250)
 )
 BEGIN
   if id is not null then
@@ -758,7 +822,7 @@ BEGIN
     select LAST_INSERT_ID() as id, `name` as name, site;
   end;
     end if;
-END
+END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
@@ -851,12 +915,13 @@ CREATE PROCEDURE `pOrderCreate`(
 )
 BEGIN
   if exists (select * from torder o inner join torderprogress op on o.id = op.order_id where o.session_id = session_id) then
-    begin
-      SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'The selected session has been already booked';
-    end;
+  begin
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'The selected session has been already booked';
+  end;
     end if;
     
-    insert into torder(user_id, session_id, players_cnt, `comment`, confirm_code) 
+    
+    insert into torder(user_id, session_id,players_cnt, `comment`, confirm_code) 
     value(user_id, session_id, players_cnt, `comment`, confirm_code);
     
     select LAST_INSERT_ID() as order_id;
@@ -946,9 +1011,9 @@ ALTER DATABASE `quests` CHARACTER SET utf8 COLLATE utf8_general_ci ;
 DELIMITER ;;
 CREATE PROCEDURE `pQuestEdit`(
   id int,
-    name varchar(45),
+    name varchar(100),
     descr varchar(5000),
-    url varchar(45),
+    url varchar(1000),
     company_id int,
     players_from int,
     players_to int,
@@ -1056,7 +1121,7 @@ BEGIN
    
    select * from tquest where id = quest_id;
     
-    select id, name from tcompany;
+    select id, name from tcompany where deleted_flag is null or deleted_flag != 1;
     
     select t.*, case when tx.quest_id is null then 0 else 1 end as selected  
     from ttag t 
@@ -1176,9 +1241,9 @@ DELIMITER ;
 DELIMITER ;;
 CREATE PROCEDURE `pQuestList`()
 BEGIN
-    select * from tcompany where (deleted_flag is null or deleted_flag != 1);
+  select * from tcompany where (deleted_flag is null or deleted_flag != 1);
     
-    select id, `name`, company_id from tquest where (deleted_flag is null or deleted_flag != 1);
+    select id, `name`, company_id from tquest where (deleted_flag  is null or deleted_flag != 1);
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -1231,7 +1296,7 @@ BEGIN
   end;
  else
   begin
-    select q.id, q.name, c.name as company_name, q.url, q.descr, q.address, 
+        select q.id, q.name, c.name as company_name, q.url, q.descr, q.address, 
       q.players_from, q.players_to, q.price_from, q.price_to, q.lat, q.lng,
       stations.stations_name as stations
       from tquest q
@@ -1341,31 +1406,10 @@ DELIMITER ;;
     phone varchar(25)
 )
 BEGIN
-  insert into tuser (oauth_provider, `name`, email, password) values('local', `name`, email, psw);
+  insert into tuser (oauth_provider, `name`, email, password, phone) 
     value('local', `name`, email, psw, phone);
     
     select * from tuser u where u.email = email and u.oauth_provider = 'local';
-END ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `pUserCreate` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8 */ ;
-/*!50003 SET character_set_results = utf8 */ ;
-/*!50003 SET collation_connection  = utf8_general_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;
-  CREATE PROCEDURE `pUserDelete`(
-    user_id int
-)
-BEGIN
-  delete from tuser where id = user_id;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -1595,4 +1639,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-09-09 15:09:40
+-- Dump completed on 2016-01-27 22:25:48
