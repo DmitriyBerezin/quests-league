@@ -1,22 +1,34 @@
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pQuestList`(
+CREATE PROCEDURE `pQuestList`(
     lang varchar(10)
 )
 BEGIN
-    select t.*, tr.name 
-    from tcompany t inner join tcompany_tr tr on t.id = tr.company_id
-    where (t.deleted_flag is null or t.deleted_flag != 1) and tr.lang = lang
-    union
-    select t.*, null 
-    from tcompany t inner join tcompany_tr tr on t.id = tr.company_id
-    where (t.deleted_flag is null or t.deleted_flag != 1) and tr.lang != lang;
+    select *
+    from
+    (
+        select t.*, null as name
+        from tcompany t inner join tcompany_tr tr on t.id = tr.company_id
+        where (t.deleted_flag is null or t.deleted_flag != 1) and tr.lang != lang
+        union
+        select t.*, tr.name 
+        from tcompany t inner join tcompany_tr tr on t.id = tr.company_id
+        where (t.deleted_flag is null or t.deleted_flag != 1) and tr.lang = lang
+        order by id
+    ) t
+    group by id;
     
-    select q.id, tr.`name`, q.company_id 
-    from tquest q inner join tquest_tr tr on q.id = tr.quest_id
-    where (q.deleted_flag is null or q.deleted_flag != 1) and tr.lang = lang
-    union
-    select q.id, null, q.company_id 
-    from tquest q inner join tquest_tr tr on q.id = tr.quest_id
-    where (q.deleted_flag is null or q.deleted_flag != 1) and tr.lang != lang;
+    select *
+    from
+    (
+        select q.id, null as name, q.company_id 
+        from tquest q inner join tquest_tr tr on q.id = tr.quest_id
+        where (q.deleted_flag is null or q.deleted_flag != 1) and tr.lang != lang
+        union
+        select q.id, tr.`name`, q.company_id 
+        from tquest q inner join tquest_tr tr on q.id = tr.quest_id
+        where (q.deleted_flag is null or q.deleted_flag != 1) and tr.lang = lang
+        order by id
+    ) t
+    group by id;
 END
 
 
