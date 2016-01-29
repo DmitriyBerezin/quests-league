@@ -34,15 +34,16 @@ grant execute on procedure pUserResetPassword to 'web';
 grant execute on procedure pUserSetForgotPasswordToken to 'web';
 grant execute on procedure pUserEmailCheck to 'web';
 grant execute on procedure pUserUpdate to 'web';
-	
 
 
 
 CREATE USER 'spider' IDENTIFIED BY 'spider';
 
-grant all privileges on quests.tschedule to 'spider'; 
+grant all privileges on quests.tschedule to 'spider';
 grant all privileges on quests.tschedulelog to 'spider';
-grant select on quests.vquest to 'spider';
+grant all privileges on quests.tquest_spider to 'spider';
+grant all privileges on quests.txcompanycity_spider to 'spider';
+grant execute on procedure pCompanyCreate to 'spider';
 
 
 
