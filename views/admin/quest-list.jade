@@ -18,16 +18,20 @@ block content
 		.lang-container.pull-right
 			+langWidget(lang)
 
-	a(href='/admin/quest').btn.btn-success=gettext('Новый квест')
+	a(href='/#{lang.currLang}/admin/quest').btn.btn-success=gettext('Новый квест')
 
 	each company in companies
 		div(data-id=company.id, data-name=company.name, data-site=company.site).company-block
 			h4
-				span.company-name= company.name
+				- var companyName = company.name || gettext('Нет перевода')
+				- var className = company.name ? null : 'not-translated'
+				span(class=className).company-name=companyName
 				span.company-edit.pseudo-link=gettext('Редактировать')
 			ul.list-group
 				each quest in quests
 					if quest.company_id === company.id
 						li.list-group-item
-							a(href="/quest/#{quest.id}")= quest.name
-							a(href="/admin/quest/#{quest.id}").pull-right=gettext('Редактировать')
+							- var questName = quest.name || gettext('Нет перевода')
+							- var className = quest.name ? null : 'not-translated'
+							a(href="/quest/#{quest.id}", class=className)=questName
+							a(href="/#{lang.currLang}/admin/quest/#{quest.id}").pull-right=gettext('Редактировать')

@@ -21,14 +21,19 @@ function getQuestList(lang, done) {
 
 function getQuest(lang, id, done) {
 	var query = util.format('call quests.pQuestGet("%s", %s)', lang, id || null),
-		data;
+		data,
+		commonData,
+		langData;
 
 	db.execQueryAsAdm(query, function(err, rows, fields) {
 		if (err) {
 			return done(err);
 		}
 
-		data = rows[0].length > 0 ? rows[0][0] : {};
+		commonData = rows[0].length > 0 ? rows[0][0] : {};
+		langData = rows[1].length > 0 ? rows[1][0] : {};
+		data = Object.assign({}, commonData, langData);
+
 		data.dic = {
 			compaines: rows[1],
 			tags: rows[2],

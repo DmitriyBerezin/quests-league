@@ -72,3 +72,7 @@ body {
 .lang-container {
 	font-size: initial;
 }
+
+.not-translated {
+	color: #f00;
+}
