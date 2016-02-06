@@ -1193,7 +1193,10 @@ BEGIN
     from txquestuser tx inner join tuser u on tx.user_id = u.id
     where tx.quest_id = quest_id and (deleted_flag is null or deleted_flag != 1) and tx.user_id != user_id and tx.approved_flag = 1;
     
-    select s.* from tschedule s where s.quest_id = quest_id;
+    select s.* 
+    from tschedule s 
+    where s.quest_id = quest_id
+    order by s.session_start;
     
     /*select t.*, case when tx.quest_id is null then 0 else 1 end as selected  
     from ttag t 

@@ -638,13 +638,13 @@ div.select-stacked div.select + .select {
   border-right: 2px solid #fff;
 }
 .schedule-time-wrapper .time {
-  width: 6.92307692%;
+  width: 5.5%;
   float: left;
   border-right: 2px solid #fff;
   line-height: 85px;
   text-align: center;
 }
-.schedule-time-wrapper .time:hover {
+.session-free:hover {
   background-color: #76d071;
   color: #fff;
 }
@@ -694,68 +694,55 @@ div.select-stacked div.select + .select {
   width: auto;
 }
 .schedule-price-range.x1 {
-  width: 7.19230769%;
-  float: left;
+  width: 5.5%;
   margin: 0 .25%;
 }
 .schedule-price-range.x2 {
-  width: 14.88461538%;
-  float: left;
+  width: 11%;
   margin: 0 .25%;
 }
 .schedule-price-range.x3 {
-  width: 22.57692308%;
-  float: left;
+  width: 16.5%;
   margin: 0 .25%;
 }
 .schedule-price-range.x4 {
-  width: 30.26923077%;
-  float: left;
+  width: 22%;
   margin: 0 .25%;
 }
 .schedule-price-range.x5 {
-  width: 37.96153846%;
-  float: left;
+  width: 27.5%;
   margin: 0 .25%;
 }
 .schedule-price-range.x6 {
-  width: 45.65384615%;
-  float: left;
+  width: 33%;
   margin: 0 .25%;
 }
 .schedule-price-range.x7 {
-  width: 53.34615385%;
-  float: left;
+  width: 39%;
   margin: 0 .25%;
 }
 .schedule-price-range.x8 {
-  width: 61.03846154%;
-  float: left;
+  width: 44.5%;
   margin: 0 .25%;
 }
 .schedule-price-range.x9 {
-  width: 68.73076923%;
-  float: left;
+  width: 50%;
   margin: 0 .25%;
 }
 .schedule-price-range.x10 {
-  width: 76.42307692%;
-  float: left;
+  width: 56%;
   margin: 0 .25%;
 }
 .schedule-price-range.x11 {
-  width: 84.11538462%;
-  float: left;
+  width: 61%;
   margin: 0 .25%;
 }
 .schedule-price-range.x12 {
-  width: 91.80769231%;
-  float: left;
+  width: 66%;
   margin: 0 .25%;
 }
 .schedule-price-range.x13 {
   width: 99.5%;
-  float: left;
   margin: 0 .25%;
 }
 @media screen and (max-width: 992px) {

@@ -246,7 +246,9 @@ block content
 							button
 								i.fa.fa-chevron-left
 							each session, index in day.sessions
-								span(data-id=session.id).time.session= session.time
+								- var className = session.status === 'free' ? 'session-free' : 'session-reserved';
+								- if (session.status === 'expired') className = 'session-expired';
+								span(data-id=session.id, class=className).time.session= session.time
 							- for (var i = day.sessions.length; i < 13; ++i)
 								span.time нет
 							button

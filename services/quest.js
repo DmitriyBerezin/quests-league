@@ -64,10 +64,12 @@ function groupQuestSessions(sessions) {
 	sessions.forEach(function(session) {
 		date = moment(session.session_start);
 
+		// Found the schedule day object of the session
 		scheduleItems = schedule.filter(function(item) {
-			return item.date.diff(date, 'days') === 0;
+			return date.isSame(item.date, 'day');
 		});
 
+		// If we start to process a new schedule day
 		if (scheduleItems.length === 0) {
 			scheduleDay = {
 				date: date,
@@ -82,11 +84,13 @@ function groupQuestSessions(sessions) {
 			schedule.push(scheduleDay);
 		}
 		else {
+			// Already have at least one
 			scheduleDay = scheduleItems[0];
 		}
 
 		scheduleDay.sessions.push({
 			id: session.id,
+			status: session.status,
 			time: date.format('HH:mm'),
 			price: session.price,
 			status: session.status

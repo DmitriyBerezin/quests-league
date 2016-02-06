@@ -79,3 +79,13 @@
 .comment:first-child {
 	margin-top: 15px;
 }
+
+.session-expired {
+	color: #ccc;
+}
+
+.session-reserved {
+	background-color: yellow !important;
+	color: #ccc;
+}
+
