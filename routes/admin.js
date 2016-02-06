@@ -2,7 +2,8 @@ var express = require('express');
 var router = express.Router();
 
 var admin = require('../services/admin'),
-	utils = require('../services/utils');
+	utils = require('../services/utils'),
+	config = require('../config/config');
 
 router.all('*', utils.requreAdminRole);
 
@@ -69,6 +70,18 @@ router.post('/quest/file', function(req, res, next) {
 		}
 
 		res.status(200).send({ url: url });
+	});
+});
+
+router.get('/company/:id', function(req, res, next) {
+	var id = req.params.id;
+
+	admin.getCompany(id, config.i18n.supported_languages, function(err, data) {
+		if (err) {
+			return next(err);
+		}
+
+		res.status(200).send(data);
 	});
 });
 

@@ -26,7 +26,8 @@ $(function() {
 
 	toggleFileInput();
 	formQuest();
-	formCompany();
+	// formCompany();
+	horizontalList($('.company-container'), null, '/admin/company');
 	formTag();
 	formCountry();
 	formCity();
@@ -81,6 +82,26 @@ $(function() {
 			$formQuest.append(tmplAlert({ msg: error, className: 'alert-danger' }));
 			$formQuest.find('button[type="submit"]').attr('disabled', false);
 		}
+	}
+
+	function horizontalList($container, $modal, getActionUrl, setActionUrl) {
+		function onItemClick(evt) {
+			var id = $(evt.target).closest('li').data('id');
+
+			evt.preventDefault();
+
+			$.getJSON(getActionUrl + '/' + id).then(onGetSuccess, onGetError);
+		}
+
+		function onGetSuccess(data) {
+			console.log(data);
+		}
+
+		function onGetError(res) {
+
+		}
+
+		$container.delegate('li a', 'click', onItemClick);
 	}
 
 	function modalForm($modal, $list, $form, onChange) {

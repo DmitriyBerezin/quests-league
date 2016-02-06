@@ -35,13 +35,13 @@ function getQuest(lang, id, done) {
 		data = Object.assign({}, commonData, langData);
 
 		data.dic = {
-			compaines: rows[1],
-			tags: rows[2],
-			leagues: rows[3],
-			countries: rows[4],
-			cities: rows[5],
-			stations: rows[6],
-			complexity: rows[7]
+			compaines: rows[2],
+			tags: rows[3],
+			leagues: rows[4],
+			countries: rows[5],
+			cities: rows[6],
+			stations: rows[7],
+			complexity: rows[8]
 		};
 		data.imgs = [];
 
@@ -70,6 +70,30 @@ function removeQuest(id, done) {
 		}
 
 		return done(null);
+	});
+}
+
+function getCompany(id, langs, done) {
+	var query = util.format('call quests.pAdminCompanyGet(%s)', id || null),
+		company = {};
+
+	db.execQueryAsAdm(query, function(err, rows, fields) {
+		if (err) {
+			return done(err);
+		}
+
+		company = rows[0].length > 0 ? rows[0][0] : null;
+		if (!company) {
+			return done(null);
+		}
+
+		// Map <lang, dbdata>
+		company.langs = {};
+		langs.forEach(function(lang, i) {
+			company.langs[lang] = rows[1].find((row) => row.lang === lang) || null;
+		});
+
+		return done(null, company);
 	});
 }
 
@@ -274,6 +298,7 @@ module.exports = {
 	removeQuest: removeQuest,
 	addQuestFile: addQuestFile,
 	getQuestFiles: getQuestFiles,
+	getCompany: getCompany,
 	editCompany: editCompany,
 	removeCompany: removeCompany,
 	createTag: createTag,

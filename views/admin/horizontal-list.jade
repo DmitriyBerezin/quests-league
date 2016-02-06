@@ -1,0 +1,21 @@
+mixin horizontalList(list, multiselectFlag)
+	- var hasSelected = false;
+	ul.horizontal-list
+		each item in list
+			- if (!item.selected) continue;
+			- hasSelected = true;
+			- var name = item.name || 'Нет перевода';
+			- var className = item.name ? null : 'not-translated';
+			li(data-id=item.id)
+				a(href='#', class=className)=name
+				span.remove-icon x
+	- if (!hasSelected || multiselectFlag || true)
+		.alert.alert-warning
+			.append-entity-block Выберите из списка
+				select(data-live-search='true').form-control.selectpicker
+					each item in list
+						- var name = item.name || 'Нет перевода';
+						option(value=item.id)=name
+			div.separator или
+			.create-entity-block
+				a(href='#').create-item-link создайте новый

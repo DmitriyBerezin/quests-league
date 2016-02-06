@@ -76,3 +76,23 @@ body {
 .not-translated {
 	color: #f00;
 }
+
+
+.horizontal-list {
+	list-style: none;
+	margin-top: 7px;
+	padding-left: 0;
+}
+
+.horizontal-list li {
+	display: inline-block;
+}
+
+.horizontal-list li:not(:first-child) {
+	margin-left: 20px;
+}
+
+.horizontal-list .remove-icon {
+	padding-left: 5px;
+	cursor: pointer;
+}
