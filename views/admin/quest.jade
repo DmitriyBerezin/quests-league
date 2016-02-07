@@ -39,12 +39,6 @@ block content
 		div.form-group
 			label(for='listCompany').col-sm-2.control-label=gettext('Компания')
 			div.col-sm-7.company-container
-				//- select(id='listCompany', name='companyID', data-width='auto', required, data-live-search='true').form-control.selectpicker
-				//- 	option
-				//- 	each item in dic.compaines
-				//- 		option(value=item.id, selected= item.id === company_id)= item.name
-				//- div(role='alert').alert.alert-warning=gettext('Не нашли нужную компанию?')
-				//- 	a(href='#', data-toggle='modal', data-target='#modalCompany')=gettext('Добавьте ее')
 				+horizontalList(dic.compaines, false)
 
 		hr

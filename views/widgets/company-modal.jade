@@ -5,17 +5,18 @@ div(id='modalCompany', tabIndex='-1', role='dialog').modal.fade
 				div.modal-header
 					button(type='button', data-dismiss='modal' aria-label='Close').close
 						span(aria-hidden='true') &times;
-					h4.modal-title #{company ? company.name : 'Новая компания'}
+					//- h4.modal-title #{company ? company.name : 'Новая компания'}
 				div.modal-body
-					div.form-group
-						label(for='txtCompName').col-sm-4.control-label Наименование
-						div.col-sm-6
-							input(type='text', id='txtCompName', name='name', placeholder='Наименование', value="#{company ? company.name : ''}", required).form-control
+					input(type='hidden', name='id', value="#{company ? company.id : ''}")
+
 					div.form-group
 						label(for='txtCompSite').col-sm-4.control-label Сайт
 						div.col-sm-6
 							input(type='text', id='txtCompSite', name='site', placeholder='Сайт', value="#{company ? company.site : ''}", required).form-control
-					input(type='hidden', name='id', value="#{company ? company.id : ''}")
+
+					each lang in company.langs
+						.input-group
+							span().input-group-addon
 				div.modal-footer
 					button(type='submit').btn.btn-primary.btn-company-create #{company ? 'Изменить' : 'Создать'}
 					if company

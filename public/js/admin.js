@@ -84,7 +84,13 @@ $(function() {
 		}
 	}
 
-	function horizontalList($container, $modal, getActionUrl, setActionUrl) {
+	function horizontalList(container, modal, form, tmplFn, getActionUrl) {
+		var $container = $(container),
+			$modal = $(modal),
+			$form;
+
+		$container.delegate('li a', 'click', onItemClick);
+
 		function onItemClick(evt) {
 			var id = $(evt.target).closest('li').data('id');
 
@@ -94,14 +100,14 @@ $(function() {
 		}
 
 		function onGetSuccess(data) {
-			console.log(data);
+			$(document.body).append(tmplFn(data));
+			$modal = $(modal).modal('show');
+			$form = $(form);
 		}
 
 		function onGetError(res) {
 
 		}
-
-		$container.delegate('li a', 'click', onItemClick);
 	}
 
 	function modalForm($modal, $list, $form, onChange) {
