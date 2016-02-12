@@ -35,7 +35,7 @@ function getQuest(lang, id, done) {
 		data = Object.assign({}, commonData, langData);
 
 		data.dic = {
-			compaines: rows[2],
+			companies: rows[2],
 			tags: rows[3],
 			leagues: rows[4],
 			countries: rows[5],
@@ -45,6 +45,7 @@ function getQuest(lang, id, done) {
 		};
 		data.imgs = [];
 
+		return done(null, data);
 		if (id) {
 			getQuestFiles(id, function(err, imgs) {
 				if (err) {
@@ -82,10 +83,7 @@ function getCompany(id, langs, done) {
 			return done(err);
 		}
 
-		company = rows[0].length > 0 ? rows[0][0] : null;
-		if (!company) {
-			return done(null);
-		}
+		company = rows[0].length > 0 ? rows[0][0] : {};
 
 		// Map <lang, dbdata>
 		company.langs = {};
@@ -97,9 +95,15 @@ function getCompany(id, langs, done) {
 	});
 }
 
-function editCompany(lang, id, name, url, done) {
-	var query = util.format('call quests.pCompanyEdit("%s", %s, "%s", "%s")',
-		lang, id || null, name, url);
+function editCompany(lang, id, nameList, url, done) {
+	var nameParam,
+		query;
+
+	nameParam = db.arrToInsertStatement(nameList, function(val) {
+		return util.format('(e_id, \\"%s\\", \\"%s\\")', val.lang, val.name);
+	});
+	query = util.format('call quests.pAdminCompanyPut("%s", %s, "%s", "%s")',
+		lang, id || null, url, nameParam);
 
 	db.execQueryAsAdm(query, function(err, rows, fields) {
 		if (err) {

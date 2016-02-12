@@ -39,7 +39,7 @@ block content
 		div.form-group
 			label(for='listCompany').col-sm-2.control-label=gettext('Компания')
 			div.col-sm-7.company-container
-				+horizontalList(dic.compaines, false)
+				+horizontalList(dic.companies, false)
 
 		hr
 
@@ -181,7 +181,9 @@ block content
 
 
 	//- Quest company editor modal
-	include ../widgets/company-modal.jade
+	div(id='modalCompany', tabIndex='-1', role='dialog').modal.fade
+		div(role='document').modal-dialog
+			div.modal-content
 
 	//- Quest tags modal
 	div(id='modalTag', tabIndex='-1', role='dialog').modal.fade

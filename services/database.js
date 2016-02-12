@@ -61,9 +61,28 @@ function intArrToInsertStatement(arr) {
 	}, '');
 }
 
+function arrToInsertStatement(arr, callback) {
+	if (!arr) {
+		return '';
+	}
+
+	if (!Array.isArray(arr)) {
+		arr = [arr];
+	}
+
+	return arr.reduce(function(res, val, index) {
+		if (index) {
+			res += ',';
+		}
+
+		return res += callback(val);
+	}, '');
+}
+
 module.exports = {
 	getConnection: getConnection,
 	execQuery: execQuery,
 	execQueryAsAdm: execQueryAsAdm,
-	intArrToInsertStatement: intArrToInsertStatement
+	intArrToInsertStatement: intArrToInsertStatement,
+	arrToInsertStatement: arrToInsertStatement
 };

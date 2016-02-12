@@ -9,13 +9,14 @@ mixin horizontalList(list, multiselectFlag)
 			li(data-id=item.id)
 				a(href='#', class=className)=name
 				span.remove-icon x
-	- if (!hasSelected || multiselectFlag || true)
-		.alert.alert-warning
-			.append-entity-block Выберите из списка
-				select(data-live-search='true').form-control.selectpicker
-					each item in list
-						- var name = item.name || 'Нет перевода';
-						option(value=item.id)=name
-			div.separator или
-			.create-entity-block
-				a(href='#').create-item-link создайте новый
+	- var display = (!hasSelected || multiselectFlag) ? 'block' : 'none'
+	.alert.alert-warning(style='display: #{display}')
+		.append-entity-block Выберите из списка
+			select(data-live-search='true').form-control.selectpicker.all-list
+				option
+				each item in list
+					- if (!item.name) continue;
+					option(value=item.id)=item.name
+		div.separator или
+		.create-entity-block
+			a(href='#').create-item-link создайте новый

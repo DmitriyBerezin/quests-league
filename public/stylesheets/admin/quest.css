@@ -96,3 +96,12 @@ body {
 	padding-left: 5px;
 	cursor: pointer;
 }
+
+.lang-container {
+	list-style: none;
+	padding-left: 0;
+}
+
+.lang-container li {
+	margin-bottom: 10px;
+}

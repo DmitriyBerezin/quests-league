@@ -27,7 +27,7 @@ $(function() {
 	toggleFileInput();
 	formQuest();
 	// formCompany();
-	horizontalList($('.company-container'), null, '/admin/company');
+	horizontalList('.company-container', '#modalCompany', tmplCompanyEditor, '/admin/company', false);
 	formTag();
 	formCountry();
 	formCity();
@@ -84,29 +84,112 @@ $(function() {
 		}
 	}
 
-	function horizontalList(container, modal, form, tmplFn, getActionUrl) {
+	function horizontalList(container, modal, tmplFn, getActionUrl, multiSelect) {
 		var $container = $(container),
+			$allList = $container.find('.all-list'),
+			$selectedList = $container.find('.horizontal-list'),
 			$modal = $(modal),
 			$form;
 
-		$container.delegate('li a', 'click', onItemClick);
+		$selectedList.delegate('li a', 'click', onItemClick);
+		$selectedList.delegate('.remove-icon', 'click', onRemoveIconClick);
+		$('.create-item-link').click(onCreateItemClick);
+		$allList.on('changed.bs.select', onAllListChanged);
 
 		function onItemClick(evt) {
 			var id = $(evt.target).closest('li').data('id');
 
 			evt.preventDefault();
-
 			$.getJSON(getActionUrl + '/' + id).then(onGetSuccess, onGetError);
 		}
 
+		function onCreateItemClick(evt) {
+			evt.preventDefault();
+			$.getJSON(getActionUrl).then(onGetSuccess, onGetError);
+		}
+
 		function onGetSuccess(data) {
-			$(document.body).append(tmplFn(data));
-			$modal = $(modal).modal('show');
-			$form = $(form);
+			$modal.find('.modal-content').html(tmplFn(data));
+			$modal.modal('show');
+
+			$form = $modal.find('form');
+			$form.validate();
+			$form.ajaxForm({
+				dataType: 'json',
+				success: onPutSuccess,
+				error: onPutError,
+				beforeSubmit: beforeSubmit
+			});
+		}
+
+		function onPutSuccess(data) {
+			var $itemSlected = $container.find('li[data-id="' + data.id + '"]'),
+				$itemAll = $container.find('option[value="' + data.id + '"]'),
+				html;
+
+			if ($itemSlected.length > 0) {
+				$itemSlected.find('a').html(data.name);
+			}
+			else {
+				appendItem(data.id, data.name);
+				if (!multiSelect) {
+					$container.find('.alert').hide();
+				}
+			}
+
+			if ($itemAll.length > 0) {
+				$itemAll.html(data.name);
+			}
+			else {
+				html = $('<option>').val(data.id).html(data.name);
+				$allList.append(html);
+			}
+			$allList.selectpicker('refresh').change();
+
+			$modal.modal('hide');
 		}
 
 		function onGetError(res) {
 
+		}
+
+		function onPutError(res) {
+
+		}
+
+		function onRemoveIconClick(evt) {
+			$(evt.target).closest('li').remove();
+
+			if (!multiSelect && $selectedList.find('li').length === 0) {
+				$container.find('.alert').show();
+			}
+			$allList.val('').selectpicker('refresh').change();
+		}
+
+		function appendItem(id, name) {
+			var $item = $('<li>'),
+				name = name || 'Нет перевода',
+				className = name ? null : 'not-translated';
+
+			$item.data('id', id)
+				.append($('<a>').attr('href', '#').addClass(className).text(name))
+				.append($('<span>').addClass('remove-icon').text('x'));
+			$selectedList.append($item);
+		}
+
+		function onAllListChanged(evt) {
+			var $option = $allList.find('option:selected'),
+				id = $option.val(),
+				name = $option.text(),
+				$itemSlected = $container.find('li[data-id="' + id + '"]'),
+				html;
+
+			if ($itemSlected.length === 0) {
+				appendItem(id, name);
+				if (!multiSelect) {
+					$container.find('.alert').hide();
+				}
+			}
 		}
 	}
 

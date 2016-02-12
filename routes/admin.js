@@ -73,7 +73,7 @@ router.post('/quest/file', function(req, res, next) {
 	});
 });
 
-router.get('/company/:id', function(req, res, next) {
+router.get('/company/:id?', function(req, res, next) {
 	var id = req.params.id;
 
 	admin.getCompany(id, config.i18n.supported_languages, function(err, data) {
@@ -87,16 +87,19 @@ router.get('/company/:id', function(req, res, next) {
 
 router.post('/company', function(req, res, next) {
 	var id = req.body.id,
-		name = req.body.name,
-		site = req.body.site;
+		site = req.body.site,
+		namesList = [],
+		prop,
+		match;
 
-	if (!name) {
-		var err = new Error('`name` parameter is required');
-		err.status(400);
-		return next(err);
+	for (prop in req.body) {
+		match = /name\[(\w*)\]/gi.exec(prop);
+		if (match && match.length > 1) {
+			namesList.push({ lang: match[1], name: req.body[prop] });
+		}
 	}
 
-	admin.editCompany(req.lang, id, name, site, function(err, data) {
+	admin.editCompany(req.lang, id, namesList, site, function(err, data) {
 		if (err) {
 			return next(err);
 		}
