@@ -74,25 +74,29 @@ function removeQuest(id, done) {
 	});
 }
 
-function getCompany(id, langs, done) {
-	var query = util.format('call quests.pAdminCompanyGet(%s)', id || null),
-		company = {};
+function getEntity(id, dbProcName, langs, done) {
+	var query = util.format('call %s(%s)', dbProcName, id || null),
+		entity = {};
 
 	db.execQueryAsAdm(query, function(err, rows, fields) {
 		if (err) {
 			return done(err);
 		}
 
-		company = rows[0].length > 0 ? rows[0][0] : {};
+		entity = rows[0].length > 0 ? rows[0][0] : {};
 
 		// Map <lang, dbdata>
-		company.langs = {};
+		entity.langs = {};
 		langs.forEach(function(lang, i) {
-			company.langs[lang] = rows[1].find((row) => row.lang === lang) || null;
+			entity.langs[lang] = rows[1].find((row) => row.lang === lang) || null;
 		});
 
-		return done(null, company);
+		return done(null, entity);
 	});
+}
+
+function getCompany(id, langs, done) {
+	getEntity(id, 'quests.pAdminCompanyGet', langs, done);
 }
 
 function editCompany(lang, id, nameList, url, done) {
@@ -126,8 +130,19 @@ function removeCompany(id, done) {
 	});
 }
 
-function createTag(lang, name, done) {
-	var query = util.format('call quests.pTagCreate("%s", "%s")', lang, name);
+function getTag(id, langs, done) {
+	getEntity(id, 'quests.pAdminTagGet', langs, done);
+}
+
+function editTag(lang, id, nameList, done) {
+	var nameParam,
+		query;
+
+	nameParam = db.arrToInsertStatement(nameList, function(val) {
+		return util.format('(e_id, \\"%s\\", \\"%s\\")', val.lang, val.name);
+	});
+	query = util.format('call quests.pAdminTagPut("%s", %s, "%s")',
+		lang, id || null, nameParam);
 
 	db.execQueryAsAdm(query, function(err, rows, fields) {
 		if (err) {
@@ -305,7 +320,8 @@ module.exports = {
 	getCompany: getCompany,
 	editCompany: editCompany,
 	removeCompany: removeCompany,
-	createTag: createTag,
+	getTag: getTag,
+	editTag: editTag,
 	createCountry: createCountry,
 	createCity: createCity,
 	createStation: createStation,

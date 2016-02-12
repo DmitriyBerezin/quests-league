@@ -126,8 +126,32 @@ router.delete('/company', function(req, res, next) {
 	});
 });
 
+router.get('/tag/:id?', function(req, res, next) {
+	var id = req.params.id;
+
+	admin.getTag(id, config.i18n.supported_languages, function(err, data) {
+		if (err) {
+			return next(err);
+		}
+
+		res.status(200).send(data);
+	});
+});
+
 router.post('/tag', function(req, res, next) {
-	admin.createTag(req.lang, req.body.name, function(err, data) {
+	var id = req.body.id,
+		namesList = [],
+		prop,
+		match;
+
+	for (prop in req.body) {
+		match = /name\[(\w*)\]/gi.exec(prop);
+		if (match && match.length > 1) {
+			namesList.push({ lang: match[1], name: req.body[prop] });
+		}
+	}
+
+	admin.editTag(req.lang, id, namesList, function(err, data) {
 		if (err) {
 			return next(err);
 		}

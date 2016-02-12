@@ -28,9 +28,8 @@ $(function() {
 
 	toggleFileInput();
 	formQuest();
-	// formCompany();
 	horizontalList('.company-container', '#modalCompany', tmplCompanyEditor, '/admin/company', false);
-	formTag();
+	horizontalList('.tags-container', '#modalTag', tmplTagEditor, '/admin/tag', true);
 	formCountry();
 	formCity();
 	formStation();
@@ -95,7 +94,7 @@ $(function() {
 
 		$selectedList.delegate('li a', 'click', onItemClick);
 		$selectedList.delegate('.remove-icon', 'click', onRemoveIconClick);
-		$('.create-item-link').click(onCreateItemClick);
+		$container.find('.create-item-link').click(onCreateItemClick);
 		$allList.on('changed.bs.select', onAllListChanged);
 
 		function onItemClick(evt) {
@@ -173,7 +172,7 @@ $(function() {
 				name = name || 'Нет перевода',
 				className = name ? null : 'not-translated';
 
-			$item.data('id', id)
+			$item.attr('data-id', id)
 				.append($('<a>').attr('href', '#').addClass(className).text(name))
 				.append($('<span>').addClass('remove-icon').text('x'));
 			$selectedList.append($item);

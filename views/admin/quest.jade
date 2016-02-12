@@ -58,12 +58,8 @@ block content
 				input(type='text', id='txtPriceTo', name='priceTo', value=price_to, size=2, placeholder=gettext('до')).form-control
 		div.form-group
 			label(for='listTag').col-sm-2.control-label=gettext('Тэги')
-			div.col-sm-7
-				select(id='listTag', name='tagsID', multiple, data-width='auto').form-control.selectpicker
-					each item in dic.tags
-						option(value=item.id, selected= item.selected === 1)= item.name
-				div(role='alert').alert.alert-warning=gettext('Не нашли нужный тэг?')
-					a(href='#', data-toggle='modal', data-target='#modalTag')=gettext('Добавьте тэг')
+			div.col-sm-7.tags-container
+				+horizontalList(dic.tags, true)
 		div.form-group
 			label(for='listLeague').col-sm-2.control-label=gettext('Лига')
 			div.col-sm-7
@@ -189,18 +185,6 @@ block content
 	div(id='modalTag', tabIndex='-1', role='dialog').modal.fade
 		div(role='document').modal-dialog
 			div.modal-content
-				form(method='post', action='/admin/tag').form-horizontal.form-tag
-					div.modal-header
-						button(type='button', data-dismiss='modal' aria-label='Close').close
-							span(aria-hidden='true') &times;
-						h4.modal-title=gettext('Тэги')
-					div.modal-body
-						div.form-group
-							label(for='txtTag').col-sm-4.control-label=gettext('Тэг')
-							div.col-sm-6
-								input(type='text', id='txtTag', name='name', placeholder=gettext('Тэг'), required).form-control
-					div.modal-footer
-						button(type='submit').btn.btn-primary=gettext('Создать')
 
 	//- Country modal
 	div(id='modalCountry', tabIndex='-1', role='dialog').modal.fade
