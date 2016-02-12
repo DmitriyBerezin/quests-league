@@ -1,26 +1,26 @@
-form(method='post', action='/admin/company').form-horizontal.form-company
+form(method='post', action="/#{currLang}/admin/company").form-horizontal.form-company
 	div.modal-header
 		button(type='button', data-dismiss='modal' aria-label='Close').close
 			span(aria-hidden='true') &times;
 	div.modal-body
-		input(type='hidden', name='id', value=id)
+		input(type='hidden', name='id', value=data.id)
 
 		div.form-group
 			label(for='txtCompSite').col-sm-4.control-label Сайт
 			div.col-sm-6
-				input(type='text', id='txtCompSite', name='site', placeholder='Сайт', value=site, required).form-control
+				input(type='text', id='txtCompSite', name='site', placeholder='Сайт', value=data.site, required).form-control
 
 		div.form-group
 			label.col-sm-4.control-label Наименование
 			div.col-sm-6
 				ul.lang-container
-					- for (lang in langs)
-						- var name = langs[lang] ? langs[lang].name : null;
+					- for (lang in data.langs)
+						- var name = data.langs[lang] ? data.langs[lang].name : null;
 						li
 							.input-group
 								input(type='text', name="name[#{lang}]" value=name).form-control
 								span.input-group-addon=lang
 	div.modal-footer
-		button(type='submit').btn.btn-primary.btn-company-create #{id ? 'Изменить' : 'Создать'}
-		if id
+		button(type='submit').btn.btn-primary.btn-company-create #{data.id ? 'Изменить' : 'Создать'}
+		if data.id
 			button(type='button').btn.btn-danger.pull-left.btn-company-remove Удалить

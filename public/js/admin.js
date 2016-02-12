@@ -5,7 +5,9 @@ $(function() {
 		$errorFile = $('.alert-file-upload-err'),
 		$removeQuest = $('.remove-quest'),
 		$id = $('input[name="id"]'),
-		$langPicker = $('.lang-picker');
+		$langPicker = $('.lang-picker'),
+
+		currLang = $langPicker.val();
 
 	$('input[type="file"]').fileupload({
 		done: function(evt, data) {
@@ -109,7 +111,7 @@ $(function() {
 		}
 
 		function onGetSuccess(data) {
-			$modal.find('.modal-content').html(tmplFn(data));
+			$modal.find('.modal-content').html(tmplFn({ data: data, currLang: currLang }));
 			$modal.modal('show');
 
 			$form = $modal.find('form');
@@ -409,6 +411,8 @@ $(function() {
 		else {
 			path = '/' + lang + path;
 		}
+
+		currLang = lang;
 
 		location.replace(location.origin + path);
 	}
