@@ -30,7 +30,7 @@ $(function() {
 	formQuest();
 	horizontalList('.company-container', '#modalCompany', tmplCompanyEditor, '/admin/company', false);
 	horizontalList('.tags-container', '#modalTag', tmplTagEditor, '/admin/tag', true);
-	formCountry();
+	horizontalList('.country-container', '#modalCountry', tmplCountryEditor, '/admin/country', false);
 	formCity();
 	formStation();
 

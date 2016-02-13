@@ -1,3 +1,18 @@
+insert INTO tleague_tr(league_id, lang, name)
+values
+    (1, 'en', 'Platinum'), 
+    (2, 'en', 'Gold'),
+    (3, 'en', 'Silver'),
+    (4, 'en', 'Bronze');
+    
+insert INTO tcomplexity_tr(complexity_id, lang, name)
+values
+    (1, 'en', 'Easy'), 
+    (2, 'en', 'Normal'),
+    (3, 'en', 'Difficult'),
+    (4, 'en', 'Master');
+
+
 CREATE PROCEDURE `pAdminTagPut`(
     lang varchar(10),
     tag_id int,

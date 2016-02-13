@@ -80,12 +80,8 @@ block content
 		h4.chapter-header=gettext('Адресная информация')
 		div.form-group
 			label(for='listCountry').col-sm-2.control-label=gettext('Страна')
-			div.col-sm-7
-				select(id='listCountry', name='countryID', required, data-width='auto').form-control.selectpicker
-					each item in dic.countries
-						option(value=item.id, selected= item.id === country_id)= item.name
-				div(role='alert').alert.alert-warning=gettext('Не нашли нужную страну?')
-					a(href='#', data-toggle='modal', data-target='#modalCountry')=gettext('Добавьте страну')
+			div.col-sm-7.country-container
+				+horizontalList(dic.countries, false)
 		div.form-group
 			label(for='listCity').col-sm-2.control-label=gettext('Город')
 			div.col-sm-7
@@ -190,18 +186,6 @@ block content
 	div(id='modalCountry', tabIndex='-1', role='dialog').modal.fade
 		div(role='document').modal-dialog
 			div.modal-content
-				form(method='post', action='/admin/country').form-horizontal.form-country
-					div.modal-header
-						button(type='button', data-dismiss='modal' aria-label='Close').close
-							span(aria-hidden='true') &times;
-						h4.modal-title=gettext('Страна')
-					div.modal-body
-						div.form-group
-							label(for='txtCountry').col-sm-4.control-label=gettext('Страна')
-							div.col-sm-6
-								input(type='text', id='txtCountry', name='name', placeholder=gettext('Страна'), required).form-control
-					div.modal-footer
-						button(type='submit').btn.btn-primary=gettext('Создать')
 
 	//- City modal
 	div(id='modalCity', tabIndex='-1', role='dialog').modal.fade

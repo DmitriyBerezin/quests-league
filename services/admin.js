@@ -153,8 +153,19 @@ function editTag(lang, id, nameList, done) {
 	});
 }
 
-function createCountry(lang, name, done) {
-	var query = util.format('call quests.pCountryCreate("%s", "%s")', lang, name);
+function getCountry(id, langs, done) {
+	getEntity(id, 'quests.pAdminCountryGet', langs, done);
+}
+
+function editCountry(lang, id, nameList, done) {
+	var nameParam,
+		query;
+
+	nameParam = db.arrToInsertStatement(nameList, function(val) {
+		return util.format('(e_id, \\"%s\\", \\"%s\\")', val.lang, val.name);
+	});
+	query = util.format('call quests.pAdminCountryPut("%s", %s, "%s")',
+		lang, id || null, nameParam);
 
 	db.execQueryAsAdm(query, function(err, rows, fields) {
 		if (err) {
@@ -322,7 +333,8 @@ module.exports = {
 	removeCompany: removeCompany,
 	getTag: getTag,
 	editTag: editTag,
-	createCountry: createCountry,
+	getCountry: getCountry,
+	editCountry: editCountry,
 	createCity: createCity,
 	createStation: createStation,
 	getCities: getCities,
