@@ -1,4 +1,142 @@
 $(function() {
+	// UI Components
+	var EntitiesListEditor = (function() {
+		function EntitiesListEditor(container, modal, tmplFn, getActionUrl, multiSelect) {
+			// dom elements
+			this.$container = $(container);
+			this.$allList = this.$container.find('.all-list');
+			this.$selectedList = this.$container.find('.horizontal-list');
+			this.$modal = $(modal);
+			this.$form;
+
+			// options
+			this.tmplFn = tmplFn;
+			this.getActionUrl = getActionUrl;
+			this.multiSelect = multiSelect;
+		}
+
+		EntitiesListEditor.prototype = {
+			init: function() {
+				this.$selectedList.delegate('li a', 'click', onItemClick.bind(this));
+				this.$selectedList.delegate('.remove-icon', 'click', onRemoveIconClick.bind(this));
+				this.$container.find('.create-item-link').click(onCreateItemClick.bind(this));
+				this.$allList.on('changed.bs.select', onAllListChanged.bind(this));
+			}
+		};
+
+		function onItemClick(evt) {
+			var id = $(evt.target).closest('li').data('id');
+
+			evt.preventDefault();
+
+			getData.call(this, id);
+		}
+
+		function onCreateItemClick(evt) {
+			evt.preventDefault();
+
+			getData.call(this);
+		}
+
+		function getData(id) {
+			var url = this.getActionUrl;
+
+			if (id) {
+				url += '/' + id;
+			}
+
+			$.getJSON(url).then(onGetSuccess.bind(this), onGetError.bind(this));		
+		}
+
+		function onGetSuccess(data) {
+			this.$modal.find('.modal-content').html(this.tmplFn({ data: data, currLang: currLang }));
+			this.$modal.modal('show');
+
+			this.$form = this.$modal.find('form');
+			this.$form.validate();
+			this.$form.ajaxForm({
+				dataType: 'json',
+				success: onPutSuccess.bind(this),
+				error: onPutError.bind(this),
+				beforeSubmit: beforeSubmit
+			});
+		}
+
+		function onPutSuccess(data) {
+			var $itemSlected = this.$container.find('li[data-id="' + data.id + '"]'),
+				$itemAll = this.$container.find('option[value="' + data.id + '"]'),
+				html;
+
+			if ($itemSlected.length > 0) {
+				$itemSlected.find('a').html(data.name);
+			}
+			else {
+				appendItem(data.id, data.name, this.$selectedList);
+				if (!this.multiSelect) {
+					this.$container.find('.alert').hide();
+				}
+			}
+
+			if ($itemAll.length > 0) {
+				$itemAll.html(data.name);
+			}
+			else {
+				html = $('<option>').val(data.id).html(data.name);
+				this.$allList.append(html);
+			}
+			this.$allList.selectpicker('refresh').change();
+
+			this.$modal.modal('hide');
+		}
+
+		function onGetError(res) {
+
+		}
+
+		function onPutError(res) {
+
+		}
+
+		function onRemoveIconClick(evt) {
+			$(evt.target).closest('li').remove();
+
+			if (!this.multiSelect && this.$selectedList.find('li').length === 0) {
+				this.$container.find('.alert').show();
+			}
+			this.$allList.val('').selectpicker('refresh').change();
+		}
+
+		function appendItem(id, name, $selectedList) {
+			var $item = $('<li>'),
+				name = name || 'Нет перевода',
+				className = name ? null : 'not-translated';
+
+			$item.attr('data-id', id)
+				.append($('<a>').attr('href', '#').addClass(className).text(name))
+				.append($('<span>').addClass('remove-icon').text('x'));
+			$selectedList.append($item);
+		}
+
+		function onAllListChanged(evt) {
+			var $option = this.$allList.find('option:selected'),
+				id = $option.val(),
+				name = $option.text(),
+				$itemSlected = this.$container.find('li[data-id="' + id + '"]'),
+				html;
+
+			if ($itemSlected.length === 0) {
+				appendItem(id, name, this.$selectedList);
+				if (!this.multiSelect) {
+					this.$container.find('.alert').hide();
+				}
+			}
+		}
+
+		return EntitiesListEditor;
+	}())
+
+
+	// module code after components block
 	var $fileInput = $('.fileinput-button'),
 		$warnFiles = $('.alert-files'),
 		$imgsContainer = $('.imgs-container'),
@@ -28,9 +166,9 @@ $(function() {
 
 	toggleFileInput();
 	formQuest();
-	horizontalList('.company-container', '#modalCompany', tmplCompanyEditor, '/admin/company', false);
-	horizontalList('.tags-container', '#modalTag', tmplTagEditor, '/admin/tag', true);
-	horizontalList('.country-container', '#modalCountry', tmplCountryEditor, '/admin/country', false);
+	new EntitiesListEditor('.company-container', '#modalCompany', tmplCompanyEditor, '/admin/company', false).init();
+	new EntitiesListEditor('.tags-container', '#modalTag', tmplTagEditor, '/admin/tag', true).init();
+	new EntitiesListEditor('.country-container', '#modalCountry', tmplCountryEditor, '/admin/country', false).init();
 	formCity();
 	formStation();
 
@@ -82,115 +220,6 @@ $(function() {
 			var error = res.responseJSON.message;
 			$formQuest.append(tmplAlert({ msg: error, className: 'alert-danger' }));
 			$formQuest.find('button[type="submit"]').attr('disabled', false);
-		}
-	}
-
-	function horizontalList(container, modal, tmplFn, getActionUrl, multiSelect) {
-		var $container = $(container),
-			$allList = $container.find('.all-list'),
-			$selectedList = $container.find('.horizontal-list'),
-			$modal = $(modal),
-			$form;
-
-		$selectedList.delegate('li a', 'click', onItemClick);
-		$selectedList.delegate('.remove-icon', 'click', onRemoveIconClick);
-		$container.find('.create-item-link').click(onCreateItemClick);
-		$allList.on('changed.bs.select', onAllListChanged);
-
-		function onItemClick(evt) {
-			var id = $(evt.target).closest('li').data('id');
-
-			evt.preventDefault();
-			$.getJSON(getActionUrl + '/' + id).then(onGetSuccess, onGetError);
-		}
-
-		function onCreateItemClick(evt) {
-			evt.preventDefault();
-			$.getJSON(getActionUrl).then(onGetSuccess, onGetError);
-		}
-
-		function onGetSuccess(data) {
-			$modal.find('.modal-content').html(tmplFn({ data: data, currLang: currLang }));
-			$modal.modal('show');
-
-			$form = $modal.find('form');
-			$form.validate();
-			$form.ajaxForm({
-				dataType: 'json',
-				success: onPutSuccess,
-				error: onPutError,
-				beforeSubmit: beforeSubmit
-			});
-		}
-
-		function onPutSuccess(data) {
-			var $itemSlected = $container.find('li[data-id="' + data.id + '"]'),
-				$itemAll = $container.find('option[value="' + data.id + '"]'),
-				html;
-
-			if ($itemSlected.length > 0) {
-				$itemSlected.find('a').html(data.name);
-			}
-			else {
-				appendItem(data.id, data.name);
-				if (!multiSelect) {
-					$container.find('.alert').hide();
-				}
-			}
-
-			if ($itemAll.length > 0) {
-				$itemAll.html(data.name);
-			}
-			else {
-				html = $('<option>').val(data.id).html(data.name);
-				$allList.append(html);
-			}
-			$allList.selectpicker('refresh').change();
-
-			$modal.modal('hide');
-		}
-
-		function onGetError(res) {
-
-		}
-
-		function onPutError(res) {
-
-		}
-
-		function onRemoveIconClick(evt) {
-			$(evt.target).closest('li').remove();
-
-			if (!multiSelect && $selectedList.find('li').length === 0) {
-				$container.find('.alert').show();
-			}
-			$allList.val('').selectpicker('refresh').change();
-		}
-
-		function appendItem(id, name) {
-			var $item = $('<li>'),
-				name = name || 'Нет перевода',
-				className = name ? null : 'not-translated';
-
-			$item.attr('data-id', id)
-				.append($('<a>').attr('href', '#').addClass(className).text(name))
-				.append($('<span>').addClass('remove-icon').text('x'));
-			$selectedList.append($item);
-		}
-
-		function onAllListChanged(evt) {
-			var $option = $allList.find('option:selected'),
-				id = $option.val(),
-				name = $option.text(),
-				$itemSlected = $container.find('li[data-id="' + id + '"]'),
-				html;
-
-			if ($itemSlected.length === 0) {
-				appendItem(id, name);
-				if (!multiSelect) {
-					$container.find('.alert').hide();
-				}
-			}
 		}
 	}
 
