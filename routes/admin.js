@@ -88,16 +88,7 @@ router.get('/company/:id?', function(req, res, next) {
 router.post('/company', function(req, res, next) {
 	var id = req.body.id,
 		site = req.body.site,
-		namesList = [],
-		prop,
-		match;
-
-	for (prop in req.body) {
-		match = /name\[(\w*)\]/gi.exec(prop);
-		if (match && match.length > 1) {
-			namesList.push({ lang: match[1], name: req.body[prop] });
-		}
-	}
+		namesList = buildNamesList(req.body);
 
 	admin.editCompany(req.lang, id, namesList, site, function(err, data) {
 		if (err) {
@@ -140,16 +131,7 @@ router.get('/tag/:id?', function(req, res, next) {
 
 router.post('/tag', function(req, res, next) {
 	var id = req.body.id,
-		namesList = [],
-		prop,
-		match;
-
-	for (prop in req.body) {
-		match = /name\[(\w*)\]/gi.exec(prop);
-		if (match && match.length > 1) {
-			namesList.push({ lang: match[1], name: req.body[prop] });
-		}
-	}
+		namesList = buildNamesList(req.body);
 
 	admin.editTag(req.lang, id, namesList, function(err, data) {
 		if (err) {
@@ -174,16 +156,7 @@ router.get('/country/:id?', function(req, res, next) {
 
 router.post('/country', function(req, res, next) {
 	var id = req.body.id,
-		namesList = [],
-		prop,
-		match;
-
-	for (prop in req.body) {
-		match = /name\[(\w*)\]/gi.exec(prop);
-		if (match && match.length > 1) {
-			namesList.push({ lang: match[1], name: req.body[prop] });
-		}
-	}
+		namesList = buildNamesList(req.body);
 
 	admin.editCountry(req.lang, id, namesList, function(err, data) {
 		if (err) {
@@ -293,5 +266,18 @@ router.get('/comment/list', function(req, res, next) {
 		res.render('admin/comment-list', { comments: comments });
 	});
 });
+
+function buildNamesList(params) {
+	var list = [];
+
+	for (prop in params) {
+		match = /name\[(\w*)\]/gi.exec(prop);
+		if (match && match.length > 1) {
+			list.push({ lang: match[1], name: params[prop] });
+		}
+	}
+
+	return list;
+}
 
 module.exports = router;
