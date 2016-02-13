@@ -81,7 +81,7 @@ router.get('/company/:id?', function(req, res, next) {
 			return next(err);
 		}
 
-		res.status(200).send(data);
+		res.status(200).send({ data: data });
 	});
 });
 
@@ -138,7 +138,7 @@ router.post('/tag', function(req, res, next) {
 			return next(err);
 		}
 
-		res.status(200).send(data);
+		res.status(200).send({ data: data });
 	});
 });
 
@@ -150,7 +150,7 @@ router.get('/country/:id?', function(req, res, next) {
 			return next(err);
 		}
 
-		res.status(200).send(data);
+		res.status(200).send({ data: data });
 	});
 });
 
@@ -167,8 +167,33 @@ router.post('/country', function(req, res, next) {
 	});
 });
 
+router.get('/city/:id?', function(req, res, next) {
+	var id = req.params.id;
+
+	admin.getCity(id, config.i18n.supported_languages, req.lang, function(err, data, allCountries) {
+		if (err) {
+			return next(err);
+		}
+
+		res.status(200).send({ data: data, allCountries: allCountries });
+	});
+});
+
 router.post('/city', function(req, res, next) {
-	admin.createCity(req.lang, req.body.name, req.body.countryID, function(err, data) {
+	var id = req.body.id,
+		countryID = req.body.countryID,
+		timeZone = req.body.timeZone,
+		lat = req.body.lat,
+		lng = req.body.lng,
+		namesList = buildNamesList(req.body);
+
+	if (!countryID) {
+		var err = new Error('Invalid arguments: countryID missing');
+		err.status = 400;
+		return next(err);
+	}
+
+	admin.editCity(req.lang, id, namesList, countryID, timeZone, lat, lng, function(err, data) {
 		if (err) {
 			return next(err);
 		}

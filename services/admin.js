@@ -75,7 +75,14 @@ function removeQuest(id, done) {
 }
 
 function getEntity(id, dbProcName, langs, done) {
-	var query = util.format('call %s(%s)', dbProcName, id || null),
+	getLangEntity(id, dbProcName, langs, null, done);
+}
+
+function getLangEntity(id, dbProcName, langs, currLang, done) {
+	console.log('getLangEntity', currLang);
+	var query = currLang ?
+					util.format('call %s("%s", %s)', dbProcName, currLang, id || null) :
+					util.format('call %s(%s)', dbProcName, id || null),
 		entity = {};
 
 	db.execQueryAsAdm(query, function(err, rows, fields) {
@@ -91,7 +98,7 @@ function getEntity(id, dbProcName, langs, done) {
 			entity.langs[lang] = rows[1].find((row) => row.lang === lang) || null;
 		});
 
-		return done(null, entity);
+		return done(null, entity, rows);
 	});
 }
 
@@ -176,9 +183,27 @@ function editCountry(lang, id, nameList, done) {
 	});
 }
 
-function createCity(lang, name, countryID, done) {
-	var query = util.format('call quests.pCityCreate("%s", "%s", %d)',
-			lang, name, countryID);
+function getCity(id, langs, currLang, done) {
+	getLangEntity(id, 'quests.pAdminCityGet', langs, currLang, function(err, city, rows) {
+		if (err) {
+			return done(err);
+		}
+
+		var allCountries = rows[2];
+
+		return done(null, city, allCountries);
+	});
+}
+
+function editCity(lang, id, nameList, countryID, timeZone, lat, lng, done) {
+	var nameParam,
+		query;
+
+	nameParam = db.arrToInsertStatement(nameList, function(val) {
+		return util.format('(e_id, \\"%s\\", \\"%s\\")', val.lang, val.name);
+	});
+	query = util.format('call quests.pAdminCityPut("%s", %s, %s, %s, %s, %s, "%s")',
+		lang, id || null, countryID || null, timeZone || null, lat || null, lng || null, nameParam);
 
 	db.execQueryAsAdm(query, function(err, rows, fields) {
 		if (err) {
@@ -335,7 +360,8 @@ module.exports = {
 	editTag: editTag,
 	getCountry: getCountry,
 	editCountry: editCountry,
-	createCity: createCity,
+	getCity: getCity,
+	editCity: editCity,
 	createStation: createStation,
 	getCities: getCities,
 	getStations: getStations,
