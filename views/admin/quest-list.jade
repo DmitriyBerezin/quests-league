@@ -1,17 +1,5 @@
-extends ../layout
+extends ./layout
 include ../widgets/select-lang-widget.jade
-
-block style
-	link(rel='stylesheet', href='/stylesheets/style.css')
-	link(rel='stylesheet', href='/stylesheets/admin/quest.css')
-
-
-block script
-	script(src='/lib/jQuery-File-Upload/js/jquery.ui.widget.js')
-	script(src='/lib/jQuery-File-Upload/js/jquery.fileupload.js')
-	script(src='/lib/jquery.form.min.js')
-	script(src='/js/admin.js')
-
 
 block content
 	h1.page-header=gettext('Список квестов')

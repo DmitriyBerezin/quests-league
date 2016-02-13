@@ -105,3 +105,11 @@ body {
 .lang-container li {
 	margin-bottom: 10px;
 }
+
+.center {
+	text-align: center;
+}
+
+.button-group {
+	text-align: center;
+}

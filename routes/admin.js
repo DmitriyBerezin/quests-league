@@ -125,7 +125,7 @@ router.get('/tag/:id?', function(req, res, next) {
 			return next(err);
 		}
 
-		res.status(200).send(data);
+		res.status(200).send({ data: data });
 	});
 });
 
@@ -138,7 +138,7 @@ router.post('/tag', function(req, res, next) {
 			return next(err);
 		}
 
-		res.status(200).send({ data: data });
+		res.status(200).send(data);
 	});
 });
 

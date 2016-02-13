@@ -1,0 +1,19 @@
+form(method='post', action="/#{currLang}/admin/tag").form-horizontal.form-company
+	div.modal-header
+		button(type='button', data-dismiss='modal' aria-label='Close').close
+			span(aria-hidden='true') &times;
+	div.modal-body
+		input(type='hidden', name='id', value=data.id)
+
+		div.form-group
+			label.col-sm-4.control-label Наименование
+			div.col-sm-6
+				ul.lang-container
+					- for (lang in data.langs)
+						- var name = data.langs[lang] ? data.langs[lang].name : null;
+						li
+							.input-group
+								input(type='text', name="name[#{lang}]" value=name).form-control
+								span.input-group-addon=lang
+	div.modal-footer
+		button(type='submit').btn.btn-primary.btn-company-create #{data.id ? 'Изменить' : 'Создать'}
