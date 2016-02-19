@@ -271,3 +271,85 @@ END$$
 
 DELIMITER ;
 
+CREATE VIEW `vstation` AS
+    SELECT 
+        `t`.`id` AS `id`,
+        `t`.`city_id` AS `city_id`,
+        `tr`.`lang` AS `lang`,
+        `tr`.`name` AS `name`
+    FROM
+        (`tstation` `t`
+        JOIN `tstation_tr` `tr` ON ((`t`.`id` = `tr`.`station_id`)));
+
+
+CREATE VIEW `vcity` AS
+    SELECT 
+        `t`.`id` AS `id`,
+        `t`.`country_id` AS `country_id`,
+        `tr`.`lang` AS `lang`,
+        `tr`.`name` AS `name`
+    FROM
+        (`tcity` `t`
+        JOIN `tcity_tr` `tr` ON ((`t`.`id` = `tr`.`city_id`)));
+
+
+USE `quests`;
+DROP procedure IF EXISTS `pCountryCities`;
+
+DELIMITER $$
+USE `quests`$$
+CREATE PROCEDURE `pCountryCities`(
+    lang varchar(10),
+    country_id int
+)
+BEGIN
+    select tc.id, max(tc.name) as name
+    from
+    (
+        select v.id, null as name
+        from vcity v
+        where v.country_id = country_id and v.lang != lang
+        union
+        select v.id, v.name
+        from vcity v
+        where v.country_id = country_id and v.lang = lang
+        order by id
+    ) tc
+    group by tc.id;
+END$$
+
+DELIMITER ;
+
+
+
+USE `quests`;
+DROP procedure IF EXISTS `pCityStations`;
+
+DELIMITER $$
+USE `quests`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pCityStations`(
+    lang varchar(10),
+    city_id int
+)
+BEGIN
+    select tc.id, max(tc.name) as name
+    from
+    (
+        select v.id, null as name
+        from vstation v
+        where v.city_id = city_id and v.lang != lang
+        union
+        select v.id, v.name
+        from vstation v
+        where v.city_id = city_id and v.lang = lang
+        order by id
+    ) tc
+    group by tc.id;
+END$$
+
+DELIMITER ;
+
+
+
+
+
