@@ -194,3 +194,80 @@ BEGIN
     from ttag_tr tr
     where tr.tag_id = tag_id;
 END
+
+
+DELIMITER $$
+USE `quests`$$
+CREATE PROCEDURE `pAdminStationGet`(
+    lang varchar(10),
+    station_id int
+)
+BEGIN
+    select * 
+    from tstation s
+    where s.id = station_id;
+    
+    select tr.lang, tr.name 
+    from tstation_tr tr
+    where tr.station_id = station_id;
+    
+    -- cities dictionary
+    select v.id, v.name
+    from vcity v
+    where v.lang = lang;
+END$$
+
+DELIMITER ;
+
+
+USE `quests`;
+DROP procedure IF EXISTS `pAdminStationPut`;
+
+DELIMITER $$
+USE `quests`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pAdminStationPut`(
+    lang varchar(10),
+    station_id int,
+    city_id int,
+    name_lang_list varchar(1000)
+)
+BEGIN
+    declare id int;
+    
+    if station_id is null then
+        begin
+            insert into tstation(city_id)
+                value(city_id);
+            
+            set id = LAST_INSERT_ID();
+        end;
+    else
+        begin
+            update tstation t
+                set t.city_id = city_id
+            where t.id = station_id;
+            
+            set id = station_id;
+        end;
+    end if;
+    
+    -- clear all entity rows from traslate table
+    delete tr
+    from tstation_tr tr
+    where tr.station_id = id;
+    
+    if char_length(name_lang_list) > 0 then
+        begin
+            set @q = concat('insert into tstation_tr(station_id, lang, name) values', replace(name_lang_list, 'e_id', id));
+            prepare stm from @q;
+            execute stm;
+        end;
+    end if;
+    
+    select t.id, tr.name
+    from tstation t inner join tstation_tr tr on t.id = tr.station_id
+    where t.id = id and tr.lang = lang;
+END$$
+
+DELIMITER ;
+

@@ -202,17 +202,30 @@ router.post('/city', function(req, res, next) {
 	});
 });
 
-router.post('/station', function(req, res, next) {
-	var name = req.body.name,
-		cityID = req.body.cityID;
+router.get('/station/:id?', function(req, res, next) {
+	var id = req.params.id;
 
-	if (!name || !cityID) {
-		var err = new Error('Invalid arguments');
+	admin.getStation(id, config.i18n.supported_languages, req.lang, function(err, data, allCities) {
+		if (err) {
+			return next(err);
+		}
+
+		res.status(200).send({ data: data, allCities: allCities });
+	});
+});
+
+router.post('/station', function(req, res, next) {
+	var id = req.body.id,
+		cityID = req.body.cityID,
+		namesList = buildNamesList(req.body);
+
+	if (!cityID) {
+		var err = new Error('Invalid arguments: cityID missing');
 		err.status = 400;
 		return next(err);
 	}
 
-	admin.createStation(req.lang, name, cityID, function(err, data) {
+	admin.editStation(req.lang, id, namesList, cityID, function(err, data) {
 		if (err) {
 			return next(err);
 		}

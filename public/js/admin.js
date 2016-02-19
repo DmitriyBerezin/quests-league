@@ -45,11 +45,12 @@ $(function() {
 				url = '/' + currLang + url + '/' + id;
 			}
 
-			$.getJSON(url).then(onGetSuccess.bind(this), onGetError.bind(this));		
+			$.getJSON(url).then(onGetSuccess.bind(this), onGetError.bind(this));
 		}
 
 		function onGetSuccess(data) {
-			this.$modal.find('.modal-content').html(this.tmplFn({ data: data.data, currLang: currLang, allCountries: data.allCountries }));
+			data.currLang = currLang;
+			this.$modal.find('.modal-content').html(this.tmplFn(data));
 			this.$modal.modal('show');
 
 			this.$modal.find('.selectpicker').selectpicker('refresh').change();;
@@ -172,7 +173,7 @@ $(function() {
 	new EntitiesListEditor('.tags-container', '#modalTag', tmplTagEditor, '/admin/tag', true).init();
 	new EntitiesListEditor('.country-container', '#modalCountry', tmplCountryEditor, '/admin/country', false).init();
 	new EntitiesListEditor('.city-container', '#modalCity', tmplCityEditor, '/admin/city', false).init();
-	formStation();
+	new EntitiesListEditor('.stations-container', '#modalStation', tmplStationEditor, '/admin/station', true).init();
 
 
 	function toggleFileInput() {

@@ -75,12 +75,8 @@ block content
 				+horizontalList(dic.cities, false)
 		div.form-group
 			label(for='listStation').col-sm-2.control-label=gettext('Метро')
-			div.col-sm-7
-				select(id='listStation', name='stationsID', multiple, data-width='auto', data-live-search='true').form-control.selectpicker
-					each item in dic.stations
-						option(value=item.id, selected= item.selected === 1)= item.name
-				div(role='alert').alert.alert-warning=gettext('Не нашли нужную станцию метро?')
-					a(href='#', data-toggle='modal', data-target='#modalStation')=gettext('Добавьте станцию')
+			div.col-sm-7.stations-container
+				+horizontalList(dic.stations, true)
 		div.form-group
 			label(for='txtAddress').col-sm-2.control-label=gettext('Адрес')
 			div.col-sm-7
@@ -179,16 +175,3 @@ block content
 	div(id='modalStation', tabIndex='-1', role='dialog').modal.fade
 		div(role='document').modal-dialog
 			div.modal-content
-				form(method='post', action='/admin/station').form-horizontal.form-station
-					div.modal-header
-						button(type='button', data-dismiss='modal' aria-label='Close').close
-							span(aria-hidden='true') &times;
-						h4.modal-title=gettext('Станция')
-					div.modal-body
-						div.form-group
-							label(for='txtStation').col-sm-4.control-label=gettext('Станция')
-							div.col-sm-6
-								input(type='text', id='txtStation', name='name', placeholder=gettext('Станция'), required).form-control
-								input(type='hidden', name='cityID', value=city_id).form-control
-					div.modal-footer
-						button(type='submit').btn.btn-primary=gettext('Создать')

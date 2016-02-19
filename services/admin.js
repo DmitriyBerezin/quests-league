@@ -214,9 +214,27 @@ function editCity(lang, id, nameList, countryID, timeZone, lat, lng, done) {
 	});
 }
 
-function createStation(lang, name, cityID, done) {
-	var query = util.format('call quests.pStationCreate("%s", "%s", %d)',
-		lang, name, cityID);
+function getStation(id, langs, currLang, done) {
+	getLangEntity(id, 'quests.pAdminStationGet', langs, currLang, function(err, station, rows) {
+		if (err) {
+			return done(err);
+		}
+
+		var allCities = rows[2];
+
+		return done(null, station, allCities);
+	});
+}
+
+function editStation(lang, id, nameList, cityID, done) {
+	var nameParam,
+		query;
+
+	nameParam = db.arrToInsertStatement(nameList, function(val) {
+		return util.format('(e_id, \\"%s\\", \\"%s\\")', val.lang, val.name);
+	});
+	query = util.format('call quests.pAdminStationPut("%s", %s, %s, "%s")',
+		lang, id || null, cityID || null, nameParam);
 
 	db.execQueryAsAdm(query, function(err, rows, fields) {
 		if (err) {
@@ -362,7 +380,8 @@ module.exports = {
 	editCountry: editCountry,
 	getCity: getCity,
 	editCity: editCity,
-	createStation: createStation,
+	getStation: getStation,
+	editStation: editStation,
 	getCities: getCities,
 	getStations: getStations,
 	importStations: importStations,
