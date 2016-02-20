@@ -26,7 +26,7 @@ block content
 		div.form-group
 			label(for='listCompany').col-sm-2.control-label=gettext('Компания')
 			div.col-sm-7.company-container
-				+horizontalList(dic.companies, false)
+				+horizontalList(dic.companies, false, 'companyID')
 
 		hr
 
@@ -46,7 +46,7 @@ block content
 		div.form-group
 			label(for='listTag').col-sm-2.control-label=gettext('Тэги')
 			div.col-sm-7.tags-container
-				+horizontalList(dic.tags, true)
+				+horizontalList(dic.tags, true, 'tagsID')
 		div.form-group
 			label(for='listLeague').col-sm-2.control-label=gettext('Лига')
 			div.col-sm-7
@@ -68,15 +68,15 @@ block content
 		div.form-group
 			label(for='listCountry').col-sm-2.control-label=gettext('Страна')
 			div.col-sm-7.country-container
-				+horizontalList(dic.countries, false)
+				+horizontalList(dic.countries, false, 'countryID')
 		div.form-group
 			label(for='listCity').col-sm-2.control-label=gettext('Город')
 			div.col-sm-7.city-container
-				+horizontalList(dic.cities, false)
+				+horizontalList(dic.cities, false, 'cityID')
 		div.form-group
 			label(for='listStation').col-sm-2.control-label=gettext('Метро')
 			div.col-sm-7.stations-container
-				+horizontalList(dic.stations, true)
+				+horizontalList(dic.stations, true, 'stationsID')
 		div.form-group
 			label(for='txtAddress').col-sm-2.control-label=gettext('Адрес')
 			div.col-sm-7

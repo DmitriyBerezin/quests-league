@@ -1,7 +1,7 @@
 $(function() {
 	// UI Components
 	var EntitiesListEditor = (function() {
-		function EntitiesListEditor(container, modal, tmplFn, getActionUrl, multiSelect, onItemSelected) {
+		function EntitiesListEditor(container, modal, tmplFn, getActionUrl, multiSelect, hidElemName, onItemSelected) {
 			// dom elements
 			this.$container = $(container);
 			this.$allList = this.$container.find('.all-list');
@@ -10,6 +10,7 @@ $(function() {
 			this.$form;
 
 			// options
+			this.hidElemName = hidElemName;
 			this.tmplFn = tmplFn;
 			this.getActionUrl = getActionUrl;
 			this.multiSelect = multiSelect;
@@ -75,7 +76,7 @@ $(function() {
 				$itemSlected.find('a').html(data.name);
 			}
 			else {
-				appendItem(data.id, data.name, this.$selectedList);
+				appendItem(data.id, data.name, this.$selectedList, this.hidElemName);
 				if (!this.multiSelect) {
 					this.$container.find('.alert').hide();
 				}
@@ -110,14 +111,15 @@ $(function() {
 			this.$allList.val('').selectpicker('refresh').change();
 		}
 
-		function appendItem(id, name, $selectedList) {
+		function appendItem(id, name, $selectedList, hidElemName) {
 			var $item = $('<li>'),
 				name = name || 'Нет перевода',
 				className = name ? null : 'not-translated';
 
 			$item.attr('data-id', id)
 				.append($('<a>').attr('href', '#').addClass(className).text(name))
-				.append($('<span>').addClass('remove-icon').text('x'));
+				.append($('<span>').addClass('remove-icon').text('x'))
+				.append($('<input type="hidden">').attr('name', hidElemName).val(id));
 			$selectedList.append($item);
 		}
 
@@ -129,7 +131,7 @@ $(function() {
 				html;
 
 			if ($itemSlected.length === 0) {
-				appendItem(id, name, this.$selectedList);
+				appendItem(id, name, this.$selectedList, this.hidElemName);
 				if (!this.multiSelect) {
 					this.$container.find('.alert').hide();
 				}
@@ -174,11 +176,11 @@ $(function() {
 
 	toggleFileInput();
 	formQuest();
-	new EntitiesListEditor('.company-container', '#modalCompany', tmplCompanyEditor, '/admin/company', false).init();
-	new EntitiesListEditor('.tags-container', '#modalTag', tmplTagEditor, '/admin/tag', true).init();
-	new EntitiesListEditor('.country-container', '#modalCountry', tmplCountryEditor, '/admin/country', false, onCountryChanged).init();
-	new EntitiesListEditor('.city-container', '#modalCity', tmplCityEditor, '/admin/city', false, onCityChanged).init();
-	new EntitiesListEditor('.stations-container', '#modalStation', tmplStationEditor, '/admin/station', true).init();
+	new EntitiesListEditor('.company-container', '#modalCompany', tmplCompanyEditor, '/admin/company', false, 'companyID').init();
+	new EntitiesListEditor('.tags-container', '#modalTag', tmplTagEditor, '/admin/tag', true, 'tagsID').init();
+	new EntitiesListEditor('.country-container', '#modalCountry', tmplCountryEditor, '/admin/country', false, 'countryID', onCountryChanged).init();
+	new EntitiesListEditor('.city-container', '#modalCity', tmplCityEditor, '/admin/city', false, 'cityID', onCityChanged).init();
+	new EntitiesListEditor('.stations-container', '#modalStation', tmplStationEditor, '/admin/station', true, 'stationsID').init();
 
 
 	function toggleFileInput() {

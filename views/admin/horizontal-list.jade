@@ -1,4 +1,4 @@
-mixin horizontalList(list, multiselectFlag)
+mixin horizontalList(list, multiselectFlag, hidElemName)
 	- var hasSelected = false;
 	ul.horizontal-list
 		each item in list
@@ -9,6 +9,7 @@ mixin horizontalList(list, multiselectFlag)
 			li(data-id=item.id)
 				a(href='#', class=className)=name
 				span.remove-icon x
+				input(type='hidden', name=hidElemName, value=item.id)
 	- var display = (!hasSelected || multiselectFlag) ? 'block' : 'none'
 	.alert.alert-warning(style='display: #{display}')
 		.append-entity-block Выберите из списка
