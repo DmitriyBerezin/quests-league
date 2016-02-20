@@ -284,6 +284,7 @@ function getQuestFiles(questID, done) {
 function importStations(done) {
 	var data = require('../sql/spb-metro'),
 		stations = data.root.row,
+		// todo: use pStationEdit instead
 		query = 'call quests.pStationCreate("%s", 3)';
 
 	for (var i = 0, l = stations.length; i < l; ++i) {
