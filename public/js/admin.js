@@ -223,7 +223,7 @@ $(function() {
 		});
 
 		function onFormQuestSuccess(data, statusText, xhr) {
-			window.location = '/admin/quest/' + data.questID;
+			window.location = '/' + currLang + '/admin/quest/' + data.questID;
 		}
 
 		function onFormQuestError(res) {

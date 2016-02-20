@@ -1,5 +1,6 @@
 
 -- create translate tables and fill them
+drop table tcity_tr;
 CREATE TABLE `tcity_tr` (
   `city_id` int(11) NOT NULL,
   `lang` varchar(10) NOT NULL,
@@ -71,6 +72,7 @@ ALTER TABLE `quests`.`tcountry`
 DROP COLUMN `name`;
 
 
+drop table tleague_tr;
 CREATE TABLE `tleague_tr` (
   `league_id` int(11) NOT NULL,
   `lang` varchar(10) NOT NULL,
@@ -88,6 +90,7 @@ ALTER TABLE `quests`.`tleague`
 DROP COLUMN `name`;
 
 
+drop table tquest_tr;
 CREATE TABLE `tquest_tr` (
   `quest_id` int(11) NOT NULL,
   `lang` varchar(10) NOT NULL,
@@ -110,6 +113,27 @@ ALTER TABLE `quests`.`tquest`
 DROP COLUMN `descr`;
 ALTER TABLE `quests`.`tquest` 
 DROP COLUMN `address`;
+
+
+CREATE TABLE `tstation_tr` (
+  `station_id` int(11) NOT NULL,
+  `lang` varchar(10) NOT NULL,
+  `name` varchar(45) NOT NULL,
+  PRIMARY KEY (`station_id`,`lang`),
+  KEY `tstation_tr_station_id_idx` (`station_id`),
+  FULLTEXT KEY `ft_name` (`name`),
+  CONSTRAINT `tstation_tr_station_id` FOREIGN KEY (`station_id`) REFERENCES `tstation` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+insert into tstation_tr(station_id, lang, name)
+select t.id, 'ru' as lang, t.name
+from tstation t;
+
+ALTER TABLE `quests`.`tstation` 
+DROP INDEX `UNIQUE_name_city_id`;
+ALTER TABLE `quests`.`tstation` 
+DROP COLUMN `name`;
+
 
 
 CREATE TABLE `ttag_tr` (
@@ -139,7 +163,7 @@ CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `vcompany` AS select `t`.`i
 
 CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `vcomplexity` AS select `t`.`id` AS `id`,`tr`.`name` AS `name` from (`tcomplexity` `t` join `tcomplexity_tr` `tr` on((`t`.`id` = `tr`.`complexity_id`)));
 
-CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `vcountry` AS select `t`.`id` AS `id`,`tr`.`name` AS `name` from (`tcountry` `t` join `tcountry_tr` `tr` on((`t`.`id` = `tr`.`country_id`)));
+CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `vcountry` AS select `t`.`id` AS `id`,`tr`.`name` AS `name`,`tr`.`lang` AS `lang` from (`tcountry` `t` join `tcountry_tr` `tr` on((`t`.`id` = `tr`.`country_id`)));
 
 CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `vleague` AS select `t`.`id` AS `id`,`tr`.`name` AS `name` from (`tleague` `t` join `tleague_tr` `tr` on((`t`.`id` = `tr`.`league_id`)));
 
@@ -497,6 +521,7 @@ DELIMITER ;
 grant execute on procedure pAdminTagPut to 'moderator';
 
 
+drop procedure pCityList;
 DELIMITER ;;
 CREATE PROCEDURE `pCityList`(
 	lang varchar(10)
@@ -517,6 +542,7 @@ DELIMITER ;
 grant execute on procedure pCityList to 'web';
 
 
+drop procedure pCityStations;
 DELIMITER ;;
 CREATE PROCEDURE `pCityStations`(
 	lang varchar(10),
@@ -541,6 +567,7 @@ DELIMITER ;
 grant execute on procedure pCityStations to 'moderator';
 
 
+drop procedure pCommentApprove;
 DELIMITER ;;
 CREATE PROCEDURE `pCommentApprove`(
   id int,
@@ -553,6 +580,7 @@ DELIMITER ;
 grant execute on procedure pCommentApprove to 'moderator';
 
 
+drop procedure pCommentDel;
 DELIMITER ;;
 CREATE PROCEDURE `pCommentDel`(
   _id int,
@@ -570,6 +598,7 @@ grant execute on procedure pCommentApprove to 'moderator';
 grant execute on procedure pCommentApprove to 'web';
 
 
+drop procedure pCommentEdit;
 DELIMITER ;;
 CREATE PROCEDURE `pCommentEdit`(
   id int,
@@ -601,6 +630,7 @@ DELIMITER ;
 grant execute on procedure pCommentEdit to 'web';
 
 
+drop procedure pCommentGet;
 DELIMITER ;;
 CREATE PROCEDURE `pCommentGet`(
   id int
@@ -613,6 +643,7 @@ DELIMITER ;
 grant execute on procedure pCommentGet to 'moderator';
 
 
+drop procedure pCommentList;
 DELIMITER ;;
 CREATE PROCEDURE `pCommentList`()
 BEGIN
@@ -626,6 +657,7 @@ DELIMITER ;
 grant execute on procedure pCommentList to 'moderator';
 
 
+drop procedure pCompanyDel;
 DELIMITER ;;
 CREATE PROCEDURE `pCompanyDel`(
 	company_id int
@@ -637,6 +669,7 @@ DELIMITER ;
 grant execute on procedure pCompanyDel to 'moderator';
 
 
+drop procedure pCountryCities;
 DELIMITER ;;
 CREATE PROCEDURE `pCountryCities`(
 	lang varchar(10),
@@ -661,6 +694,7 @@ DELIMITER ;
 grant execute on procedure pCountryCities to 'moderator';
 
 
+drop procedure pOrderConfirm;
 DELIMITER ;;
 CREATE PROCEDURE `pOrderConfirm`(
 	order_id int,
@@ -679,6 +713,7 @@ END ;;
 DELIMITER ;
 
 
+drop procedure pOrderCreate;
 DELIMITER ;;
 CREATE PROCEDURE `pOrderCreate`(
 	user_id int,
@@ -703,6 +738,7 @@ END ;;
 DELIMITER ;
 
 
+drop procedure pOrderSetStatus;
 DELIMITER ;;
 CREATE PROCEDURE `pOrderSetStatus`(
 	order_id int,
@@ -714,6 +750,7 @@ END ;;
 DELIMITER ;
 
 
+drop procedure pQuestDel;
 DELIMITER ;;
 CREATE PROCEDURE `pQuestDel`(
   quest_id int
@@ -725,7 +762,7 @@ DELIMITER ;
 grant execute on procedure pQuestDel to 'moderator';
 
 
-
+drop procedure pQuestEdit;
 DELIMITER ;;
 CREATE PROCEDURE `pQuestEdit`(
     lang varchar(10),
@@ -832,6 +869,7 @@ DELIMITER ;
 grant execute on procedure pQuestEdit to 'moderator';
 
 
+drop procedure pQuestGet;
 DELIMITER ;;
 CREATE PROCEDURE `pQuestGet`(
 	lang varchar(10),
@@ -873,31 +911,75 @@ BEGIN
     group by tc.id;
     
     -- tags
-    select t.*, tr.name, case when tx.quest_id is null then 0 else 1 end as selected  
+    select tc.id, max(tc.name) as name, tc.selected
+    from
+    (
+        select t.*, null as name, case when tx.quest_id is null then 0 else 1 end as selected  
     from ttag t inner join ttag_tr tr on t.id = tr.tag_id
     left join txquesttag tx on t.id = tx.tag_id
-        and tx.quest_id = quest_id
-	where tr.lang = lang;
+      and tx.quest_id = quest_id
+    where tr.lang != lang
+        union
+        select t.*, tr.name, case when tx.quest_id is null then 0 else 1 end as selected  
+    from ttag t inner join ttag_tr tr on t.id = tr.tag_id
+    left join txquesttag tx on t.id = tx.tag_id
+      and tx.quest_id = quest_id
+    where tr.lang = lang
+    ) tc
+    group by tc.id;
     
     select t.id, tr.name 
     from tleague t inner join tleague_tr tr on t.id = tr.league_id
     where tr.lang = lang;
     
-    select t.id, tr.name 
+    -- countries
+    select tc.id, max(tc.name) as name, tc.selected
+    from
+    (
+    select t.id, null as name, case when t.id = country_id then 1 else 0 end as selected
     from tcountry t inner join tcountry_tr tr on t.id = tr.country_id
-    where tr.lang = lang;
+    where tr.lang != lang
+    union
+    select t.id, tr.name, case when t.id = country_id then 1 else 0 end as selected
+    from tcountry t inner join tcountry_tr tr on t.id = tr.country_id
+    where tr.lang = lang
+    ) tc
+    group by tc.id;
     
-    select t.id, tr.name 
+    -- cities
+    select tc.id, max(tc.name) as name, tc.selected
+    from
+    (
+    select t.id, null as name, case when t.id = city_id then 1 else 0 end as selected
     from tcity t inner join tcity_tr tr on t.id = tr.city_id
-    where t.country_id = country_id and tr.lang = lang;
+    where tr.lang != lang
+    union
+    select t.id, tr.name, case when t.id = city_id then 1 else 0 end as selected
+    from tcity t inner join tcity_tr tr on t.id = tr.city_id
+    where tr.lang = lang
+    ) tc
+    group by tc.id;
     
-    select t.*, tr.name, case when tx.quest_id is null then 0 else 1 end as selected  
+    -- stations
+    select tc.id, max(tc.name) as name, tc.selected
+    from
+    (
+        select t.*, null as name, case when tx.quest_id is null then 0 else 1 end as selected  
     from tstation t inner join tstation_tr tr on t.id = tr.station_id
     left join txqueststation tx on t.id = tx.station_id
-        and tx.quest_id = quest_id
-	where t.city_id = city_id and tr.lang = lang;
-        
-	select t.id, tr.name 
+      and tx.quest_id = quest_id
+    where tr.lang != lang
+        union
+        select t.*, tr.name as name, case when tx.quest_id is null then 0 else 1 end as selected  
+    from tstation t inner join tstation_tr tr on t.id = tr.station_id
+    left join txqueststation tx on t.id = tx.station_id
+      and tx.quest_id = quest_id
+    where tr.lang = lang
+    ) tc
+    group by tc.id;
+
+    -- complexity    
+    select t.id, tr.name 
     from tcomplexity t inner join tcomplexity_tr tr on t.id = tr.complexity_id
     where tr.lang = lang;
 END ;;
@@ -906,6 +988,7 @@ grant execute on procedure pQuestGet to 'moderator';
 
 
 
+drop procedure pQuestGet1;
 DELIMITER ;;
 CREATE PROCEDURE `pQuestGet1`(
 	lang varchar(10),
@@ -969,7 +1052,7 @@ DELIMITER ;
 grant execute on procedure pQuestGet1 to 'web';
 
 
-
+drop procedure pQuestGetIdBySefName;
 DELIMITER ;;
 CREATE PROCEDURE `pQuestGetIdBySefName`(
 	sef_name varchar(150)
@@ -981,7 +1064,7 @@ DELIMITER ;
 grant execute on procedure pQuestGetIdBySefName to 'web';
 
 
-
+drop procedure pQuestList;
 DELIMITER ;;
 CREATE PROCEDURE `pQuestList`(
 	lang varchar(10)
@@ -1019,6 +1102,7 @@ DELIMITER ;
 grant execute on procedure pQuestList to 'moderator';
 
 
+drop procedure pQuestSearch;
 DELIMITER ;;
 CREATE PROCEDURE `pQuestSearch`(
 	lang varchar(10),
@@ -1114,6 +1198,7 @@ DELIMITER ;
 grant execute on procedure pQuestSearch to 'web';
 
 
+drop procedure pUserChangePassword;
 DELIMITER ;;
 CREATE PROCEDURE `pUserChangePassword`(
   user_id int,
@@ -1126,6 +1211,7 @@ DELIMITER ;
 grant execute on procedure pUserChangePassword to 'web';
 
 
+drop procedure pUserCreate;
 DELIMITER ;;
 CREATE PROCEDURE `pUserCreate`(
 	`name` varchar(45),
@@ -1153,6 +1239,7 @@ END ;;
 DELIMITER ;
 
 
+drop procedure pUserEmailCheck;
 DELIMITER ;;
 CREATE PROCEDURE `pUserEmailCheck`(
   email varchar(45)
@@ -1164,6 +1251,7 @@ DELIMITER ;
 grant execute on procedure pUserEmailCheck to 'web';
 
 
+drop procedure pUserGet;
 DELIMITER ;;
 CREATE PROCEDURE `pUserGet`(email varchar(45))
 BEGIN
@@ -1175,6 +1263,7 @@ DELIMITER ;
 grant execute on procedure pUserGet to 'web';
 
 
+drop procedure pUserOAuth;
 DELIMITER ;;
 CREATE PROCEDURE `pUserOAuth`(
   provider varchar(45),
@@ -1207,6 +1296,7 @@ DELIMITER ;
 grant execute on procedure pUserOAuth to 'web';
 
 
+drop procedure pUserResetPassword;
 DELIMITER ;;
 CREATE PROCEDURE `pUserResetPassword`(
   token varchar(250),
@@ -1222,6 +1312,7 @@ DELIMITER ;
 grant execute on procedure pUserResetPassword to 'web';
 
 
+drop procedure pUserSetForgotPasswordToken;
 DELIMITER ;;
 CREATE PROCEDURE `pUserSetForgotPasswordToken`(
   email varchar(45),
@@ -1236,6 +1327,7 @@ DELIMITER ;
 grant execute on procedure pUserSetForgotPasswordToken to 'web';
 
 
+drop procedure pUserSetVerificationToken;
 DELIMITER ;;
 CREATE PROCEDURE `pUserSetVerificationToken`(id int, token varchar(250))
 BEGIN
@@ -1245,6 +1337,7 @@ DELIMITER ;
 grant execute on procedure pUserSetVerificationToken to 'web';
 
 
+drop procedure pUserUpdate;
 DELIMITER ;;
 CREATE PROCEDURE `pUserUpdate`(
   user_id int,
@@ -1257,6 +1350,7 @@ DELIMITER ;
 grant execute on procedure pUserUpdate to 'web';
 
 
+drop procedure pUserVerify;
 DELIMITER ;;
 CREATE PROCEDURE `pUserVerify`(id int, token varchar(250))
 BEGIN

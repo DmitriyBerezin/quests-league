@@ -48,12 +48,25 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(i18n.abide(config.i18n));
 
 app.use(function(req, res, next) {
-	res.locals.user = req.user;
+	next();
+});
+
+app.use(function(req, res, next) {
+	res.locals.currLang = req.lang;
 	next();
 });
 
 // Set cities list on each sync request
 app.use(function(req, res, next) {
+	// current user
+	res.locals.user = req.user;
+
+	// current language
+	res.locals.lang = {};
+	res.locals.lang.list = config.i18n.supported_languages;
+	res.locals.lang.currLang = req.lang;
+
+
 	if (req.xhr) {
 		return next();
 	}
@@ -62,10 +75,7 @@ app.use(function(req, res, next) {
 		return next();
 	}
 
-	res.locals.lang = {};
-	res.locals.lang.list = config.i18n.supported_languages;
-	res.locals.lang.currLang = req.lang;
-
+	// cities list
 	var utilSvc = require('./services/utils-svc');
 	utilSvc.getCities(req.lang, function(err, countries, cities) {
 		if (err) {

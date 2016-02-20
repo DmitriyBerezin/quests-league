@@ -113,3 +113,13 @@ body {
 .button-group {
 	text-align: center;
 }
+
+.error {
+	color: #f00;
+}
+
+.pseudo-link {
+	border-bottom: 1px dashed;
+	padding-bottom: .1em;
+	cursor: pointer;
+}

@@ -7,7 +7,7 @@ block content
 		.lang-container.pull-right
 			+langWidget(lang)
 
-	form(method='post', action='/admin/quest').form-horizontal.form-quest
+	form(method='post', action='/#{currLang}/admin/quest').form-horizontal.form-quest
 		input(type='hidden', name='id', value=id)
 
 		h4.chapter-header=gettext('Основная информация')
