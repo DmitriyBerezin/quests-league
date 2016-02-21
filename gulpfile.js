@@ -4,7 +4,8 @@ var gulp = require('gulp'),
 	jade = require('gulp-jade'),
 	path = require('path'),
 	gutil = require('gulp-util'),
-	through = require('through2');
+	through = require('through2'),
+	exec = require('child_process').exec,
 
 	paths = {
 		templates: ['./views-client/**/*.jade'],
@@ -16,6 +17,14 @@ var gulp = require('gulp'),
 			.pipe(modify())
 			.pipe(concat('templates.js'))
 			.pipe(gulp.dest('./public/js'));
+	},
+
+	i18nTask = function(cb) {
+		exec('sh/po2json.sh', function (err, stdout, stderr) {
+			console.log(stdout);
+			console.log(stderr);
+			cb(err);
+		});
 	};
 
 function swallowError(error) {
@@ -52,6 +61,7 @@ function modify() {
 }
 
 gulp.task('jade', jadeTask);
-gulp.task('build', ['jade']);
+gulp.task('i18n', i18nTask);
+gulp.task('build', ['jade', 'i18n']);
 
 gulp.task('default', ['build']);

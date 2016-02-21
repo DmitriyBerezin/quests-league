@@ -56,7 +56,7 @@
     "i18n-abide": "0.0.25"
   },
   "devDependencies": {
-    "mocha": "^2.3.3",
-    "jsxgettext": "^0.8.2"
+    "jsxgettext": "^0.8.2",
+    "mocha": "^2.3.3"
   }
 }

@@ -1,5 +1,7 @@
 #!/bin/bash
 
+mkdir -p i18n
+
 # Convert PO files to JSON
 ./node_modules/i18n-abide/bin/compile-json locale i18n
 
