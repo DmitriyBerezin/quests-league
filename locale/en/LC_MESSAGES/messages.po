@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-02-21 02:22+0000\n"
+"POT-Creation-Date: 2016-02-21 03:39+0000\n"
 "PO-Revision-Date: 2016-02-21 02:07+0000\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -18,56 +18,56 @@ msgstr ""
 #: /Users/yoyoseek/Documents/Projects/quests/back-end/views/admin/quest-list.jade:14
 #: /Users/yoyoseek/Documents/Projects/quests/back-end/views/admin/quest-list.jade:22
 msgid "Нет перевода"
-msgstr "Нет перевода"
+msgstr "Not translated"
 
 #: /Users/yoyoseek/Documents/Projects/quests/back-end/public/js/admin.js:292
 msgid "Квест не удален: "
-msgstr "Квест не удален: "
+msgstr "Quest hasn't been removed: "
 
 #: /Users/yoyoseek/Documents/Projects/quests/back-end/public/js/admin.js:297
 msgid "Вы чтоно хотите удалить квест?"
-msgstr "Вы чтоно хотите удалить квест?"
+msgstr "Are you really want to remove quest?"
 
 #: /Users/yoyoseek/Documents/Projects/quests/back-end/public/js/admin.js:324
 msgid "Произошла ошибка: "
-msgstr "Произошла ошибка: "
+msgstr "Error has occured: "
 
 #: /Users/yoyoseek/Documents/Projects/quests/back-end/public/js/admin.js:337
 msgid "Вы точно хотите удалить компанию?"
-msgstr "Вы точно хотите удалить компанию?"
+msgstr "Are you really want to remove company?"
 
 #: /Users/yoyoseek/Documents/Projects/quests/back-end/views/admin/horizontal-list.jade:15
 msgid "Выберите из списка"
-msgstr "Выберите из списка"
+msgstr "Select from list"
 
 #: /Users/yoyoseek/Documents/Projects/quests/back-end/views/admin/horizontal-list.jade:21
 msgid "или"
-msgstr "или"
+msgstr "or"
 
 #: /Users/yoyoseek/Documents/Projects/quests/back-end/views/admin/horizontal-list.jade:23
 msgid "создайте новый"
-msgstr "создайте новый"
+msgstr "create a new"
 
 #: /Users/yoyoseek/Documents/Projects/quests/back-end/views/admin/quest-list.jade:5
 msgid "Список квестов"
-msgstr "Список квестов"
+msgstr "Quest list"
 
 #: /Users/yoyoseek/Documents/Projects/quests/back-end/views/admin/quest-list.jade:9
 msgid "Новый квест"
-msgstr "Новый квест"
+msgstr "New quest"
 
 #: /Users/yoyoseek/Documents/Projects/quests/back-end/views/admin/quest-list.jade:17
 #: /Users/yoyoseek/Documents/Projects/quests/back-end/views/admin/quest-list.jade:25
 msgid "Редактировать"
-msgstr "Редактировать"
+msgstr "Edit"
 
 #: /Users/yoyoseek/Documents/Projects/quests/back-end/views/admin/quest.jade:6
 msgid "Форма редактирования"
-msgstr "Форма редактирования"
+msgstr "Edit form"
 
 #: /Users/yoyoseek/Documents/Projects/quests/back-end/views/admin/quest.jade:13
 msgid "Основная информация"
-msgstr "Основная информация"
+msgstr "Common info"
 
 #: /Users/yoyoseek/Documents/Projects/quests/back-end/views/admin/quest.jade:15
 #: /Users/yoyoseek/Documents/Projects/quests/back-end/views/admin/quest.jade:17
@@ -77,160 +77,160 @@ msgstr "Основная информация"
 #: /Users/yoyoseek/Documents/Projects/quests/back-end/views/widgets/station-editor.jade:16
 #: /Users/yoyoseek/Documents/Projects/quests/back-end/views/widgets/tag-editor.jade:9
 msgid "Наименование"
-msgstr "Наименование"
+msgstr "Name"
 
 #: /Users/yoyoseek/Documents/Projects/quests/back-end/views/admin/quest.jade:23
 #: /Users/yoyoseek/Documents/Projects/quests/back-end/views/admin/quest.jade:25
 msgid "Описание"
-msgstr "Описание"
+msgstr "Description"
 
 #: /Users/yoyoseek/Documents/Projects/quests/back-end/views/admin/quest.jade:27
 msgid "Компания"
-msgstr "Компания"
+msgstr "Company"
 
 #: /Users/yoyoseek/Documents/Projects/quests/back-end/views/admin/quest.jade:33
 msgid "Дополнительные характеристики"
-msgstr "Дополнительные характеристики"
+msgstr "Additional info"
 
 #: /Users/yoyoseek/Documents/Projects/quests/back-end/views/admin/quest.jade:35
 msgid "Игроков"
-msgstr "Игроков"
+msgstr "Players"
 
 #: /Users/yoyoseek/Documents/Projects/quests/back-end/views/admin/quest.jade:37
 #: /Users/yoyoseek/Documents/Projects/quests/back-end/views/admin/quest.jade:43
 msgid "от"
-msgstr "от"
+msgstr "from"
 
 #: /Users/yoyoseek/Documents/Projects/quests/back-end/views/admin/quest.jade:39
 #: /Users/yoyoseek/Documents/Projects/quests/back-end/views/admin/quest.jade:45
 msgid "до"
-msgstr "до"
+msgstr "to"
 
 #: /Users/yoyoseek/Documents/Projects/quests/back-end/views/admin/quest.jade:41
 msgid "Стоимость посещения"
-msgstr "Стоимость посещения"
+msgstr "Price"
 
 #: /Users/yoyoseek/Documents/Projects/quests/back-end/views/admin/quest.jade:47
 msgid "Тэги"
-msgstr "Тэги"
+msgstr "Tags"
 
 #: /Users/yoyoseek/Documents/Projects/quests/back-end/views/admin/quest.jade:51
 msgid "Лига"
-msgstr "Лига"
+msgstr "League"
 
 #: /Users/yoyoseek/Documents/Projects/quests/back-end/views/admin/quest.jade:58
 msgid "Сложность"
-msgstr "Сложность"
+msgstr "Complexity"
 
 #: /Users/yoyoseek/Documents/Projects/quests/back-end/views/admin/quest.jade:67
 msgid "Адресная информация"
-msgstr "Адресная информация"
+msgstr "Address info"
 
 #: /Users/yoyoseek/Documents/Projects/quests/back-end/views/admin/quest.jade:69
 #: /Users/yoyoseek/Documents/Projects/quests/back-end/views/widgets/city-editor.jade:9
 msgid "Страна"
-msgstr "Страна"
+msgstr "Country"
 
 #: /Users/yoyoseek/Documents/Projects/quests/back-end/views/admin/quest.jade:73
 #: /Users/yoyoseek/Documents/Projects/quests/back-end/views/widgets/station-editor.jade:9
 msgid "Город"
-msgstr "Город"
+msgstr "City"
 
 #: /Users/yoyoseek/Documents/Projects/quests/back-end/views/admin/quest.jade:77
 msgid "Метро"
-msgstr "Метро"
+msgstr "Stations"
 
 #: /Users/yoyoseek/Documents/Projects/quests/back-end/views/admin/quest.jade:81
 #: /Users/yoyoseek/Documents/Projects/quests/back-end/views/admin/quest.jade:83
 msgid "Адрес"
-msgstr "Адрес"
+msgstr "Address"
 
 #: /Users/yoyoseek/Documents/Projects/quests/back-end/views/admin/quest.jade:85
 msgid "Gps Координаты"
-msgstr "Gps Координаты"
+msgstr "Gps coords"
 
 #: /Users/yoyoseek/Documents/Projects/quests/back-end/views/admin/quest.jade:87
 msgid "долгота"
-msgstr "долгота"
+msgstr "longitude"
 
 #: /Users/yoyoseek/Documents/Projects/quests/back-end/views/admin/quest.jade:89
 msgid "широта"
-msgstr "широта"
+msgstr "latitude"
 
 #: /Users/yoyoseek/Documents/Projects/quests/back-end/views/admin/quest.jade:90
 msgid "Перейдите нa"
-msgstr "Перейдите нa"
+msgstr "Go to"
 
 #: /Users/yoyoseek/Documents/Projects/quests/back-end/views/admin/quest.jade:91
 msgid "карту"
-msgstr "карту"
+msgstr "map"
 
 #: /Users/yoyoseek/Documents/Projects/quests/back-end/views/admin/quest.jade:92
 msgid "введите адрес, нажмите правой кнопкой и выбирете \"Что здесь?\""
-msgstr "введите адрес, нажмите правой кнопкой и выбирете \"Что здесь?\""
+msgstr "input address, right click and select \"Что здесь?\""
 
 #: /Users/yoyoseek/Documents/Projects/quests/back-end/views/admin/quest.jade:97
 #: /Users/yoyoseek/Documents/Projects/quests/back-end/views/admin/quest.jade:99
 msgid "Ссылка на видео"
-msgstr "Ссылка на видео"
+msgstr "Video"
 
 #: /Users/yoyoseek/Documents/Projects/quests/back-end/views/admin/quest.jade:103
 msgid "CEO данные"
-msgstr "CEO данные"
+msgstr "CEO"
 
 #: /Users/yoyoseek/Documents/Projects/quests/back-end/views/admin/quest.jade:105
 #: /Users/yoyoseek/Documents/Projects/quests/back-end/views/admin/quest.jade:107
 msgid "ЧПУ"
-msgstr "ЧПУ"
+msgstr "SEF"
 
 #: /Users/yoyoseek/Documents/Projects/quests/back-end/views/admin/quest.jade:122
 msgid "Сохранить изменения"
-msgstr "Сохранить изменения"
+msgstr "Save"
 
 #: /Users/yoyoseek/Documents/Projects/quests/back-end/views/admin/quest.jade:124
 msgid "Удалить квест"
-msgstr "Удалить квест"
+msgstr "Remove quest"
 
 #: /Users/yoyoseek/Documents/Projects/quests/back-end/views/admin/quest.jade:126
 msgid "Ура! Информация изменена"
-msgstr "Ура! Информация изменена"
+msgstr "Yeap! Changes have been saved"
 
 #: /Users/yoyoseek/Documents/Projects/quests/back-end/views/admin/quest.jade:132
 msgid "Картинки"
-msgstr "Картинки"
+msgstr "Images"
 
 #: /Users/yoyoseek/Documents/Projects/quests/back-end/views/admin/quest.jade:141
 msgid "Добавить картинки"
-msgstr "Добавить картинки"
+msgstr "Upload images"
 
 #: /Users/yoyoseek/Documents/Projects/quests/back-end/views/admin/quest.jade:145
 msgid "Сначала создайте квест. Потом появится возможность загрузить картинки."
-msgstr "Сначала создайте квест. Потом появится возможность загрузить картинки."
+msgstr "Create quest . Потом появится возможность загрузить картинки."
 
 #: /Users/yoyoseek/Documents/Projects/quests/back-end/views/widgets/city-editor.jade:16
 msgid "Часовой поиск"
-msgstr "Часовой поиск"
+msgstr "Timezone"
 
 #: /Users/yoyoseek/Documents/Projects/quests/back-end/views/widgets/city-editor.jade:19
 msgid "Информацию о часовом поясе можно узнать"
-msgstr "Информацию о часовом поясе можно узнать"
+msgstr "Get timezone"
 
 #: /Users/yoyoseek/Documents/Projects/quests/back-end/views/widgets/city-editor.jade:20
 #: /Users/yoyoseek/Documents/Projects/quests/back-end/views/widgets/city-editor.jade:31
 msgid "тут"
-msgstr "тут"
+msgstr "here"
 
 #: /Users/yoyoseek/Documents/Projects/quests/back-end/views/widgets/city-editor.jade:23
 msgid "Широта"
-msgstr "Широта"
+msgstr "Latitude"
 
 #: /Users/yoyoseek/Documents/Projects/quests/back-end/views/widgets/city-editor.jade:27
 msgid "Долгота"
-msgstr "Долгота"
+msgstr "Longitude"
 
 #: /Users/yoyoseek/Documents/Projects/quests/back-end/views/widgets/city-editor.jade:30
 msgid "Информацию о широте и доготе можно узнать"
-msgstr "Информацию о широте и доготе можно узнать"
+msgstr "Get latitude and longitude"
 
 #: /Users/yoyoseek/Documents/Projects/quests/back-end/views/widgets/city-editor.jade:45
 #: /Users/yoyoseek/Documents/Projects/quests/back-end/views/widgets/company-editor.jade:24
@@ -238,7 +238,7 @@ msgstr "Информацию о широте и доготе можно узна
 #: /Users/yoyoseek/Documents/Projects/quests/back-end/views/widgets/station-editor.jade:26
 #: /Users/yoyoseek/Documents/Projects/quests/back-end/views/widgets/tag-editor.jade:19
 msgid "Изменить"
-msgstr "Изменить"
+msgstr "Save"
 
 #: /Users/yoyoseek/Documents/Projects/quests/back-end/views/widgets/city-editor.jade:45
 #: /Users/yoyoseek/Documents/Projects/quests/back-end/views/widgets/company-editor.jade:24
@@ -246,14 +246,14 @@ msgstr "Изменить"
 #: /Users/yoyoseek/Documents/Projects/quests/back-end/views/widgets/station-editor.jade:26
 #: /Users/yoyoseek/Documents/Projects/quests/back-end/views/widgets/tag-editor.jade:19
 msgid "Создать"
-msgstr "Создать"
+msgstr "Create"
 
 #: /Users/yoyoseek/Documents/Projects/quests/back-end/views/widgets/city-editor.jade:47
 #: /Users/yoyoseek/Documents/Projects/quests/back-end/views/widgets/company-editor.jade:26
 #: /Users/yoyoseek/Documents/Projects/quests/back-end/views/widgets/station-editor.jade:28
 msgid "Удалить"
-msgstr "Удалить"
+msgstr "Remove"
 
 #: /Users/yoyoseek/Documents/Projects/quests/back-end/views/widgets/company-editor.jade:9
 msgid "Сайт"
-msgstr "Сайт"
+msgstr "Site"

@@ -128,27 +128,25 @@ block content
 
 	hr
 
-	//- Quest images
-	h4.chapter-header=gettext('Картинки')
-	form(method='post', action='/admin/quest/file').form-horizontal
-		input(type='hidden', name='id', value=id)
+	if id
+		//- Quest images
+		h4.chapter-header=gettext('Картинки')
+		form(method='post', action='/admin/quest/file').form-horizontal
+			input(type='hidden', name='id', value=id)
 
-		div.form-group
-			if id
+			div.form-group
 				div.col-sm-2
 				div.col-sm-2
 					span.btn.btn-success.fileinput-button
 						span=gettext('Добавить картинки')
 						input(type='file', name='files', multiple)
 				div.col-sm-8.alert-file-upload-err
-			else
-				div.alert-files.alert.alert-warning=gettext('Сначала создайте квест. Потом появится возможность загрузить картинки.')
-		div.form-group
-			div.col-sm-2
-			div.col-sm-7.imgs-container
-				each img in imgs
-					a(href=img.url, data-gallery)
-						img(src=img.url, alt='Quest image').quest-img
+			div.form-group
+				div.col-sm-2
+				div.col-sm-7.imgs-container
+					each img in imgs
+						a(href=img.url, data-gallery)
+							img(src=img.url, alt='Quest image').quest-img
 
 
 	//- Quest company editor modal
