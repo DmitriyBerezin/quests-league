@@ -4,7 +4,7 @@ mixin horizontalList(list, multiselectFlag, hidElemName)
 		each item in list
 			- if (!item.selected) continue;
 			- hasSelected = true;
-			- var name = item.name || 'Нет перевода';
+			- var name = item.name || gettext('Нет перевода');
 			- var className = item.name ? null : 'not-translated';
 			li(data-id=item.id)
 				a(href='#', class=className)=name
@@ -12,12 +12,12 @@ mixin horizontalList(list, multiselectFlag, hidElemName)
 				input(type='hidden', name=hidElemName, value=item.id)
 	- var display = (!hasSelected || multiselectFlag) ? 'block' : 'none'
 	.alert.alert-warning(style='display: #{display}')
-		.append-entity-block Выберите из списка
+		.append-entity-block=gettext('Выберите из списка')
 			select(data-live-search='true').form-control.selectpicker.all-list
 				option
 				each item in list
 					- if (!item.name) continue;
 					option(value=item.id)=item.name
-		div.separator или
+		div.separator=gettext('или')
 		.create-entity-block
-			a(href='#').create-item-link создайте новый
+			a(href='#').create-item-link=gettext('создайте новый')

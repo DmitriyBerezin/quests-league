@@ -113,7 +113,7 @@ $(function() {
 
 		function appendItem(id, name, $selectedList, hidElemName) {
 			var $item = $('<li>'),
-				name = name || 'Нет перевода',
+				name = name || gettext('Нет перевода'),
 				className = name ? null : 'not-translated';
 
 			$item.attr('data-id', id)
@@ -243,7 +243,7 @@ $(function() {
 			$listCity.empty();
 			$('<option>').appendTo($listCity);
 			cities.forEach(function(city) {
-				name = city.name || 'Нет перевода';
+				name = city.name || gettext('Нет перевода');
 				$('<option>').val(city.id).html(name).appendTo($listCity);
 			});
 			$listCity.selectpicker('refresh');
@@ -289,12 +289,12 @@ $(function() {
 		}
 
 		function onQuestRemoveError(res) {
-			var error = 'Квест не удален: ' + res.responseJSON.message;
+			var error = gettext('Квест не удален: ') + res.responseJSON.message;
 
 			$(tmplAlert({ msg: error, className: 'alert-danger' })).appendTo('.form-quest').show();
 		}
 
-		if (confirm('Вы чтоно хотите удалить квест?')) {
+		if (confirm(gettext('Вы чтоно хотите удалить квест?'))) {
 			$.ajax({
 				url: '/admin/quest',
 				type: 'DELETE',
@@ -321,7 +321,7 @@ $(function() {
 		}
 
 		function onCompanyEditError(res) {
-			var error = 'Произошла ошибка: ' + res.responseJSON.message;
+			var error = gettext('Произошла ошибка: ') + res.responseJSON.message;
 			$formCompany.find('.modal-body').prepend(tmplAlert({ msg: error, className: 'alert-danger' }));
 			$formCompany.find('button').attr('disabled', false);
 		}
@@ -334,7 +334,7 @@ $(function() {
 		function onBtnCompanyRemoveClick(evt) {
 			var companyID = $formCompany.find('input[name="id"]').val();
 
-			if (confirm('Вы точно хотите удалить компанию?')) {
+			if (confirm(gettext('Вы точно хотите удалить компанию?'))) {
 				$.ajax({
 					type: 'DELETE',
 					url: '/admin/company',

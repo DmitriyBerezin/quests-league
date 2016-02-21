@@ -6,33 +6,33 @@ form(method='post', action="/#{currLang}/admin/city").form-horizontal.form-city
 		input(type='hidden', name='id', value=data.id)
 
 		div.form-group
-			label.col-sm-4.control-label Страна
+			label.col-sm-4.control-label=gettext('Страна')
 			div.col-sm-6
 				select(name='countryID', required, data-width='auto', data-live-search='true').form-control.selectpicker
 					each item in allCountries
 						option(value=item.id, selected= item.id === data.country_id)= item.name
 
 		div.form-group
-			label(for='txtTimeZone').col-sm-4.control-label Часовой поиск
+			label(for='txtTimeZone').col-sm-4.control-label=gettext('Часовой поиск')
 			div.col-sm-6
 				input(type='text', id='txtTimeZone', name='timeZone', value=data.time_zone).form-control
-		.alert.alert-warning Информацию о часовом поясе можно узнать
-			a(href='http://www.timeanddate.com/worldclock/', target='timezone') тут
+		.alert.alert-warning=gettext('Информацию о часовом поясе можно узнать')
+			a(href='http://www.timeanddate.com/worldclock/', target='timezone')=gettext('тут')
 
 		div.form-group
-			label(for='txtLat').col-sm-4.control-label Широта
+			label(for='txtLat').col-sm-4.control-label=gettext('Широта')
 			div.col-sm-6
 				input(type='text', id='txtLat', name='lat', value=data.lat).form-control
 		div.form-group
-			label(for='txtLng').col-sm-4.control-label Долгота
+			label(for='txtLng').col-sm-4.control-label=gettext('Долгота')
 			div.col-sm-6
 				input(type='text', id='txtLng', name='lng', value=data.lng).form-control
-		.alert.alert-warning Информацию о широте и доготе можно узнать
-			a(href='http://www.latlong.net/', target='latlong') тут
+		.alert.alert-warning=gettext('Информацию о широте и доготе можно узнать')
+			a(href='http://www.latlong.net/', target='latlong')=gettext('тут')
 
 
 		div.form-group
-			label.col-sm-4.control-label Наименование
+			label.col-sm-4.control-label=gettext('Наименование')
 			div.col-sm-6
 				ul.lang-container
 					- for (lang in data.langs)
@@ -42,6 +42,6 @@ form(method='post', action="/#{currLang}/admin/city").form-horizontal.form-city
 								input(type='text', name="name[#{lang}]" value=name).form-control
 								span.input-group-addon=lang
 	div.modal-footer
-		button(type='submit').btn.btn-primary.btn-company-create #{data.id ? 'Изменить' : 'Создать'}
+		button(type='submit').btn.btn-primary.btn-company-create #{data.id ? gettext('Изменить') : gettext('Создать')}
 		if data.id
-			button(type='button').btn.btn-danger.pull-left.btn-company-remove Удалить
+			button(type='button').btn.btn-danger.pull-left.btn-company-remove=gettext('Удалить')

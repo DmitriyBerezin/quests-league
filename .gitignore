@@ -1,4 +1,5 @@
 *.DS_Store
 node_modules
-locale
+i18n
+locale/**/*.pot
 public/js/templates.js

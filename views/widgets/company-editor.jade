@@ -6,12 +6,12 @@ form(method='post', action="/#{currLang}/admin/company").form-horizontal.form-co
 		input(type='hidden', name='id', value=data.id)
 
 		div.form-group
-			label(for='txtCompSite').col-sm-4.control-label Сайт
+			label(for='txtCompSite').col-sm-4.control-label=gettext('Сайт')
 			div.col-sm-6
 				input(type='text', id='txtCompSite', name='site', placeholder='Сайт', value=data.site, required).form-control
 
 		div.form-group
-			label.col-sm-4.control-label Наименование
+			label.col-sm-4.control-label=gettext('Наименование')
 			div.col-sm-6
 				ul.lang-container
 					- for (lang in data.langs)
@@ -21,6 +21,6 @@ form(method='post', action="/#{currLang}/admin/company").form-horizontal.form-co
 								input(type='text', name="name[#{lang}]" value=name).form-control
 								span.input-group-addon=lang
 	div.modal-footer
-		button(type='submit').btn.btn-primary.btn-company-create #{data.id ? 'Изменить' : 'Создать'}
+		button(type='submit').btn.btn-primary.btn-company-create #{data.id ? gettext('Изменить') : gettext('Создать')}
 		if data.id
-			button(type='button').btn.btn-danger.pull-left.btn-company-remove Удалить
+			button(type='button').btn.btn-danger.pull-left.btn-company-remove=gettext('Удалить')
