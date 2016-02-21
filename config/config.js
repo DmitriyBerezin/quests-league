@@ -99,6 +99,6 @@ module.exports = {
 		default_lang: 'en',
 		locale_on_url: true,
 		// debug_lang: 'it-CH',
-		translation_directory: 'i18n'
+		translation_directory: 'public/i18n'
 	}
 };

@@ -22,7 +22,7 @@
 			if (json_locale_data && json_locale_data.messages) {
 				msg = json_locale_data.messages[msgid];
 
-				if (msg) {
+				if (msg && msg[1]) {
 					return msg[1];
 				}
 		
