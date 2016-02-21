@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-02-21 03:39+0000\n"
+"POT-Creation-Date: 2016-02-21 04:05+0000\n"
 "PO-Revision-Date: 2016-02-21 02:07+0000\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -195,17 +195,13 @@ msgstr "Remove quest"
 msgid "Ура! Информация изменена"
 msgstr "Yeap! Changes have been saved"
 
-#: /Users/yoyoseek/Documents/Projects/quests/back-end/views/admin/quest.jade:132
+#: /Users/yoyoseek/Documents/Projects/quests/back-end/views/admin/quest.jade:133
 msgid "Картинки"
 msgstr "Images"
 
 #: /Users/yoyoseek/Documents/Projects/quests/back-end/views/admin/quest.jade:141
 msgid "Добавить картинки"
 msgstr "Upload images"
-
-#: /Users/yoyoseek/Documents/Projects/quests/back-end/views/admin/quest.jade:145
-msgid "Сначала создайте квест. Потом появится возможность загрузить картинки."
-msgstr "Create quest . Потом появится возможность загрузить картинки."
 
 #: /Users/yoyoseek/Documents/Projects/quests/back-end/views/widgets/city-editor.jade:16
 msgid "Часовой поиск"
@@ -257,3 +253,7 @@ msgstr "Remove"
 #: /Users/yoyoseek/Documents/Projects/quests/back-end/views/widgets/company-editor.jade:9
 msgid "Сайт"
 msgstr "Site"
+
+#~ msgid ""
+#~ "Сначала создайте квест. Потом появится возможность загрузить картинки."
+#~ msgstr "Create quest . Потом появится возможность загрузить картинки."
