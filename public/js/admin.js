@@ -41,10 +41,10 @@ $(function() {
 		}
 
 		function getData(id) {
-			var url = this.getActionUrl;
+			var url = '/' + currLang + this.getActionUrl;
 
 			if (id) {
-				url = '/' + currLang + url + '/' + id;
+				url += '/' + id;
 			}
 
 			$.getJSON(url).then(onGetSuccess.bind(this), onGetError.bind(this));
