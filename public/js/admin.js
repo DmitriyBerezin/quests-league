@@ -368,9 +368,15 @@ $(function() {
 
 	function onCompanyEditClick(evt) {
 		function onCompanyEditSuccess(data) {
-			$companyBlock.find('.company-name').html(data.name);
-			$companyBlock.data('name', data.name);
-			$companyBlock.data('site', data.site);
+			var $nameElem = $companyBlock.find('.company-name');
+
+			if (data.name) {
+				$nameElem.text(data.name).removeClass('not-translated');
+			}
+			else {
+				$nameElem.text('Нет перевода').addClass('not-translated');
+			}
+
 			$modalCompany.modal('hide');
 		}
 
@@ -401,28 +407,35 @@ $(function() {
 			}
 		}
 
-		var $companyBlock = $(evt.target).closest('.company-block'),
-			company = {
-				id: $companyBlock.data('id'),
-				name: $companyBlock.data('name'),
-				site: $companyBlock.data('site')
-			},
+		function onCompanyGetSuccess(data) {
+			data.currLang = currLang;
+			$modalCompany = $(tmplCompanyModal(data)).appendTo('body');
+			$modalCompany.modal('show');
+			$formCompany = $modalCompany.find('.form-company');
+			$formCompany.validate();
+			$formCompany.ajaxForm({
+				dataType: 'json',
+				success: onCompanyEditSuccess,
+				error: onCompanyEditError,
+				beforeSubmit: beforeSubmit
+			});
+			$('.btn-company-remove').click(onBtnCompanyRemoveClick);
+		}
 
+		function onCompanyGetError() {
+
+		}
+
+		var $companyBlock = $(evt.target).closest('.company-block'),
 			$modalCompany,
-			$formCompany;
+			$formCompany,
+			id = $companyBlock.data('id');
+
+		
+		$.getJSON('/admin/company/' + id).then(onCompanyGetSuccess, onCompanyGetError);
 
 		$('#modalCompany').remove();
-		$modalCompany = $(tmplCompanyModal({ company: company })).appendTo('body');
-		$modalCompany.modal('show');
-		$formCompany = $modalCompany.find('.form-company');
-		$formCompany.validate();
-		$formCompany.ajaxForm({
-			dataType: 'json',
-			success: onCompanyEditSuccess,
-			error: onCompanyEditError,
-			beforeSubmit: beforeSubmit
-		});
-		$('.btn-company-remove').click(onBtnCompanyRemoveClick);
+		
 	}
 
 	function onLangPickerChange(evt) {

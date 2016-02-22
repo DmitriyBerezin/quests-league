@@ -9,7 +9,7 @@ block content
 	a(href='/#{lang.currLang}/admin/quest').btn.btn-success=gettext('Новый квест')
 
 	each company in companies
-		div(data-id=company.id, data-name=company.name, data-site=company.site).company-block
+		div(data-id=company.id).company-block
 			h4
 				- var companyName = company.name || gettext('Нет перевода')
 				- var className = company.name ? null : 'not-translated'
