@@ -199,15 +199,48 @@ $(function() {
 			$errQuest = $('.alert-quest-error'),
 			$successQuest = $('.alert-quest-success');
 
+		$.validator.addMethod('notEmptyList', function(value, elem) {
+			var $list = $(elem).parent().find('.horizontal-list'),
+				count = $list.find('li').length;
+
+			return count > 0;
+		});
+
 		$formQuest.validate({
 			errorElement: 'div',
 			errorClass: 'error',
+			
 			errorPlacement: function (error, element) {
 				if (element.hasClass('selectpicker')) {
 					element.next('.bootstrap-select').after(error);
 				}
 				else {
 					element.after(error);
+				}
+			},
+
+			rules: {
+				companyID_dummy: {
+					notEmptyList: true
+				},
+
+				countryID_dummy: {
+					notEmptyList: true
+				},
+				cityID_dummy: {
+					notEmptyList: true
+				}
+			},
+
+			messages: {
+				companyID_dummy: {
+					notEmptyList: $.validator.messages.required
+				},
+				countryID_dummy: {
+					notEmptyList: $.validator.messages.required
+				},
+				cityID_dummy: {
+					notEmptyList: $.validator.messages.required
 				}
 			}
 		});
@@ -237,10 +270,14 @@ $(function() {
 		function onSuccess(cities) {
 			var $listCity = $('.city-container').find('select.all-list'),
 				$selectedList = $('.city-container').find('.horizontal-list'),
+				$panel = $('.city-container').find('.entity-panel'),
 				name;
 
+			// Empty all lists
 			$selectedList.empty();
 			$listCity.empty();
+			
+			// Fill all entities list using obtained data
 			$('<option>').appendTo($listCity);
 			cities.forEach(function(city) {
 				name = city.name || gettext('Нет перевода');
@@ -248,6 +285,8 @@ $(function() {
 			});
 			$listCity.selectpicker('refresh');
 			$listCity.change();
+
+			$panel.show();
 		}
 
 		function onError(err) {
@@ -261,15 +300,21 @@ $(function() {
 		function onSuccess(stations) {
 			var $listStation = $('.stations-container').find('select.all-list'),
 				$selectedList = $('.stations-container').find('.horizontal-list'),
+				$panel = $('.city-container').find('.entity-panel'),
 				name;
 
+			// Empty all lists
 			$selectedList.empty();
 			$listStation.empty();
+			
+			// Fill all entities list using obtained data
 			$('<option>').appendTo($listStation);
 			stations.forEach(function(station) {
 				$('<option>').val(station.id).html(station.name).appendTo($listStation);
 			});
 			$listStation.selectpicker('refresh');
+
+			$panel.show();
 		}
 
 		function onError(err) {
@@ -280,6 +325,10 @@ $(function() {
 	}
 
 	function beforeSubmit(arr, $form, options) {
+		// Prevent dummy fields values sending
+		$form.find('.dummy').remove();
+
+		// Prevent multiple click
 		$form.find('button[type="submit"]').prop('disabled', true);
 	}
 

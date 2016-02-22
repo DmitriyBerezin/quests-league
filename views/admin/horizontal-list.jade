@@ -1,4 +1,8 @@
 mixin horizontalList(list, multiselectFlag, hidElemName)
+	//- Dummy always empty field to garantee at least one dome element for form validation check
+	if !multiselectFlag
+		input(type='hidden', name='#{hidElemName}_dummy', class='dummy')
+
 	- var hasSelected = false;
 	ul.horizontal-list
 		each item in list
@@ -10,8 +14,9 @@ mixin horizontalList(list, multiselectFlag, hidElemName)
 				a(href='#', class=className)=name
 				span.remove-icon x
 				input(type='hidden', name=hidElemName, value=item.id)
+
 	- var display = (!hasSelected || multiselectFlag) ? 'block' : 'none'
-	.alert.alert-warning(style='display: #{display}')
+	.alert.alert-warning.entity-panel(style='display: #{display}')
 		.append-entity-block=gettext('Выберите из списка')
 			select(data-live-search='true').form-control.selectpicker.all-list
 				option
