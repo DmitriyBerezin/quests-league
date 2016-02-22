@@ -62,6 +62,6 @@ function modify() {
 
 gulp.task('jade', jadeTask);
 gulp.task('i18n', i18nTask);
-gulp.task('build', ['jade', 'i18n']);
+gulp.task('build', ['jade']);
 
 gulp.task('default', ['build']);
