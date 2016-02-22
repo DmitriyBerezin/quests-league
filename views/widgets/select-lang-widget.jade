@@ -1,0 +1,5 @@
+mixin langWidget(lang)
+	select(name='lang').form-control.selectpicker.lang-picker
+		each l in lang.list
+			- var selected = (lang.currLang == l) ? 'selected' : null;
+			option(value=l, selected=selected)= l

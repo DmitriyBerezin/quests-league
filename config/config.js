@@ -5,14 +5,14 @@ module.exports = {
 			host: 'quests.cp0uujwgrxiz.eu-west-1.rds.amazonaws.com',
 			port: 3306,
 			user: 'web',
-			password: process.env.RDS_WEB_PSW || 'root',
+			password: process.env.RDS_WEB_PSW,
 			connectionLimit: 10
 		},
 		admin: {
 			host: 'quests.cp0uujwgrxiz.eu-west-1.rds.amazonaws.com',
 			port: 3306,
 			user: 'moderator',
-			password: process.env.RDS_ADM_PSW || 'root'
+			password: process.env.RDS_ADM_PSW
 		}
 	},
 
@@ -87,5 +87,16 @@ module.exports = {
 	aws: {
 		region: 'eu-central-1',
 		bucket: 'quests-league'
+	},
+
+	i18n: {
+		supported_languages: [
+			'en',
+			'ru'
+		],
+		default_lang: 'en',
+		locale_on_url: true,
+		// debug_lang: 'it-CH',
+		translation_directory: 'public/i18n'
 	}
 };

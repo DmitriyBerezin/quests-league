@@ -8,7 +8,7 @@ router.get('/search', function(req, res, next) {
 		page = req.query.page || 1,
 		cityID = req.cookies.city;
 
-	quest.search(query, page, cityID, function(err, quests) {
+	quest.search(req.lang, query, page, cityID, function(err, quests) {
 		if (err) {
 			return next(err);
 		}
@@ -35,7 +35,7 @@ router.get('/:idOrSef', function(req, res, next) {
 		});
 	}
 
-	quest.getQuest(id, userID, function(err, data) {
+	quest.getQuest(req.lang, id, userID, function(err, data) {
 		if (err) {
 			return next(err);
 		}

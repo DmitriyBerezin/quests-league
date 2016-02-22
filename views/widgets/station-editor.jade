@@ -1,0 +1,28 @@
+form(method='post', action="/#{currLang}/admin/station").form-horizontal.form-station
+	div.modal-header
+		button(type='button', data-dismiss='modal' aria-label='Close').close
+			span(aria-hidden='true') &times;
+	div.modal-body
+		input(type='hidden', name='id', value=data.id)
+
+		div.form-group
+			label.col-sm-4.control-label=gettext('Город')
+			div.col-sm-6
+				select(name='cityID', required, data-width='auto', data-live-search='true').form-control.selectpicker
+					each item in allCities
+						option(value=item.id, selected= item.id === data.city_id)= item.name
+
+		div.form-group
+			label.col-sm-4.control-label=gettext('Наименование')
+			div.col-sm-6
+				ul.lang-container
+					- for (lang in data.langs)
+						- var name = data.langs[lang] ? data.langs[lang].name : null;
+						li
+							.input-group
+								input(type='text', name="name[#{lang}]" value=name).form-control
+								span.input-group-addon=lang
+	div.modal-footer
+		button(type='submit').btn.btn-primary.btn-station-create #{data.id ? gettext('Изменить') : gettext('Создать')}
+		if data.id
+			button(type='button').btn.btn-danger.pull-left.btn-station-remove=gettext('Удалить')

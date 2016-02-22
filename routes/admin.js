@@ -2,12 +2,13 @@ var express = require('express');
 var router = express.Router();
 
 var admin = require('../services/admin'),
-	utils = require('../services/utils');
+	utils = require('../services/utils'),
+	config = require('../config/config');
 
 router.all('*', utils.requreAdminRole);
 
 router.get('/quest/list', function(req, res, next) {
-	admin.getQuestList(function(err, data) {
+	admin.getQuestList(req.lang, function(err, data) {
 		if (err) {
 			return next(err);
 		}
@@ -17,7 +18,7 @@ router.get('/quest/list', function(req, res, next) {
 });
 
 router.get('/quest/:id?', function(req, res, next) {
-	admin.getQuest(req.params.id, function(err, data) {
+	admin.getQuest(req.lang, req.params.id, function(err, data) {
 		if (err) {
 			return next(err);
 		}
@@ -27,7 +28,7 @@ router.get('/quest/:id?', function(req, res, next) {
 });
 
 router.post('/quest', function(req, res, next) {
-	admin.editQuest(req.body, function(err, quest) {
+	admin.editQuest(req.lang, req.body, function(err, quest) {
 		if (err) {
 			return next(err);
 		}
@@ -72,18 +73,24 @@ router.post('/quest/file', function(req, res, next) {
 	});
 });
 
+router.get('/company/:id?', function(req, res, next) {
+	var id = req.params.id;
+
+	admin.getCompany(id, config.i18n.supported_languages, function(err, data) {
+		if (err) {
+			return next(err);
+		}
+
+		res.status(200).send({ data: data });
+	});
+});
+
 router.post('/company', function(req, res, next) {
 	var id = req.body.id,
-		name = req.body.name,
-		site = req.body.site;
+		site = req.body.site,
+		namesList = buildNamesList(req.body);
 
-	if (!name) {
-		var err = new Error('`name` parameter is required');
-		err.status(400);
-		return next(err);
-	}
-
-	admin.editCompany(id, name, site, function(err, data) {
+	admin.editCompany(req.lang, id, namesList, site, function(err, data) {
 		if (err) {
 			return next(err);
 		}
@@ -110,28 +117,83 @@ router.delete('/company', function(req, res, next) {
 	});
 });
 
+router.get('/tag/:id?', function(req, res, next) {
+	var id = req.params.id;
+
+	admin.getTag(id, config.i18n.supported_languages, function(err, data) {
+		if (err) {
+			return next(err);
+		}
+
+		res.status(200).send({ data: data });
+	});
+});
+
 router.post('/tag', function(req, res, next) {
-	admin.createTag(req.body.name, function(err, data) {
+	var id = req.body.id,
+		namesList = buildNamesList(req.body);
+
+	admin.editTag(req.lang, id, namesList, function(err, data) {
 		if (err) {
 			return next(err);
 		}
 
 		res.status(200).send(data);
+	});
+});
+
+router.get('/country/:id?', function(req, res, next) {
+	var id = req.params.id;
+
+	admin.getCountry(id, config.i18n.supported_languages, function(err, data) {
+		if (err) {
+			return next(err);
+		}
+
+		res.status(200).send({ data: data });
 	});
 });
 
 router.post('/country', function(req, res, next) {
-	admin.createCountry(req.body.name, function(err, data) {
+	var id = req.body.id,
+		namesList = buildNamesList(req.body);
+
+	admin.editCountry(req.lang, id, namesList, function(err, data) {
 		if (err) {
 			return next(err);
 		}
 
 		res.status(200).send(data);
+	});
+});
+
+router.get('/city/:id?', function(req, res, next) {
+	var id = req.params.id;
+
+	admin.getCity(id, config.i18n.supported_languages, req.lang, function(err, data, allCountries) {
+		if (err) {
+			return next(err);
+		}
+
+		res.status(200).send({ data: data, allCountries: allCountries });
 	});
 });
 
 router.post('/city', function(req, res, next) {
-	admin.createCity(req.body.name, req.body.countryID, function(err, data) {
+	var id = req.body.id,
+		countryID = req.body.countryID,
+		timeZone = req.body.timeZone,
+		lat = req.body.lat,
+		lng = req.body.lng,
+		namesList = buildNamesList(req.body);
+
+	if (!countryID) {
+		var err = new Error('Invalid arguments: countryID missing');
+		err.status = 400;
+		return next(err);
+	}
+
+	admin.editCity(req.lang, id, namesList, countryID, timeZone, lat, lng, function(err, data) {
 		if (err) {
 			return next(err);
 		}
@@ -140,17 +202,30 @@ router.post('/city', function(req, res, next) {
 	});
 });
 
-router.post('/station', function(req, res, next) {
-	var name = req.body.name,
-		cityID = req.body.cityID;
+router.get('/station/:id?', function(req, res, next) {
+	var id = req.params.id;
 
-	if (!name || !cityID) {
-		var err = new Error('Invalid arguments');
+	admin.getStation(id, config.i18n.supported_languages, req.lang, function(err, data, allCities) {
+		if (err) {
+			return next(err);
+		}
+
+		res.status(200).send({ data: data, allCities: allCities });
+	});
+});
+
+router.post('/station', function(req, res, next) {
+	var id = req.body.id,
+		cityID = req.body.cityID,
+		namesList = buildNamesList(req.body);
+
+	if (!cityID) {
+		var err = new Error('Invalid arguments: cityID missing');
 		err.status = 400;
 		return next(err);
 	}
 
-	admin.createStation(name, cityID, function(err, data) {
+	admin.editStation(req.lang, id, namesList, cityID, function(err, data) {
 		if (err) {
 			return next(err);
 		}
@@ -160,7 +235,7 @@ router.post('/station', function(req, res, next) {
 });
 
 router.get('/cities', function(req, res, next) {
-	admin.getCities(req.query.countryID, function(err, data) {
+	admin.getCities(req.lang, req.query.countryID, function(err, data) {
 		if (err) {
 			return next(err);
 		}
@@ -170,7 +245,7 @@ router.get('/cities', function(req, res, next) {
 });
 
 router.get('/stations', function(req, res, next) {
-	admin.getStations(req.query.cityID, function(err, data) {
+	admin.getStations(req.lang, req.query.cityID, function(err, data) {
 		if (err) {
 			return next(err);
 		}
@@ -229,5 +304,18 @@ router.get('/comment/list', function(req, res, next) {
 		res.render('admin/comment-list', { comments: comments });
 	});
 });
+
+function buildNamesList(params) {
+	var list = [];
+
+	for (prop in params) {
+		match = /name\[(\w*)\]/gi.exec(prop);
+		if (match && match.length > 1) {
+			list.push({ lang: match[1], name: params[prop] });
+		}
+	}
+
+	return list;
+}
 
 module.exports = router;

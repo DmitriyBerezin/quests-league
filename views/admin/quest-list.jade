@@ -1,30 +1,25 @@
-extends ../layout
-
-block style
-	link(rel='stylesheet', href='/stylesheets/style.css')
-	link(rel='stylesheet', href='/stylesheets/admin/quest.css')
-
-
-block script
-	script(src='/lib/jQuery-File-Upload/js/jquery.ui.widget.js')
-	script(src='/lib/jQuery-File-Upload/js/jquery.fileupload.js')
-	script(src='/lib/jquery.form.min.js')
-	script(src='/js/admin.js')
-
+extends ./layout
+include ../widgets/select-lang-widget.jade
 
 block content
-	h1.page-header Список квестов
+	h1.page-header=gettext('Список квестов')
+		.lang-container.pull-right
+			+langWidget(lang)
 
-	a(href='/admin/quest').btn.btn-success Новый квест
+	a(href='/#{lang.currLang}/admin/quest').btn.btn-success=gettext('Новый квест')
 
 	each company in companies
-		div(data-id=company.id, data-name=company.name, data-site=company.site).company-block
+		div(data-id=company.id).company-block
 			h4
-				span.company-name= company.name
-				span.company-edit.pseudo-link Редактировать
+				- var companyName = company.name || gettext('Нет перевода')
+				- var className = company.name ? null : 'not-translated'
+				span(class=className).company-name=companyName
+				span.company-edit.pseudo-link=gettext('Редактировать')
 			ul.list-group
 				each quest in quests
 					if quest.company_id === company.id
 						li.list-group-item
-							a(href="/quest/#{quest.id}")= quest.name
-							a(href="/admin/quest/#{quest.id}").pull-right Редактировать
+							- var questName = quest.name || gettext('Нет перевода')
+							- var className = quest.name ? null : 'not-translated'
+							a(href="/quest/#{quest.id}", class=className)=questName
+							a(href="/#{lang.currLang}/admin/quest/#{quest.id}").pull-right=gettext('Редактировать')

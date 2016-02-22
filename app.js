@@ -8,6 +8,7 @@ var flash = require('connect-flash');
 var passport = require('passport');
 var session = require('express-session');
 var multer  = require('multer');
+var i18n = require('i18n-abide');
 // var MongoStore = require('connect-mongo')(session);
 // var mongoose = require ("mongoose");
 
@@ -21,6 +22,7 @@ var order = require('./routes/order');
 var utils = require('./routes/utils');
 
 var mailer = require('./services/mailer');
+var config = require('./config/config');
 
 var app = express();
 
@@ -43,13 +45,28 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(i18n.abide(config.i18n));
+
 app.use(function(req, res, next) {
-	res.locals.user = req.user;
+	next();
+});
+
+app.use(function(req, res, next) {
+	res.locals.currLang = req.lang;
 	next();
 });
 
 // Set cities list on each sync request
 app.use(function(req, res, next) {
+	// current user
+	res.locals.user = req.user;
+
+	// current language
+	res.locals.lang = {};
+	res.locals.lang.list = config.i18n.supported_languages;
+	res.locals.lang.currLang = req.lang;
+
+
 	if (req.xhr) {
 		return next();
 	}
@@ -58,8 +75,9 @@ app.use(function(req, res, next) {
 		return next();
 	}
 
+	// cities list
 	var utilSvc = require('./services/utils-svc');
-	utilSvc.getCities(function(err, countries, cities) {
+	utilSvc.getCities(req.lang, function(err, countries, cities) {
 		if (err) {
 			return next(err);
 		}

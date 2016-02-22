@@ -68,3 +68,58 @@ body {
 	color: #f00;
 	margin-left: 200px;
 }
+
+.lang-container {
+	font-size: initial;
+}
+
+.not-translated {
+	color: #f00;
+}
+
+
+.horizontal-list {
+	list-style: none;
+	margin-top: 7px;
+	padding-left: 0;
+}
+
+.horizontal-list li {
+	display: inline-block;
+}
+
+.horizontal-list li:not(:first-child) {
+	margin-left: 20px;
+}
+
+.horizontal-list .remove-icon {
+	padding-left: 5px;
+	cursor: pointer;
+}
+
+.lang-container {
+	list-style: none;
+	padding-left: 0;
+}
+
+.lang-container li {
+	margin-bottom: 10px;
+}
+
+.center {
+	text-align: center;
+}
+
+.button-group {
+	text-align: center;
+}
+
+.error {
+	color: #f00;
+}
+
+.pseudo-link {
+	border-bottom: 1px dashed;
+	padding-bottom: .1em;
+	cursor: pointer;
+}

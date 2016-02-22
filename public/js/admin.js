@@ -1,10 +1,166 @@
 $(function() {
+	// UI Components
+	var EntitiesListEditor = (function() {
+		function EntitiesListEditor(container, modal, tmplFn, getActionUrl, multiSelect, hidElemName, onItemSelected) {
+			// dom elements
+			this.$container = $(container);
+			this.$allList = this.$container.find('.all-list');
+			this.$selectedList = this.$container.find('.horizontal-list');
+			this.$modal = $(modal);
+			this.$form;
+
+			// options
+			this.hidElemName = hidElemName;
+			this.tmplFn = tmplFn;
+			this.getActionUrl = getActionUrl;
+			this.multiSelect = multiSelect;
+			this.onItemSelected = onItemSelected;
+		}
+
+		EntitiesListEditor.prototype = {
+			init: function() {
+				this.$selectedList.delegate('li a', 'click', onItemClick.bind(this));
+				this.$selectedList.delegate('.remove-icon', 'click', onRemoveIconClick.bind(this));
+				this.$container.find('.create-item-link').click(onCreateItemClick.bind(this));
+				this.$allList.on('changed.bs.select', onAllListChanged.bind(this));
+			}
+		};
+
+		function onItemClick(evt) {
+			var id = $(evt.target).closest('li').data('id');
+
+			evt.preventDefault();
+
+			getData.call(this, id);
+		}
+
+		function onCreateItemClick(evt) {
+			evt.preventDefault();
+
+			getData.call(this);
+		}
+
+		function getData(id) {
+			var url = '/' + currLang + this.getActionUrl;
+
+			if (id) {
+				url += '/' + id;
+			}
+
+			$.getJSON(url).then(onGetSuccess.bind(this), onGetError.bind(this));
+		}
+
+		function onGetSuccess(data) {
+			data.currLang = currLang;
+			this.$modal.find('.modal-content').html(this.tmplFn(data));
+			this.$modal.modal('show');
+
+			this.$modal.find('.selectpicker').selectpicker('refresh').change();;
+
+			this.$form = this.$modal.find('form');
+			this.$form.validate();
+			this.$form.ajaxForm({
+				dataType: 'json',
+				success: onPutSuccess.bind(this),
+				error: onPutError.bind(this),
+				beforeSubmit: beforeSubmit
+			});
+		}
+
+		function onPutSuccess(data) {
+			var $itemSlected = this.$container.find('li[data-id="' + data.id + '"]'),
+				$itemAll = this.$container.find('option[value="' + data.id + '"]'),
+				html;
+
+			if (typeof this.onItemSelected === 'function') {
+				this.onItemSelected({ id: data.id, name: data.name });
+			}
+
+			if ($itemSlected.length > 0) {
+				$itemSlected.find('a').html(data.name);
+			}
+			else {
+				appendItem(data.id, data.name, this.$selectedList, this.hidElemName);
+				if (!this.multiSelect) {
+					this.$container.find('.alert').hide();
+				}
+			}
+
+			if ($itemAll.length > 0) {
+				$itemAll.html(data.name);
+			}
+			else {
+				html = $('<option>').val(data.id).html(data.name);
+				this.$allList.append(html);
+			}
+			this.$allList.selectpicker('refresh').change();
+
+			this.$modal.modal('hide');
+		}
+
+		function onGetError(res) {
+
+		}
+
+		function onPutError(res) {
+
+		}
+
+		function onRemoveIconClick(evt) {
+			$(evt.target).closest('li').remove();
+
+			if (!this.multiSelect && this.$selectedList.find('li').length === 0) {
+				this.$container.find('.alert').show();
+			}
+			this.$allList.val('').selectpicker('refresh').change();
+		}
+
+		function appendItem(id, name, $selectedList, hidElemName) {
+			var $item = $('<li>'),
+				name = name || gettext('Нет перевода'),
+				className = name ? null : 'not-translated';
+
+			$item.attr('data-id', id)
+				.append($('<a>').attr('href', '#').addClass(className).text(name))
+				.append($('<span>').addClass('remove-icon').text('x'))
+				.append($('<input type="hidden">').attr('name', hidElemName).val(id));
+			$selectedList.append($item);
+		}
+
+		function onAllListChanged(evt) {
+			var $option = this.$allList.find('option:selected'),
+				id = $option.val(),
+				name = $option.text(),
+				$itemSlected = this.$container.find('li[data-id="' + id + '"]'),
+				html;
+
+			if ($itemSlected.length === 0) {
+				appendItem(id, name, this.$selectedList, this.hidElemName);
+				if (!this.multiSelect) {
+					this.$container.find('.alert').hide();
+					this.$container.find('.error').hide();
+				}
+
+				if (typeof this.onItemSelected === 'function') {
+					this.onItemSelected({ id: id, name: name });
+				}
+			}
+		}
+
+		return EntitiesListEditor;
+	}())
+
+
+	// module code after components block
 	var $fileInput = $('.fileinput-button'),
 		$warnFiles = $('.alert-files'),
 		$imgsContainer = $('.imgs-container'),
 		$errorFile = $('.alert-file-upload-err'),
 		$removeQuest = $('.remove-quest'),
-		$id = $('input[name="id"]');
+		$id = $('input[name="id"]'),
+		$langPicker = $('.lang-picker'),
+
+		currLang = $langPicker.val();
 
 	$('input[type="file"]').fileupload({
 		done: function(evt, data) {
@@ -21,14 +177,15 @@ $(function() {
 	});
 
 	$removeQuest.click(onRemoveQuestClick);
+	$langPicker.change(onLangPickerChange);
 
 	toggleFileInput();
 	formQuest();
-	formCompany();
-	formTag();
-	formCountry();
-	formCity();
-	formStation();
+	new EntitiesListEditor('.company-container', '#modalCompany', tmplCompanyEditor, '/admin/company', false, 'companyID').init();
+	new EntitiesListEditor('.tags-container', '#modalTag', tmplTagEditor, '/admin/tag', true, 'tagsID').init();
+	new EntitiesListEditor('.country-container', '#modalCountry', tmplCountryEditor, '/admin/country', false, 'countryID', onCountryChanged).init();
+	new EntitiesListEditor('.city-container', '#modalCity', tmplCityEditor, '/admin/city', false, 'cityID', onCityChanged).init();
+	new EntitiesListEditor('.stations-container', '#modalStation', tmplStationEditor, '/admin/station', true, 'stationsID').init();
 
 
 	function toggleFileInput() {
@@ -47,15 +204,48 @@ $(function() {
 			$errQuest = $('.alert-quest-error'),
 			$successQuest = $('.alert-quest-success');
 
+		$.validator.addMethod('notEmptyList', function(value, elem) {
+			var $list = $(elem).parent().find('.horizontal-list'),
+				count = $list.find('li').length;
+
+			return count > 0;
+		});
+
 		$formQuest.validate({
 			errorElement: 'div',
 			errorClass: 'error',
+			
 			errorPlacement: function (error, element) {
 				if (element.hasClass('selectpicker')) {
 					element.next('.bootstrap-select').after(error);
 				}
 				else {
 					element.after(error);
+				}
+			},
+
+			rules: {
+				companyID_dummy: {
+					notEmptyList: true
+				},
+
+				countryID_dummy: {
+					notEmptyList: true
+				},
+				cityID_dummy: {
+					notEmptyList: true
+				}
+			},
+
+			messages: {
+				companyID_dummy: {
+					notEmptyList: $.validator.messages.required
+				},
+				countryID_dummy: {
+					notEmptyList: $.validator.messages.required
+				},
+				cityID_dummy: {
+					notEmptyList: $.validator.messages.required
 				}
 			}
 		});
@@ -71,7 +261,7 @@ $(function() {
 		});
 
 		function onFormQuestSuccess(data, statusText, xhr) {
-			window.location = '/admin/quest/' + data.questID;
+			window.location = '/' + currLang + '/admin/quest/' + data.questID;
 		}
 
 		function onFormQuestError(res) {
@@ -81,120 +271,69 @@ $(function() {
 		}
 	}
 
-	function modalForm($modal, $list, $form, onChange) {
-		$form.validate();
-		$form.ajaxForm({
-			dataType: 'json',
-			success: onSuccess,
-			error: onError,
-			beforeSubmit: beforeSubmit
-		});
-
-		function onSuccess(data, statusText, xhr) {
-			$modal.modal('hide');
-			$('<option selected>').val(data.id).html(data.name).appendTo($list);
-			$list.selectpicker('refresh');
-			$list.change();
-			$form.find('button[type="submit"]').attr('disabled', false);
-		}
-
-		function onError(res) {
-			var error = res.responseJSON.message;
-			$form.find('.modal-body').prepend(tmplAlert({ msg: error, className: 'alert-danger' }));
-			$form.find('button[type="submit"]').attr('disabled', false);
-		}
-
-		$modal.on('show.bs.modal', function(evt) {
-			$form.clearForm();
-		});
-
-		if (typeof onChange === 'function') {
-			$list.on('change', onChange);
-		}
-	}
-
-	function formCompany() {
-		var $modalCompany = $('#modalCompany'),
-			$listCompany = $('#listCompany'),
-			$formCompany = $('.form-company');
-
-		modalForm($modalCompany, $listCompany, $formCompany);
-	}
-
-	function formTag() {
-		var $modalTag = $('#modalTag'),
-			$listTag = $('#listTag'),
-			$formTag = $('.form-tag');
-
-		modalForm($modalTag, $listTag, $formTag);
-	}
-
-	function formCountry() {
-		var $modalCountry = $('#modalCountry'),
-			$listCountry = $('#listCountry'),
-			$listCity = $('#listCity'),
-			$formCountry = $('.form-country');
-
-		function onCountryChange(evt) {
-			var countryID = $(evt.target).val();
-
-			$.getJSON('/admin/cities', { countryID: countryID }).then(onSuccess, onError);
-			$('input:hidden[name="countryID"]').val(countryID);
-		}
-
+	function onCountryChanged(data) {
 		function onSuccess(cities) {
+			var $listCity = $('.city-container').find('select.all-list'),
+				$selectedList = $('.city-container').find('.horizontal-list'),
+				$panel = $('.city-container').find('.entity-panel'),
+				name;
+
+			// Empty all lists
+			$selectedList.empty();
 			$listCity.empty();
+			
+			// Fill all entities list using obtained data
+			$('<option>').appendTo($listCity);
 			cities.forEach(function(city) {
-				$('<option>').val(city.id).html(city.name).appendTo($listCity);
+				name = city.name || gettext('Нет перевода');
+				$('<option>').val(city.id).html(name).appendTo($listCity);
 			});
 			$listCity.selectpicker('refresh');
 			$listCity.change();
+
+			$panel.show();
 		}
 
 		function onError(err) {
 
 		}
 
-		modalForm($modalCountry, $listCountry, $formCountry, onCountryChange);
+		$.getJSON('/' + currLang + '/admin/cities', { countryID: data.id }).then(onSuccess, onError);
 	}
 
-	function formCity() {
-		var $modalCity = $('#modalCity'),
-			$listCity = $('#listCity'),
-			$listStation = $('#listStation'),
-			$formCity = $('.form-city');
-
-		function onCityChange(evt) {
-			var cityID = $(evt.target).val();
-
-			$.getJSON('/admin/stations', { cityID: cityID }).then(onSuccess, onError);
-			$('input:hidden[name="cityID"]').val(cityID);
-		}
-
+	function onCityChanged(data) {
 		function onSuccess(stations) {
+			var $listStation = $('.stations-container').find('select.all-list'),
+				$selectedList = $('.stations-container').find('.horizontal-list'),
+				$panel = $('.city-container').find('.entity-panel'),
+				name;
+
+			// Empty all lists
+			$selectedList.empty();
 			$listStation.empty();
+			
+			// Fill all entities list using obtained data
+			$('<option>').appendTo($listStation);
 			stations.forEach(function(station) {
 				$('<option>').val(station.id).html(station.name).appendTo($listStation);
 			});
 			$listStation.selectpicker('refresh');
+
+			$panel.show();
 		}
 
 		function onError(err) {
 
 		}
 
-		modalForm($modalCity, $listCity, $formCity, onCityChange);
-	}
-
-	function formStation() {
-		var $modalStation = $('#modalStation'),
-			$listStation = $('#listStation'),
-			$formStation = $('.form-station');
-
-		modalForm($modalStation, $listStation, $formStation);
+		$.getJSON('/' + currLang + '/admin/stations', { cityID: data.id }).then(onSuccess, onError);
 	}
 
 	function beforeSubmit(arr, $form, options) {
+		// Prevent dummy fields values sending
+		$form.find('.dummy').remove();
+
+		// Prevent multiple click
 		$form.find('button[type="submit"]').prop('disabled', true);
 	}
 
@@ -204,12 +343,12 @@ $(function() {
 		}
 
 		function onQuestRemoveError(res) {
-			var error = 'Квест не удален: ' + res.responseJSON.message;
+			var error = gettext('Квест не удален: ') + res.responseJSON.message;
 
 			$(tmplAlert({ msg: error, className: 'alert-danger' })).appendTo('.form-quest').show();
 		}
 
-		if (confirm('Вы чтоно хотите удалить квест?')) {
+		if (confirm(gettext('Вы чтоно хотите удалить квест?'))) {
 			$.ajax({
 				url: '/admin/quest',
 				type: 'DELETE',
@@ -229,14 +368,20 @@ $(function() {
 
 	function onCompanyEditClick(evt) {
 		function onCompanyEditSuccess(data) {
-			$companyBlock.find('.company-name').html(data.name);
-			$companyBlock.data('name', data.name);
-			$companyBlock.data('site', data.site);
+			var $nameElem = $companyBlock.find('.company-name');
+
+			if (data.name) {
+				$nameElem.text(data.name).removeClass('not-translated');
+			}
+			else {
+				$nameElem.text('Нет перевода').addClass('not-translated');
+			}
+
 			$modalCompany.modal('hide');
 		}
 
 		function onCompanyEditError(res) {
-			var error = 'Произошла ошибка: ' + res.responseJSON.message;
+			var error = gettext('Произошла ошибка: ') + res.responseJSON.message;
 			$formCompany.find('.modal-body').prepend(tmplAlert({ msg: error, className: 'alert-danger' }));
 			$formCompany.find('button').attr('disabled', false);
 		}
@@ -249,7 +394,7 @@ $(function() {
 		function onBtnCompanyRemoveClick(evt) {
 			var companyID = $formCompany.find('input[name="id"]').val();
 
-			if (confirm('Вы точно хотите удалить компанию?')) {
+			if (confirm(gettext('Вы точно хотите удалить компанию?'))) {
 				$.ajax({
 					type: 'DELETE',
 					url: '/admin/company',
@@ -262,27 +407,51 @@ $(function() {
 			}
 		}
 
-		var $companyBlock = $(evt.target).closest('.company-block'),
-			company = {
-				id: $companyBlock.data('id'),
-				name: $companyBlock.data('name'),
-				site: $companyBlock.data('site')
-			},
+		function onCompanyGetSuccess(data) {
+			data.currLang = currLang;
+			$modalCompany = $(tmplCompanyModal(data)).appendTo('body');
+			$modalCompany.modal('show');
+			$formCompany = $modalCompany.find('.form-company');
+			$formCompany.validate();
+			$formCompany.ajaxForm({
+				dataType: 'json',
+				success: onCompanyEditSuccess,
+				error: onCompanyEditError,
+				beforeSubmit: beforeSubmit
+			});
+			$('.btn-company-remove').click(onBtnCompanyRemoveClick);
+		}
 
+		function onCompanyGetError() {
+
+		}
+
+		var $companyBlock = $(evt.target).closest('.company-block'),
 			$modalCompany,
-			$formCompany;
+			$formCompany,
+			id = $companyBlock.data('id');
+
+		
+		$.getJSON('/admin/company/' + id).then(onCompanyGetSuccess, onCompanyGetError);
 
 		$('#modalCompany').remove();
-		$modalCompany = $(tmplCompanyModal({ company: company })).appendTo('body');
-		$modalCompany.modal('show');
-		$formCompany = $modalCompany.find('.form-company');
-		$formCompany.validate();
-		$formCompany.ajaxForm({
-			dataType: 'json',
-			success: onCompanyEditSuccess,
-			error: onCompanyEditError,
-			beforeSubmit: beforeSubmit
-		});
-		$('.btn-company-remove').click(onBtnCompanyRemoveClick);
+		
+	}
+
+	function onLangPickerChange(evt) {
+		var path = location.pathname,
+			langRegex = /^\/[a-z]{2}\//i,
+			lang = $langPicker.val();
+
+		if (path.search(langRegex) > -1) {
+			path = path.replace(langRegex, '/' + lang + '/');
+		}
+		else {
+			path = '/' + lang + path;
+		}
+
+		currLang = lang;
+
+		location.replace(location.origin + path);
 	}
 });

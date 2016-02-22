@@ -1,79 +1,61 @@
-extends ../layout
-
-block style
-	link(rel='stylesheet', href='/lib/jQuery-File-Upload/css/jquery.fileupload.css')
-	link(rel='stylesheet', href='/stylesheets/style.css')
-	link(rel='stylesheet', href='/stylesheets/admin/quest.css')
-
-
-block script
-	script(src='/lib/jQuery-File-Upload/js/jquery.ui.widget.js')
-	script(src='/lib/jQuery-File-Upload/js/jquery.fileupload.js')
-	script(src='/lib/jquery.form.min.js')
-	script(src='/js/admin.js')
-
+extends ./layout
+include ../widgets/select-lang-widget.jade
+include ./horizontal-list.jade
 
 block content
-	h1.page-header Форма редактирования
+	h1.page-header=gettext('Форма редактирования')
+		.lang-container.pull-right
+			+langWidget(lang)
 
-	form(method='post', action='/admin/quest').form-horizontal.form-quest
+	form(method='post', action='/#{currLang}/admin/quest').form-horizontal.form-quest
 		input(type='hidden', name='id', value=id)
 
-		h4.chapter-header Основная информация
+		h4.chapter-header=gettext('Основная информация')
 		div.form-group
-			label(for='txtName').col-sm-2.control-label Наименование
+			label(for='txtName').col-sm-2.control-label=gettext('Наименование')
 			div.col-sm-7
-				input(type='text', id='txtName', name='name', value=name, placeholder='Наименование', required).form-control
+				input(type='text', id='txtName', name='name', value=name, placeholder=gettext('Наименование'), required).form-control
 		div.form-group
 			label(for='txtUrl').col-sm-2.control-label Url
 			div.col-sm-7
 				input(type='text', id='txtUrl', name='url', value=url, placeholder='Url').form-control
 		div.form-group
-			label(for='txtDescr').col-sm-2.control-label Описание
+			label(for='txtDescr').col-sm-2.control-label=gettext('Описание')
 			div.col-sm-7
-				textarea(type='text', id='txtDescr', name='descr', placeholder='Описание', rows='10').form-control= descr
+				textarea(type='text', id='txtDescr', name='descr', placeholder=gettext('Описание'), rows='10').form-control= descr
 		div.form-group
-			label(for='listCompany').col-sm-2.control-label Компания
-			div.col-sm-7
-				select(id='listCompany', name='companyID', data-width='auto', required, data-live-search='true').form-control.selectpicker
-					option
-					each item in dic.compaines
-						option(value=item.id, selected= item.id === company_id)= item.name
-				div(role='alert').alert.alert-warning Не нашли нужную компанию?
-					a(href='#', data-toggle='modal', data-target='#modalCompany') Добавьте ее
+			label(for='listCompany').col-sm-2.control-label=gettext('Компания')
+			div.col-sm-7.company-container
+				+horizontalList(dic.companies, false, 'companyID')
 
 		hr
 
-		h4.chapter-header Дополнительные характеристики
+		h4.chapter-header=gettext('Дополнительные характеристики')
 		div.form-group
-			label.col-sm-2.control-label Игроков
+			label.col-sm-2.control-label=gettext('Игроков')
 			div.col-sm-3
-				input(type='text', id='txtPlayerFrom', name='playerFrom', value=players_from, size=2, placeholder='от').form-control
+				input(type='text', id='txtPlayerFrom', name='playerFrom', value=players_from, size=2, placeholder=gettext('от')).form-control
 			div.col-sm-3
-				input(type='text', id='txtPlayerTo', name='playerTo', value=players_to, size=2, placeholder='до').form-control
+				input(type='text', id='txtPlayerTo', name='playerTo', value=players_to, size=2, placeholder=gettext('до')).form-control
 		div.form-group
-			label.col-sm-2.control-label Стоимость посещения
+			label.col-sm-2.control-label=gettext('Стоимость посещения')
 			div.col-sm-3
-				input(type='text', id='txtPriceFrom', name='priceFrom', value=price_from, size=2, placeholder='от').form-control
+				input(type='text', id='txtPriceFrom', name='priceFrom', value=price_from, size=2, placeholder=gettext('от')).form-control
 			div.col-sm-3
-				input(type='text', id='txtPriceTo', name='priceTo', value=price_to, size=2, placeholder='до').form-control
+				input(type='text', id='txtPriceTo', name='priceTo', value=price_to, size=2, placeholder=gettext('до')).form-control
 		div.form-group
-			label(for='listTag').col-sm-2.control-label Тэги
-			div.col-sm-7
-				select(id='listTag', name='tagsID', multiple, data-width='auto').form-control.selectpicker
-					each item in dic.tags
-						option(value=item.id, selected= item.selected === 1)= item.name
-				div(role='alert').alert.alert-warning Не нашли нужный тэг?
-					a(href='#', data-toggle='modal', data-target='#modalTag') Добавьте тэг
+			label(for='listTag').col-sm-2.control-label=gettext('Тэги')
+			div.col-sm-7.tags-container
+				+horizontalList(dic.tags, true, 'tagsID')
 		div.form-group
-			label(for='listLeague').col-sm-2.control-label Лига
+			label(for='listLeague').col-sm-2.control-label=gettext('Лига')
 			div.col-sm-7
 				select(id='listLeague', name='leagueID', data-width='auto').form-control.selectpicker
 					option
 					each item in dic.leagues
 						option(value=item.id, selected= item.id === league_id)= item.name
 		div.form-group
-			label(for='listComplexity').col-sm-2.control-label Сложность
+			label(for='listComplexity').col-sm-2.control-label=gettext('Сложность')
 			div.col-sm-7
 				select(id='listComplexity', name='complexityID', data-width='auto').form-control.selectpicker
 					option
@@ -82,59 +64,47 @@ block content
 
 		hr
 
-		h4.chapter-header Адресная информация
+		h4.chapter-header=gettext('Адресная информация')
 		div.form-group
-			label(for='listCountry').col-sm-2.control-label Страна
+			label(for='listCountry').col-sm-2.control-label=gettext('Страна')
+			div.col-sm-7.country-container
+				+horizontalList(dic.countries, false, 'countryID')
+		div.form-group
+			label(for='listCity').col-sm-2.control-label=gettext('Город')
+			div.col-sm-7.city-container
+				+horizontalList(dic.cities, false, 'cityID')
+		div.form-group
+			label(for='listStation').col-sm-2.control-label=gettext('Метро')
+			div.col-sm-7.stations-container
+				+horizontalList(dic.stations, true, 'stationsID')
+		div.form-group
+			label(for='txtAddress').col-sm-2.control-label=gettext('Адрес')
 			div.col-sm-7
-				select(id='listCountry', name='countryID', required, data-width='auto').form-control.selectpicker
-					each item in dic.countries
-						option(value=item.id, selected= item.id === country_id)= item.name
-				div(role='alert').alert.alert-warning Не нашли нужную страну?
-					a(href='#', data-toggle='modal', data-target='#modalCountry') Добавьте страну
+				input(type='text', id='txtAddress', name='address', value=address placeholder=gettext('Адрес'), required).form-control
 		div.form-group
-			label(for='listCity').col-sm-2.control-label Город
-			div.col-sm-7
-				select(id='listCity', name='cityID', required, data-width='auto', data-live-search='true').form-control.selectpicker
-					each item in dic.cities
-						option(value=item.id, selected= item.id === city_id)= item.name
-				div(role='alert').alert.alert-warning Не нашли нужный город?
-					a(href='#', data-toggle='modal', data-target='#modalCity') Добавьте город
-		div.form-group
-			label(for='listStation').col-sm-2.control-label Метро
-			div.col-sm-7
-				select(id='listStation', name='stationsID', multiple, data-width='auto', data-live-search='true').form-control.selectpicker
-					each item in dic.stations
-						option(value=item.id, selected= item.selected === 1)= item.name
-				div(role='alert').alert.alert-warning Не нашли нужную станцию метро?
-					a(href='#', data-toggle='modal', data-target='#modalStation') Добавьте станцию
-		div.form-group
-			label(for='txtAddress').col-sm-2.control-label Адрес
-			div.col-sm-7
-				input(type='text', id='txtAddress', name='address', value=address placeholder='Адрес', required).form-control
-		div.form-group
-			label.col-sm-2.control-label Gps Координаты
+			label.col-sm-2.control-label=gettext('Gps Координаты')
 			div.col-sm-3
-				input(type='text', id='txtLng', name='lng', value=lng, placeholder='долгота', required).form-control
+				input(type='text', id='txtLng', name='lng', value=lng, placeholder=gettext('долгота'), required).form-control
 			div.col-sm-3
-				input(type='text', id='txtLat', name='lat', value=lat, placeholder='широта', required).form-control
-		div(role='alert').alert.alert-warning Перейдите нa
-			a(href='http://maps.yandex.ru', target='ymap') карту
-			|, введите адрес, нажмите правой кнопкой и выбирете "Что здесь?"
+				input(type='text', id='txtLat', name='lat', value=lat, placeholder=gettext('широта'), required).form-control
+		div(role='alert').alert.alert-warning=gettext('Перейдите нa')
+			a(href='http://maps.yandex.ru', target='ymap')=gettext('карту')
+			| #{gettext('введите адрес, нажмите правой кнопкой и выбирете "Что здесь?"')}
 
 		hr
 
 		div.form-group
-			label(for='txtVideoUrl').col-sm-2.control-label Ссылка на видео
+			label(for='txtVideoUrl').col-sm-2.control-label=gettext('Ссылка на видео')
 			div.col-sm-7
-				input(type='text', id='txtVideoUrl', name='videoUrl', value=video_url, placeholder='Ссылка на видео').form-control
+				input(type='text', id='txtVideoUrl', name='videoUrl', value=video_url, placeholder=gettext('Ссылка на видео')).form-control
 
 		hr
 
-		h4.chapter-header CEO данные
+		h4.chapter-header=gettext('CEO данные')
 		div.form-group
-			label(for='txtSefName').col-sm-2.control-label ЧПУ
+			label(for='txtSefName').col-sm-2.control-label=gettext('ЧПУ')
 			div.col-sm-7
-				input(type='text', id='txtSefName', name='sefName', value=sef_name, placeholder='ЧПУ').form-control
+				input(type='text', id='txtSefName', name='sefName', value=sef_name, placeholder=gettext('ЧПУ')).form-control
 		div.form-group
 			label(for='txtCeoTitle').col-sm-2.control-label Title
 			div.col-sm-7
@@ -149,108 +119,57 @@ block content
 				input(type='text', id='txtCeoKeywords', name='ceoKeywords', value=ceo_keywords, placeholder='Keywords').form-control
 
 		div.form-group.button-group
-			button(type='submit').btn.btn-primary.btn-save Сохранить изменения
+			button(type='submit').btn.btn-primary.btn-save=gettext('Сохранить изменения')
 			if id
-				a(href='#').remove-quest Удалить квест
+				a(href='#').remove-quest=gettext('Удалить квест')
 
-		div.alert-quest-success.alert.alert-success Ура! Информация изменена
+		div.alert-quest-success.alert.alert-success=gettext('Ура! Информация изменена')
 
 
 	hr
 
-	//- Quest images
-	h4.chapter-header Картинки
-	form(method='post', action='/admin/quest/file').form-horizontal
-		input(type='hidden', name='id', value=id)
+	if id
+		//- Quest images
+		h4.chapter-header=gettext('Картинки')
+		form(method='post', action='/admin/quest/file').form-horizontal
+			input(type='hidden', name='id', value=id)
 
-		div.form-group
-			if id
+			div.form-group
 				div.col-sm-2
 				div.col-sm-2
 					span.btn.btn-success.fileinput-button
-						span Добавить картинки
+						span=gettext('Добавить картинки')
 						input(type='file', name='files', multiple)
 				div.col-sm-8.alert-file-upload-err
-			else
-				div.alert-files.alert.alert-warning Сначала создайте квест. Потом появится возможность загрузить картинки.
-		div.form-group
-			div.col-sm-2
-			div.col-sm-7.imgs-container
-				each img in imgs
-					a(href=img.url, data-gallery)
-						img(src=img.url, alt='Quest image').quest-img
+			div.form-group
+				div.col-sm-2
+				div.col-sm-7.imgs-container
+					each img in imgs
+						a(href=img.url, data-gallery)
+							img(src=img.url, alt='Quest image').quest-img
 
 
 	//- Quest company editor modal
-	include ../widgets/company-modal.jade
+	div(id='modalCompany', tabIndex='-1', role='dialog').modal.fade
+		div(role='document').modal-dialog
+			div.modal-content
 
 	//- Quest tags modal
 	div(id='modalTag', tabIndex='-1', role='dialog').modal.fade
 		div(role='document').modal-dialog
 			div.modal-content
-				form(method='post', action='/admin/tag').form-horizontal.form-tag
-					div.modal-header
-						button(type='button', data-dismiss='modal' aria-label='Close').close
-							span(aria-hidden='true') &times;
-						h4.modal-title Тэги
-					div.modal-body
-						div.form-group
-							label(for='txtTag').col-sm-4.control-label Тэг
-							div.col-sm-6
-								input(type='text', id='txtTag', name='name', placeholder='Тэг', required).form-control
-					div.modal-footer
-						button(type='submit').btn.btn-primary Создать
 
 	//- Country modal
 	div(id='modalCountry', tabIndex='-1', role='dialog').modal.fade
 		div(role='document').modal-dialog
 			div.modal-content
-				form(method='post', action='/admin/country').form-horizontal.form-country
-					div.modal-header
-						button(type='button', data-dismiss='modal' aria-label='Close').close
-							span(aria-hidden='true') &times;
-						h4.modal-title Страна
-					div.modal-body
-						div.form-group
-							label(for='txtCountry').col-sm-4.control-label Страна
-							div.col-sm-6
-								input(type='text', id='txtCountry', name='name', placeholder='Страна', required).form-control
-					div.modal-footer
-						button(type='submit').btn.btn-primary Создать
 
 	//- City modal
 	div(id='modalCity', tabIndex='-1', role='dialog').modal.fade
 		div(role='document').modal-dialog
 			div.modal-content
-				form(method='post', action='/admin/city').form-horizontal.form-city
-					div.modal-header
-						button(type='button', data-dismiss='modal' aria-label='Close').close
-							span(aria-hidden='true') &times;
-						h4.modal-title Город
-					div.modal-body
-						div.form-group
-							label(for='txtCity').col-sm-4.control-label Город
-							div.col-sm-6
-								input(type='text', id='txtCity', name='name', placeholder='Город', required).form-control
-								input(type='hidden', name='countryID', value=country_id).form-control
-					div.modal-footer
-						button(type='submit').btn.btn-primary Создать
-
 
 	//- Station modal
 	div(id='modalStation', tabIndex='-1', role='dialog').modal.fade
 		div(role='document').modal-dialog
 			div.modal-content
-				form(method='post', action='/admin/station').form-horizontal.form-station
-					div.modal-header
-						button(type='button', data-dismiss='modal' aria-label='Close').close
-							span(aria-hidden='true') &times;
-						h4.modal-title Станция
-					div.modal-body
-						div.form-group
-							label(for='txtStation').col-sm-4.control-label Станция
-							div.col-sm-6
-								input(type='text', id='txtStation', name='name', placeholder='Станция', required).form-control
-								input(type='hidden', name='cityID', value=city_id).form-control
-					div.modal-footer
-						button(type='submit').btn.btn-primary Создать

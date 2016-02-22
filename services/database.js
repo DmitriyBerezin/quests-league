@@ -10,6 +10,7 @@ function getConnection(callback) {
 }
 
 function execQuery(query, callback) {
+	console.log(query);
 	pool.getConnection(function(err, connection) {
 		if (err) {
 			return callback(err);
@@ -26,6 +27,7 @@ function execQuery(query, callback) {
 function execQueryAsAdm(query, callback) {
 	var connection = mysql.createConnection(config.database.admin);
 
+	console.log(query);
 	connection.connect(function(err) {
 		if (err) {
 			return callback(err);
@@ -59,9 +61,28 @@ function intArrToInsertStatement(arr) {
 	}, '');
 }
 
+function arrToInsertStatement(arr, callback) {
+	if (!arr) {
+		return '';
+	}
+
+	if (!Array.isArray(arr)) {
+		arr = [arr];
+	}
+
+	return arr.reduce(function(res, val, index) {
+		if (index) {
+			res += ',';
+		}
+
+		return res += callback(val);
+	}, '');
+}
+
 module.exports = {
 	getConnection: getConnection,
 	execQuery: execQuery,
 	execQueryAsAdm: execQueryAsAdm,
-	intArrToInsertStatement: intArrToInsertStatement
+	intArrToInsertStatement: intArrToInsertStatement,
+	arrToInsertStatement: arrToInsertStatement
 };
