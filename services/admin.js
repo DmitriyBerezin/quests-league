@@ -45,7 +45,6 @@ function getQuest(lang, id, done) {
 		};
 		data.imgs = [];
 
-		return done(null, data);
 		if (id) {
 			getQuestFiles(id, function(err, imgs) {
 				if (err) {
