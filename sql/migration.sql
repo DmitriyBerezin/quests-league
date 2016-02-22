@@ -952,11 +952,11 @@ BEGIN
     (
     select t.id, null as name, case when t.id = city_id then 1 else 0 end as selected
     from tcity t inner join tcity_tr tr on t.id = tr.city_id
-    where tr.lang != lang
+    where tr.lang != lang and t.country_id = country_id
     union
     select t.id, tr.name, case when t.id = city_id then 1 else 0 end as selected
     from tcity t inner join tcity_tr tr on t.id = tr.city_id
-    where tr.lang = lang
+    where tr.lang = lang and t.country_id = country_id
     ) tc
     group by tc.id;
     
@@ -968,13 +968,13 @@ BEGIN
     from tstation t inner join tstation_tr tr on t.id = tr.station_id
     left join txqueststation tx on t.id = tx.station_id
       and tx.quest_id = quest_id
-    where tr.lang != lang
+    where tr.lang != lang and t.city_id = city_id
         union
         select t.*, tr.name as name, case when tx.quest_id is null then 0 else 1 end as selected  
     from tstation t inner join tstation_tr tr on t.id = tr.station_id
     left join txqueststation tx on t.id = tx.station_id
       and tx.quest_id = quest_id
-    where tr.lang = lang
+    where tr.lang = lang and t.city_id = city_id
     ) tc
     group by tc.id;
 

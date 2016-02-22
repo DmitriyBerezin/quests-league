@@ -72,6 +72,10 @@ $(function() {
 				$itemAll = this.$container.find('option[value="' + data.id + '"]'),
 				html;
 
+			if (typeof this.onItemSelected === 'function') {
+				this.onItemSelected({ id: data.id, name: data.name });
+			}
+
 			if ($itemSlected.length > 0) {
 				$itemSlected.find('a').html(data.name);
 			}
@@ -134,6 +138,7 @@ $(function() {
 				appendItem(id, name, this.$selectedList, this.hidElemName);
 				if (!this.multiSelect) {
 					this.$container.find('.alert').hide();
+					this.$container.find('.error').hide();
 				}
 
 				if (typeof this.onItemSelected === 'function') {
